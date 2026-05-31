@@ -18,7 +18,7 @@ CyberEdge Academy is a complete, self-paced cybersecurity analyst training platf
 | File | Description |
 |------|-------------|
 | `START_HERE.html` | Launch portal — start here |
-| `CyberEdge_Master_Portal.html` | Main dashboard with all 14 lessons |
+| `index.html` | Main dashboard with all 14 lessons |
 | `lesson1_learner_portal.html` through `lesson14_learner_portal.html` | Individual lesson portals |
 | `manifest.json` | PWA configuration |
 | `service-worker.js` | Offline caching |
