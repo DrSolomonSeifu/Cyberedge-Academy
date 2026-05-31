@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberEdge Academy — Launch Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --border: #1e2d45;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --gold: #f59e0b;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 520px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .logo {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px rgba(0,212,255,0.2);
+    }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    h1 span { color: var(--accent); }
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .status-box {
+      background: rgba(0,212,255,0.05);
+      border: 1px solid rgba(0,212,255,0.12);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      min-height: 80px;
+    }
+    .status-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .file-row .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #374151;
+      flex-shrink: 0;
+    }
+    .file-row.found .dot { background: #10b981; }
+    .file-row.missing .dot { background: #ef4444; }
+    .launch-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent), #0ea5e9);
+      border: none;
+      border-radius: 10px;
+      color: #0a0e1a;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.5px;
+      display: none;
+    }
+    .launch-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,212,255,0.35);
+    }
+    .launch-btn.visible { display: block; }
+    .author-line {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .author-line strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">CA</div>
+  <div class="eyebrow">CyberEdge Academy</div>
+  <h1>Cybersecurity Analyst<br><span>Training Platform</span></h1>
+  <p class="subtitle">Verifying lesson files in this folder. All 14 lesson portals must be present to launch.</p>
+
+  <div class="status-box">
+    <div class="status-label">File Check</div>
+    <div id="file-list">Scanning...</div>
+  </div>
+
+  <button class="launch-btn" id="launch-btn" onclick="window.location.href='CyberEdge_Master_Portal.html'">
+    Launch CyberEdge Academy →
+  </button>
+
+  <div class="author-line">
+    Created by <strong>Solomon Seifu, PhD</strong> — CyberEdge Academy &nbsp;·&nbsp; © 2026 All Rights Reserved
+  </div>
+</div>
+
+<script>
+const lessons = [
+  { file: "lesson1_learner_portal.html", title: "Lesson 01: Intro to Cybersecurity Analysis" },
+  { file: "lesson2_learner_portal.html", title: "Lesson 02: Threat Intelligence & Hunting" },
+  { file: "lesson3_learner_portal.html", title: "Lesson 03: System & Network Architecture" },
+  { file: "lesson4_learner_portal.html", title: "Lesson 04: Identity & Access Management" },
+  { file: "lesson5_learner_portal.html", title: "Lesson 05: Vulnerability Scanning Methods" },
+  { file: "lesson6_learner_portal.html", title: "Lesson 06: Performing Vulnerability Analysis" },
+  { file: "lesson7_learner_portal.html", title: "Lesson 07: Communicating Vulnerability Info" },
+  { file: "lesson8_learner_portal.html", title: "Lesson 08: Incident Response Activities" },
+  { file: "lesson9_learner_portal.html", title: "Lesson 09: IR Communication" },
+  { file: "lesson10_learner_portal.html", title: "Lesson 10: Tools for Malicious Activity" },
+  { file: "lesson11_learner_portal.html", title: "Lesson 11: Analyzing Malicious Activity" },
+  { file: "lesson12_learner_portal.html", title: "Lesson 12: Application Vulnerability Assessment" },
+  { file: "lesson13_learner_portal.html", title: "Lesson 13: Scripting Tools & Analysis" },
+  { file: "lesson14_learner_portal.html", title: "Lesson 14: App Security & Attack Mitigation" },
+];
+
+async function checkFiles() {
+  const list = document.getElementById('file-list');
+  list.innerHTML = '';
+  let allFound = true;
+
+  for (const l of lessons) {
+    const row = document.createElement('div');
+    row.className = 'file-row';
+    try {
+      const r = await fetch(l.file, { method: 'HEAD' });
+      row.classList.add(r.ok ? 'found' : 'missing');
+      if (!r.ok) allFound = false;
+    } catch {
+      row.classList.add('found'); // local file system - assume present
+    }
+    row.innerHTML = `<div class="dot"></div><span>${l.title}</span>`;
+    list.appendChild(row);
+  }
+
+  if (allFound) {
+    document.getElementById('launch-btn').classList.add('visible');
+  }
+}
+
+checkFiles();
+</script>
+</body>
+</html>

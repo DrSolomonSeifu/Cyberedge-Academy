@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 1 - Complete Learning Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a4d7a 0%, #2d5f8f 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 3px solid #f39c12;
+        }
+
+        .header h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* LEFT SIDEBAR */
+        .left-sidebar {
+            width: 220px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            overflow-y: auto;
+            border-right: 1px solid #34495e;
+        }
+
+        .objectives-section {
+            margin-bottom: 20px;
+        }
+
+        .objectives-section h3 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 8px;
+        }
+
+        .objectives-list {
+            list-style: none;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .objectives-list li {
+            margin-bottom: 8px;
+            color: #ecf0f1;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .objectives-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #f39c12;
+        }
+
+        .progress-section {
+            background-color: #34495e;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .progress-label {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #2c3e50;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            transition: width 0.3s ease;
+        }
+
+        .nav-section h3 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 8px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 8px 10px;
+            color: #ecf0f1;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 2px;
+        }
+
+        .nav-link:hover {
+            background-color: #34495e;
+            border-left-color: #f39c12;
+        }
+
+        .nav-link.active {
+            background-color: #f39c12;
+            color: #2c3e50;
+            border-left-color: #f39c12;
+            font-weight: 600;
+        }
+
+        /* CENTER CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .content-section h2 {
+            color: #1a4d7a;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 3px solid #f39c12;
+            padding-bottom: 10px;
+        }
+
+        .content-section h3 {
+            color: #2c3e50;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .content-section h4 {
+            color: #34495e;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .content-section p {
+            line-height: 1.7;
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .content-section ul, .content-section ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        .content-section li {
+            margin-bottom: 6px;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .info-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #f39c12;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .concept-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .key-point {
+            background-color: #fff8dc;
+            border-left: 4px solid #ff6b6b;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 2px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+
+        table th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 8px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* QUIZ STYLES */
+        .quiz-question {
+            background-color: #f9f9f9;
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+
+        .quiz-question h3 {
+            margin-top: 0;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .quiz-option:hover {
+            background-color: #f0f0f0;
+            border-color: #3498db;
+        }
+
+        .quiz-option input[type="radio"] {
+            margin-right: 12px;
+            margin-top: 3px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .quiz-option-text {
+            flex: 1;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .quiz-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .quiz-result {
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 3px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .quiz-result.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .quiz-result.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .quiz-explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f4f8;
+            border-left: 3px solid #3498db;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* RIGHT SIDEBAR */
+        .right-sidebar {
+            width: 220px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            overflow-y: auto;
+            border-left: 1px solid #bdc3c7;
+        }
+
+        .right-section {
+            margin-bottom: 20px;
+        }
+
+        .right-section h3 {
+            color: #2c3e50;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 5px;
+        }
+
+        .download-btn {
+            display: block;
+            background-color: #27ae60;
+            color: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+        .download-btn:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+        }
+
+        .download-btn.orange {
+            background-color: #f39c12;
+        }
+
+        .download-btn.orange:hover {
+            background-color: #e67e22;
+        }
+
+        .glossary-item {
+            background-color: white;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+            border-left: 3px solid #3498db;
+            font-size: 11px;
+        }
+
+        .glossary-term {
+            font-weight: 600;
+            color: #1a4d7a;
+            margin-bottom: 2px;
+        }
+
+        .glossary-def {
+            color: #555;
+            line-height: 1.4;
+            font-size: 10px;
+        }
+
+        .resource-link {
+            display: block;
+            color: #2980b9;
+            text-decoration: none;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        .assignment-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #f39c12;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+
+        .assignment-type {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CyberEdge Academy</h1>
+        <p>Lesson 1: Understanding Vulnerability Response, Handling & Management</p>
+        <p style="font-size: 10px; opacity: 0.8;">Dr. Solomon Seifu &nbsp;|&nbsp; CyberEdge Academy</p>
+    </div>
+
+    <div class="container">
+        <!-- LEFT SIDEBAR -->
+        <div class="left-sidebar">
+            <!-- Lesson Objectives -->
+            <div class="objectives-section">
+                <h3>📚 LESSON 1 OBJECTIVES</h3>
+                <ul class="objectives-list">
+                    <li>Review Policies & Governance</li>
+                    <li>Explore Risk Management Principles</li>
+                    <li>Understand Types of Controls</li>
+                    <li>Review Attack Surface Management</li>
+                    <li>Explore Patch & Configuration Management</li>
+                    <li>Review Maintenance Windows</li>
+                </ul>
+            </div>
+
+            <!-- Progress Tracker -->
+            <div class="progress-section">
+                <div class="progress-label">Progress: <span id="progress-percent">0%</span></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="nav-section">
+                <h3>📖 LESSON CONTENT</h3>
+                <ul class="nav-links">
+                    <li><a class="nav-link active" onclick="switchSection('scenario')">Opening Scenario</a></li>
+                    <li><a class="nav-link" onclick="switchSection('governance')">Governance & Leadership</a></li>
+                    <li><a class="nav-link" onclick="switchSection('risk')">Risk Management</a></li>
+                    <li><a class="nav-link" onclick="switchSection('controls')">Security Controls</a></li>
+                    <li><a class="nav-link" onclick="switchSection('attack-surface')">Attack Surface</a></li>
+                    <li><a class="nav-link" onclick="switchSection('patch')">Patch Management</a></li>
+                    <li><a class="nav-link" onclick="switchSection('config')">Configuration Mgmt</a></li>
+                    <li><a class="nav-link" onclick="switchSection('maintenance')">Maintenance Windows</a></li>
+                    <li><a class="nav-link" onclick="switchSection('resources')">Resources & Links</a></li>
+                    <li><a class="nav-link" onclick="switchSection('commands')">Commands/Tools</a></li>
+                    <li><a class="nav-link" onclick="switchSection('assignments')">Assignments & Assessments</a></li>
+                    <li><a class="nav-link" onclick="switchSection('lab')">Lab Guide</a></li>
+                    <li><a class="nav-link" onclick="switchSection('quiz')">Self-Check Quiz</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            
+            <!-- OPENING SCENARIO -->
+            <div class="content-section active" id="scenario">
+                <h2>🔐 Opening Scenario: The Equifax Data Breach (2017)</h2>
+                
+                <h3>A REAL BREACH THAT CHANGED EVERYTHING</h3>
+                <div class="key-point">147 million people's personal data stolen</div>
+
+                <h3>What Happened?</h3>
+                <p>Equifax had a known vulnerability for 2 months. They knew exactly what was wrong. But they had NO governance framework to fix it.</p>
+
+                <h3>The Failure Chain</h3>
+                
+                <div class="info-box">
+                    <strong>1. No Governance</strong><br>
+                    Nobody had authority to mandate patches. Different teams managed different systems without coordination.
+                </div>
+
+                <div class="info-box">
+                    <strong>2. No Risk Assessment</strong><br>
+                    Even if the vulnerability was known, there was no formal process to assess impact and priority.
+                </div>
+
+                <div class="info-box">
+                    <strong>3. No Patch Management Policy</strong><br>
+                    Without a policy defining timelines, teams didn't know WHEN to patch.
+                </div>
+
+                <div class="info-box">
+                    <strong>4. No Detective Controls</strong><br>
+                    Even as attackers exploited the vulnerability for 2 months, Equifax had no monitoring to detect it.
+                </div>
+
+                <h3>The Cost</h3>
+                <ul>
+                    <li>147 million people affected</li>
+                    <li>$700 million settlement</li>
+                    <li>CEO resigned</li>
+                    <li>Years of reputation damage</li>
+                </ul>
+
+                <h3>The Lesson</h3>
+                <p><strong>This breach could have been prevented with proper governance.</strong> The vulnerability didn't require new technology. It required a FRAMEWORK—governance—that told the organization what to do and when to do it.</p>
+
+                <p style="color: #27ae60; font-weight: 600; margin-top: 15px;">Reflection: If Equifax had governance, would this breach have happened?</p>
+                <p style="color: #27ae60;">Answer: No. Governance creates the framework that prevents these failures.</p>
+            </div>
+
+            <!-- GOVERNANCE & LEADERSHIP -->
+            <div class="content-section" id="governance">
+                <h2>Governance & Leadership</h2>
+
+                <h3>What is Governance?</h3>
+                <p>Governance is <strong>NOT</strong> software. It's <strong>NOT</strong> a tool you buy. Governance is a <strong>decision-making framework</strong> that determines WHO makes decisions, WHAT to protect, HOW to protect it, and WHEN to take action.</p>
+                
+                <div class="concept-box">
+                    <strong>Governance Definition:</strong> A framework of policies, procedures, and accountability structures that ensures an organization systematically identifies, assesses, responds to, and monitors security risks.
+                </div>
+
+                <h3>The Four Core Questions Governance Answers:</h3>
+                <ul>
+                    <li><strong>WHAT:</strong> What assets are critical? What risks do we face? What do we NEED to protect?</li>
+                    <li><strong>HOW:</strong> How should we protect these assets? What controls should we implement?</li>
+                    <li><strong>WHO:</strong> Who has authority to make decisions? Who is accountable if something goes wrong?</li>
+                    <li><strong>WHEN:</strong> When must we take action? What are our deadlines? (e.g., patch critical vulnerabilities within 48 hours)</li>
+                </ul>
+
+                <h3>Why Governance Matters - The Castle Analogy</h3>
+                <p>Imagine defending a medieval castle from attack. You have guards, walls, gates, and various defensive structures. <strong>Governance is the battle plan.</strong></p>
+                
+                <div class="info-box">
+                    <strong>WITHOUT governance (battle plan):</strong> Guards don't know where to stand. 100 soldiers defend the front gate while 5 soldiers defend the back gate (where the real attack comes). Nobody knows what to do if an attack happens. Attackers break in through the undefended back entrance. Disaster.
+                </div>
+
+                <div class="info-box">
+                    <strong>WITH governance (battle plan):</strong> The commander says: "Gate 1 gets 30 soldiers, Gate 2 gets 40, Gate 3 gets 20." Everyone KNOWS their assignment. If an attack happens on Gate 2, soldiers from Gate 1 and 3 have pre-planned reinforcements. Communication is clear. Roles are defined. The castle is defended effectively.
+                </div>
+
+                <h3>Key Governance Concepts:</h3>
+                <ul>
+                    <li><strong>Policy:</strong> Written rules. Example: "All critical patches must be applied within 48 hours"</li>
+                    <li><strong>Procedure:</strong> Step-by-step instructions. Example: "1) Identify patch, 2) Test in staging, 3) Deploy to production"</li>
+                    <li><strong>Accountability:</strong> Clear responsibility. Example: "CISO approves critical patches, System Admin deploys"</li>
+                    <li><strong>Audit/Monitoring:</strong> Verify the system works. Example: "Check weekly that all critical patches are deployed"</li>
+                </ul>
+
+                <h3>Leadership's Role in Governance</h3>
+                <p>Leadership (CISO, CRO, Board executives) is responsible for establishing and maintaining governance:</p>
+                <ul>
+                    <li><strong>Define the vision:</strong> "Our company follows zero-trust architecture" or "We implement defense in depth"</li>
+                    <li><strong>Allocate resources:</strong> Budget for security tools, hire staff, fund training</li>
+                    <li><strong>Make strategic exceptions:</strong> Sometimes accept risk for business reasons. Example: "We'll accept the risk of legacy system because replacing it costs $500K"</li>
+                    <li><strong>Resolve conflicts:</strong> When operations wants to skip a patch for stability but security says it's critical</li>
+                    <li><strong>Set accountability:</strong> Define roles. Make clear: "If patches aren't deployed, the system admin is accountable"</li>
+                    <li><strong>Report to Board:</strong> Present security status to executives and shareholders</li>
+                </ul>
+
+                <h3>Service Level Objectives (SLOs) - How You Measure if Governance Works</h3>
+                <p>SLOs are <strong>quantitative, measurable targets</strong> that tell you if your governance framework is actually effective:</p>
+                
+                <div class="key-point">
+                    <strong>Example SLOs for Patch Management:</strong><br>
+                    • Critical patches: Applied within 48 hours of release<br>
+                    • High patches: Applied within 7 days<br>
+                    • Medium patches: Applied within 30 days<br>
+                    • Low patches: Applied within 90 days
+                </div>
+
+                <div class="key-point">
+                    <strong>Example SLOs for Incident Response:</strong><br>
+                    • Detect 95% of breaches within 1 hour<br>
+                    • Contain breach within 4 hours<br>
+                    • Restore systems within 24 hours
+                </div>
+
+                <div class="key-point">
+                    <strong>Example SLOs for Vulnerability Management:</strong><br>
+                    • Scan all systems daily for vulnerabilities<br>
+                    • Assess severity within 24 hours<br>
+                    • Patch critical vulnerabilities within 48 hours
+                </div>
+
+                <div class="key-point">
+                    <strong>Example SLOs for Access Control:</strong><br>
+                    • Deactivate terminated user accounts within 4 hours<br>
+                    • Audit privileged accounts monthly<br>
+                    • Reset forgotten passwords within 2 hours
+                </div>
+
+                <h3>Why SLOs Matter:</h3>
+                <p><strong>WITHOUT SLOs:</strong> You have no way to measure if governance is working. Management can't report to the Board: "Is security good?" You have no data. It becomes invisible.</p>
+                
+                <p><strong>WITH SLOs:</strong> You can measure and report: "We patched 100% of critical vulnerabilities within 48 hours this month" or "We detected breaches in 55 minutes on average." You can improve what you measure.</p>
+
+                <h3>Equifax Example - Governance Failure:</h3>
+                <p>Equifax <strong>knew about the vulnerability</strong> for 2 months but had NO governance to mandate patches. There was:</p>
+                <ul>
+                    <li>No CISO with authority to order patches</li>
+                    <li>No policy saying "critical patches must be applied within 48 hours"</li>
+                    <li>No accountability: If a patch didn't get applied, nobody was responsible</li>
+                    <li>No SLOs: No way to measure if patches were being applied</li>
+                </ul>
+                <p>Result: Attackers exploited the vulnerability for 2 months while Equifax knew about it but did nothing.</p>
+            </div>
+
+            <!-- RISK MANAGEMENT -->
+            <div class="content-section" id="risk">
+                <h2>Risk Management</h2>
+
+                <h3>The Risk Management Process (4 Steps)</h3>
+                <ol>
+                    <li><strong>Identify:</strong> What assets could be at risk? What threats exist?</li>
+                    <li><strong>Assess:</strong> How likely is the threat? What's the impact if it happens?</li>
+                    <li><strong>Respond:</strong> Choose one of four responses (below)</li>
+                    <li><strong>Monitor:</strong> Has the risk changed? Is the control effective?</li>
+                </ol>
+
+                <h3>The Four Risk Responses</h3>
+
+                <div class="concept-box">
+                    <strong>1. AVOID</strong><br>
+                    Stop the business activity that creates the risk.<br>
+                    Example: "We don't store credit cards. We use a payment processor."
+                </div>
+
+                <div class="concept-box">
+                    <strong>2. ACCEPT</strong><br>
+                    Choose to live with the risk because business benefits outweigh it.<br>
+                    Example: "We'll accept a 4-hour downtime risk on Sunday to patch systems"
+                </div>
+
+                <div class="concept-box">
+                    <strong>3. MITIGATE</strong><br>
+                    Implement controls to reduce likelihood or impact.<br>
+                    Example: "Apply patches within 48 hours" (reduces likelihood)
+                </div>
+
+                <div class="concept-box">
+                    <strong>4. TRANSFER</strong><br>
+                    Shift the risk to a third party.<br>
+                    Example: "Buy cyber insurance" or "Outsource payment processing"
+                </div>
+
+                <h3>How to Choose a Response</h3>
+                <table>
+                    <tr>
+                        <th>Likelihood</th>
+                        <th>Impact</th>
+                        <th>Best Response</th>
+                    </tr>
+                    <tr>
+                        <td>High</td>
+                        <td>High</td>
+                        <td>MITIGATE</td>
+                    </tr>
+                    <tr>
+                        <td>High</td>
+                        <td>Low</td>
+                        <td>MITIGATE</td>
+                    </tr>
+                    <tr>
+                        <td>Low</td>
+                        <td>High</td>
+                        <td>MITIGATE or AVOID</td>
+                    </tr>
+                    <tr>
+                        <td>Low</td>
+                        <td>Low</td>
+                        <td>ACCEPT</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- SECURITY CONTROLS -->
+            <div class="content-section" id="controls">
+                <h2>Security Controls</h2>
+
+                <h3>What is a Security Control?</h3>
+                <p>A security control is any measure taken to protect an asset from a threat. Controls can be technology-based, people-based, or governance-based. The most effective security uses ALL THREE TYPES working together.</p>
+
+                <h3>The 3x3 Framework: Categories and Functions</h3>
+                <p>Security controls can be organized two ways:</p>
+
+                <h3>PART 1: THREE CONTROL CATEGORIES</h3>
+                <p>Every control falls into one of three categories:</p>
+
+                <div class="info-box">
+                    <strong>TECHNICAL CONTROLS</strong><br>
+                    Technology-based safeguards. Implemented in software/hardware.<br>
+                    <strong>Examples:</strong> Firewalls, encryption, antivirus, MFA (multi-factor authentication), IDS (intrusion detection), VPN, password managers, access controls
+                </div>
+
+                <div class="info-box">
+                    <strong>OPERATIONAL CONTROLS</strong><br>
+                    People and process-based safeguards. Implemented through training and procedures.<br>
+                    <strong>Examples:</strong> Security awareness training, incident response procedures, background checks, security drills, access procedures, change management
+                </div>
+
+                <div class="info-box">
+                    <strong>MANAGERIAL CONTROLS</strong><br>
+                    Governance-based safeguards. Implemented through policies and oversight.<br>
+                    <strong>Examples:</strong> Security policies, risk assessments, compliance audits, asset inventory, vendor management, SLOs
+                </div>
+
+                <h3>PART 2: THREE CONTROL FUNCTIONS</h3>
+                <p>Every control also serves one of three functions:</p>
+
+                <div class="concept-box">
+                    <strong>PREVENTIVE CONTROLS</strong><br>
+                    Stop attacks BEFORE they happen. Reduce likelihood of attack succeeding.<br>
+                    <strong>Examples:</strong> Firewall blocks malicious traffic, MFA prevents unauthorized logins, encryption prevents data theft
+                </div>
+
+                <div class="concept-box">
+                    <strong>DETECTIVE CONTROLS</strong><br>
+                    Detect attacks WHILE they are happening. Allows quick response.<br>
+                    <strong>Examples:</strong> IDS detects port scanning, SIEM detects unusual login patterns, log monitoring detects file access
+                </div>
+
+                <div class="concept-box">
+                    <strong>CORRECTIVE CONTROLS</strong><br>
+                    Fix damage AFTER attack succeeds. Restore normal operations.<br>
+                    <strong>Examples:</strong> Restore from backup, incident response team contains breach, patching fixes vulnerability
+                </div>
+
+                <h3>The 3x3 Security Control Matrix:</h3>
+                <p>All nine combinations can exist. The most secure organizations use controls from ALL 9 boxes:</p>
+
+                <table>
+                    <tr>
+                        <th>Category →<br>Function ↓</th>
+                        <th>TECHNICAL</th>
+                        <th>OPERATIONAL</th>
+                        <th>MANAGERIAL</th>
+                    </tr>
+                    <tr>
+                        <td><strong>PREVENTIVE</strong></td>
+                        <td>Firewall blocks traffic<br>MFA prevents login<br>Encryption protects data</td>
+                        <td>Security training (prevent phishing)<br>Access procedures<br>Background checks</td>
+                        <td>Security policy requires controls<br>Asset classification policy<br>Access control policy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DETECTIVE</strong></td>
+                        <td>IDS detects attacks<br>SIEM monitors logs<br>Antivirus detects malware</td>
+                        <td>Security audits<br>Log reviews<br>Incident response team</td>
+                        <td>Compliance audits<br>Risk assessments<br>Audit logs review</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CORRECTIVE</strong></td>
+                        <td>Patch fixes vulnerability<br>Backup restoration<br>Block attacker IP</td>
+                        <td>Incident response (contain)<br>User training (prevent next)<br>System rebuild</td>
+                        <td>Incident response plan<br>Lessons learned report<br>Policy updates</td>
+                    </tr>
+                </table>
+
+                <h3>KEY PRINCIPLE: DEFENSE IN DEPTH (You need all 3 categories!)</h3>
+                <p><strong>Technology alone will fail.</strong> <strong>People training alone will fail.</strong> <strong>Governance alone will fail.</strong> You NEED all three working together.</p>
+
+                <div class="key-point">
+                    <strong>REAL WORLD EXAMPLE: Phishing Attack</strong><br><br>
+                    
+                    <strong>SCENARIO:</strong> Employee receives email saying "Click here to reset your password." It's actually a phishing email from attackers.<br><br>
+                    
+                    <strong>TECHNICAL CONTROLS:</strong><br>
+                    ✓ Email filter (preventive) - tries to block phishing emails<br>
+                    ✓ MFA (preventive) - even if password stolen, attacker needs second factor<br>
+                    ✓ SIEM (detective) - notices unusual login from different country<br><br>
+                    
+                    <strong>OPERATIONAL CONTROLS:</strong><br>
+                    ✓ Training (preventive) - teaches employees: "Don't click suspicious links"<br>
+                    ✓ Incident response (corrective) - if someone got phished, team responds<br><br>
+                    
+                    <strong>MANAGERIAL CONTROLS:</strong><br>
+                    ✓ Policy (preventive) - "Never click links in unsolicited emails"<br>
+                    ✓ SLO (detective) - "Detect phishing campaigns within 1 hour"<br><br>
+                    
+                    <strong>WHAT HAPPENS:</strong><br>
+                    • Email filter catches 70% of phishing (technical preventive)<br>
+                    • Employee training catches another 20% (operational preventive)<br>
+                    • 10% get through, but MFA stops the login (technical preventive)<br>
+                    • SIEM detects the unusual login attempt (technical detective)<br>
+                    • Incident response team investigates (operational corrective)<br><br>
+                    
+                    <strong>WHAT IF WE ONLY HAD TECHNICAL CONTROLS?</strong><br>
+                    Email filter catches 70%, but if employee is tricked by the other 30%, attacker gets in. (No training = more people fall for phishing)<br><br>
+                    
+                    <strong>WHAT IF WE ONLY HAD TRAINING?</strong><br>
+                    Employees learn about phishing, but if someone clicks anyway, there's nothing stopping them. (No MFA = no second layer)<br><br>
+                    
+                    <strong>WHAT IF WE ONLY HAD POLICY?</strong><br>
+                    Policy says "don't click suspicious links" but nobody monitors if people follow it. (No detective controls = nobody catches the breach)
+                </div>
+
+                <h3>Why Equifax Failed (Control Perspective):</h3>
+                <ul>
+                    <li>PREVENTIVE: No patching policy (governance) to prevent exploits</li>
+                    <li>DETECTIVE: No monitoring to detect attacks</li>
+                    <li>CORRECTIVE: No incident response to contain breach</li>
+                </ul>
+                <p>Result: Attackers exploited a preventable vulnerability for 2 months without detection.</p>
+            </div>
+
+            <!-- ATTACK SURFACE -->
+            <div class="content-section" id="attack-surface">
+                <h2>Attack Surface Management</h2>
+
+                <h3>What is Attack Surface?</h3>
+                <p><strong>Attack surface = Every possible way an attacker could exploit your systems.</strong> It's the sum of all entry points, vulnerabilities, and weaknesses that could allow an attacker to compromise you.</p>
+
+                <h3>Components of Attack Surface:</h3>
+                <ul>
+                    <li><strong>Open ports:</strong> Network services listening for connections (web server on port 80, SSH on port 22, etc.)</li>
+                    <li><strong>User accounts:</strong> Every account is a potential login point. More accounts = more attack surface</li>
+                    <li><strong>Unpatched systems:</strong> Known vulnerabilities that attackers can exploit</li>
+                    <li><strong>Misconfigured systems:</strong> Accidentally exposed data, weak encryption, default passwords</li>
+                    <li><strong>Third-party software:</strong> Vulnerabilities in libraries, plugins, vendor code</li>
+                    <li><strong>Network protocols:</strong> Old insecure protocols (Telnet, HTTP, NFS) vs secure ones (SSH, HTTPS, SMB)</li>
+                    <li><strong>Human factors:</strong> Employees who can be phished, socially engineered</li>
+                </ul>
+
+                <h3>KEY PRINCIPLE: Smaller Attack Surface = Better Security</h3>
+                <p><strong>Think of it like a castle:</strong> If you have 10 gates, enemies can attack any of 10 places. If you reduce to 2 gates, enemies only have 2 options. If you reduce to 1 gate with strong defenses, much harder to break in.</p>
+
+                <h3>Real-World Example: File Server</h3>
+
+                <div class="info-box">
+                    <strong>BEFORE Attack Surface Reduction:</strong><br>
+                    File Server has these services listening:<br>
+                    • Port 21: FTP (old file transfer, unencrypted passwords)<br>
+                    • Port 23: Telnet (remote access, unencrypted)<br>
+                    • Port 111: NFS (network file system, weak security)<br>
+                    • Port 139: NetBIOS (legacy networking)<br>
+                    • Port 445: SMB (Windows file sharing)<br>
+                    • Port 22: SSH (secure shell, OK)<br><br>
+                    <strong>Problem:</strong> 6 potential entry points. Attackers can probe FTP, Telnet, NFS looking for exploits.
+                </div>
+
+                <div class="info-box">
+                    <strong>AFTER Attack Surface Reduction:</strong><br>
+                    File Server has only:<br>
+                    • Port 445: SMB (Windows file sharing, required)<br>
+                    • Port 22: SSH (for admin access, required)<br><br>
+                    <strong>Benefit:</strong> Only 2 entry points. Fewer services to exploit. Much more secure. Easier to monitor and audit.
+                </div>
+
+                <h3>Attack Surface Reduction Strategy - 4 Key Steps:</h3>
+
+                <div class="concept-box">
+                    <strong>STEP 1: Disable Unnecessary Services</strong><br>
+                    <strong>Actions:</strong><br>
+                    • Audit all running services: "Do we actually use this?"<br>
+                    • If not needed: STOP the service and DISABLE it<br>
+                    <strong>Examples to disable:</strong><br>
+                    ✗ FTP (use SSH/SFTP instead)<br>
+                    ✗ Telnet (use SSH instead)<br>
+                    ✗ NFS (use SMB instead)<br>
+                    ✗ SNMP v1/v2 (use SNMP v3 with encryption)<br>
+                    ✗ HTTP (use HTTPS)<br>
+                    <strong>Impact:</strong> Every disabled service = one fewer way to attack you
+                </div>
+
+                <div class="concept-box">
+                    <strong>STEP 2: Remove Unnecessary User Accounts</strong><br>
+                    <strong>Actions:</strong><br>
+                    • Audit all user accounts: "Who is this person? Do they still work here?"<br>
+                    • Deactivate terminated employees immediately<br>
+                    • Remove test/demo accounts<br>
+                    • Remove shared accounts (each person should have own ID)<br>
+                    <strong>Real danger:</strong> Former employee's account is compromised or still has access<br>
+                    <strong>Impact:</strong> Every deleted account = one fewer potential login point
+                </div>
+
+                <div class="concept-box">
+                    <strong>STEP 3: Harden Configurations</strong><br>
+                    <strong>Actions:</strong><br>
+                    • Apply CIS Benchmarks (step-by-step hardening guides)<br>
+                    • Apply NIST guidelines<br>
+                    • Apply vendor hardening guides<br>
+                    <strong>Examples of hardening:</strong><br>
+                    ✓ Disable unused protocols (NFS, NetBIOS)<br>
+                    ✓ Require strong passwords<br>
+                    ✓ Enable encryption (TLS 1.3)<br>
+                    ✓ Disable default accounts<br>
+                    ✓ Remove unnecessary software<br>
+                    <strong>Impact:</strong> Systems are more resistant to known attacks
+                </div>
+
+                <div class="concept-box">
+                    <strong>STEP 4: Patch Continuously</strong><br>
+                    <strong>Why:</strong> Unpatched systems = known exploitable vulnerabilities<br>
+                    <strong>Actions:</strong><br>
+                    • Subscribe to security alerts<br>
+                    • Assess which patches affect you<br>
+                    • Deploy CRITICAL patches within 48 hours<br>
+                    • Deploy HIGH patches within 1 week<br>
+                    <strong>Impact:</strong> Known vulnerabilities are fixed before attackers exploit them
+                </div>
+
+                <h3>Why Equifax Failed - Attack Surface Perspective:</h3>
+                <p>Equifax had a vulnerability in their web server. They could have:</p>
+                <ul>
+                    <li>DISABLED the vulnerable service</li>
+                    <li>PATCHED the vulnerability</li>
+                    <li>ISOLATED the vulnerable system from the internet</li>
+                </ul>
+                <p>They did NONE of these. The vulnerability remained exposed for 2 months.</p>
+            </div>
+
+            <!-- PATCH MANAGEMENT -->
+            <div class="content-section" id="patch">
+                <h2>Patch Management</h2>
+
+                <h3>What is a Patch?</h3>
+                <p>A patch is a software update that fixes a known security vulnerability or bug. When vendors discover vulnerabilities, they release patches to fix them. Applying patches is one of the most critical security practices.</p>
+
+                <h3>The 7-Step Patch Management Lifecycle:</h3>
+
+                <div class="concept-box">
+                    <strong>Step 1: DISCOVER</strong><br>
+                    A vulnerability is publicly announced by vendor or security researcher. You learn about it via vendor websites, CVE databases, security feeds.<br>
+                    <strong>Your action:</strong> Subscribe to security alerts for all vendors you use
+                </div>
+
+                <div class="concept-box">
+                    <strong>Step 2: ASSESS</strong><br>
+                    Determine: Do WE have this vulnerability? What systems are affected? Is it critical?<br>
+                    <strong>Actions:</strong><br>
+                    • Check which systems use vulnerable software<br>
+                    • Check what version you're running<br>
+                    • Determine CVSS score (how serious)<br>
+                    • Check if actively being exploited
+                </div>
+
+                <div class="concept-box">
+                    <strong>Step 3: PLAN</strong><br>
+                    Schedule when you'll deploy the patch. Get approvals. Prepare rollback plan.<br>
+                    <strong>Actions:</strong><br>
+                    • Classify as CRITICAL/HIGH/MEDIUM/LOW<br>
+                    • Schedule deployment window<br>
+                    • Request management approval<br>
+                    • Notify affected users
+                </div>
+
+                <div class="concept-box">
+                    <strong>Step 4: TEST</strong><br>
+                    Test patch in staging environment to verify nothing breaks.<br>
+                    <strong>Actions:</strong><br>
+                    • Apply patch to non-production copy<br>
+                    • Test all critical functionality<br>
+                    • Check for unintended side effects
+                </div>
+
+                <div class="concept-box">
+                    <strong>Step 5: DEPLOY</strong><br>
+                    Apply patch to production systems. Usually done in phases to minimize risk.<br>
+                    <strong>Actions:</strong><br>
+                    • Back up all systems<br>
+                    • Deploy to small group first<br>
+                    • Monitor for issues<br>
+                    • Deploy to remaining systems in waves
+                </div>
+
+                <div class="concept-box">
+                    <strong>Step 6: VERIFY</strong><br>
+                    Confirm patch installed correctly on all systems.<br>
+                    <strong>Actions:</strong><br>
+                    • Run vulnerability scan<br>
+                    • Check version numbers<br>
+                    • Verify functionality
+                </div>
+
+                <div class="concept-box">
+                    <strong>Step 7: MONITOR</strong><br>
+                    Watch for patch-related issues. Monitor for 1+ weeks to ensure stability.<br>
+                    <strong>Actions:</strong><br>
+                    • Monitor system performance<br>
+                    • Check application logs<br>
+                    • If issues found, prepare rollback
+                </div>
+
+                <h3>Patch Classification & Response Timelines:</h3>
+                <table>
+                    <tr>
+                        <th>Classification</th>
+                        <th>Definition</th>
+                        <th>Timeline</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>CRITICAL</strong></td>
+                        <td>Actively exploited OR worm capability</td>
+                        <td><strong>48 hours</strong></td>
+                        <td>WannaCry (2017) - patch all within 48h</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HIGH</strong></td>
+                        <td>Remote code execution possible</td>
+                        <td><strong>1 week</strong></td>
+                        <td>Windows RCE - patch within 7 days</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MEDIUM</strong></td>
+                        <td>Local privilege escalation</td>
+                        <td><strong>30 days</strong></td>
+                        <td>Weak encryption - patch within 30d</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LOW</strong></td>
+                        <td>Denial of Service or minor bug</td>
+                        <td><strong>90 days</strong></td>
+                        <td>UI bug - patch within 90d</td>
+                    </tr>
+                </table>
+
+                <h3>Patch Management Tools:</h3>
+                <ul>
+                    <li><strong>WSUS:</strong> Windows Server Update Services (Microsoft)</li>
+                    <li><strong>SCCM:</strong> System Center Configuration Manager (enterprise)</li>
+                    <li><strong>apt/yum:</strong> Linux package managers</li>
+                    <li><strong>Ansible/Terraform:</strong> Infrastructure-as-Code automation</li>
+                </ul>
+
+                <h3>The Equifax Breach: A Patching Failure Story</h3>
+                <div class="key-point">
+                    <strong>Timeline of Failure:</strong><br>
+                    • March 8, 2017: Apache announces critical RCE vulnerability<br>
+                    • March 8 - May 13 (2 MONTHS): Equifax KNOWS about it but doesn't patch<br>
+                    • Attackers actively exploit unpatched Equifax systems<br>
+                    • May 13: Equifax finally discovers the breach<br>
+                    • Result: 147 million people's data stolen, $700M settlement<br><br>
+                    
+                    <strong>Why it happened:</strong> Equifax got stuck at Step 2 (ASSESS). They discovered the vulnerability but never planned (Step 3) or deployed (Step 5) the patch.<br><br>
+                    
+                    <strong>Root cause:</strong> NO GOVERNANCE. No policy saying "Critical patches must be applied within 48 hours." No accountability if patches weren't applied. No process to enforce it.
+                </div>
+            </div>
+
+            <!-- CONFIGURATION MANAGEMENT -->
+            <div class="content-section" id="config">
+                <h2>Configuration Management & Infrastructure as Code</h2>
+
+                <h3>The Problem: Configuration Drift</h3>
+                <p>In organizations without configuration management, systems gradually become <strong>inconsistent and unpredictable:</strong></p>
+                
+                <div class="info-box">
+                    <strong>Real-world example of drift:</strong><br>
+                    • Web Server 1: SSH enabled, TLS 1.3, updated 2025-01-01<br>
+                    • Web Server 2: SSH enabled, TLS 1.2, updated 2024-12-15<br>
+                    • Web Server 3: SSH disabled, TLS 1.0 (VULNERABLE!), updated 2024-06-01<br><br>
+                    
+                    Result: Different security levels, impossible to audit, one server is vulnerable!
+                </div>
+
+                <h3>Why Configuration Drift Happens:</h3>
+                <ul>
+                    <li>Manual configuration: Each sysadmin configures servers slightly differently</li>
+                    <li>Patches applied at different times: Some get latest patches, some don't</li>
+                    <li>Ad-hoc changes: Someone makes an "emergency fix" that isn't documented</li>
+                    <li>No audit trail: Hard to know what changed and when</li>
+                    <li>Human error: Configuration mistakes creep in</li>
+                </ul>
+
+                <h3>The Solution: Infrastructure as Code (IaC)</h3>
+                <p><strong>Define your entire infrastructure in CODE.</strong> When you need new servers, run the code and they're configured identically, securely, and consistently.</p>
+
+                <div class="concept-box">
+                    <strong>Infrastructure as Code Principle:</strong> Your infrastructure configuration should be:<br>
+                    ✓ Written in code (human-readable)<br>
+                    ✓ Version controlled (Git history of changes)<br>
+                    ✓ Automated (no manual clicking)<br>
+                    ✓ Idempotent (same result every time)<br>
+                    ✓ Repeatable (can be deployed anywhere)
+                </div>
+
+                <h3>Configuration Management Tools:</h3>
+
+                <div class="info-box">
+                    <strong>Chef</strong> (Recipe-based)<br>
+                    Uses "recipes" written in Ruby to define configuration.<br>
+                    <strong>Example use case:</strong> "Recipe to install Apache, enable SSL, configure firewall rules"<br>
+                    <strong>Best for:</strong> Complex infrastructure with many rules
+                </div>
+
+                <div class="info-box">
+                    <strong>Puppet</strong> (Model-based)<br>
+                    Define desired state in Puppet DSL, Puppet enforces it continuously.<br>
+                    <strong>Example use case:</strong> "Server should have Apache installed, TLS 1.3 enabled, SSH on port 22"<br>
+                    <strong>Best for:</strong> Complex, large-scale environments
+                </div>
+
+                <div class="info-box">
+                    <strong>Ansible</strong> (Agentless)<br>
+                    Uses YAML configuration files, pushes changes via SSH.<br>
+                    <strong>Example use case:</strong> "Install Docker, pull image, run container"<br>
+                    <strong>Best for:</strong> Simplicity, easy to learn, no agents needed
+                </div>
+
+                <div class="info-box">
+                    <strong>Terraform</strong> (Infrastructure Provisioning)<br>
+                    Provisions actual infrastructure (VMs, networks, storage) on cloud platforms.<br>
+                    <strong>Example use case:</strong> "Create 10 VMs in AWS, configure security groups, attach storage"<br>
+                    <strong>Best for:</strong> Cloud infrastructure as code
+                </div>
+
+                <h3>Hardening Standards - How to Apply IaC Securely:</h3>
+                <p>When you write your IaC code, follow established hardening standards to ensure security:</p>
+
+                <ul>
+                    <li><strong>CIS Benchmarks:</strong> Center for Internet Security provides step-by-step hardening guides. Example: "CIS Windows Server 2019 Hardening" has 1000+ recommendations</li>
+                    <li><strong>NIST Guidelines:</strong> National Institute of Standards & Technology provides standards (SP 800-53, SP 800-171)</li>
+                    <li><strong>STIGs (Secure Technical Implementation Guides):</strong> U.S. Department of Defense standards for hardening systems</li>
+                </ul>
+
+                <h3>IaC Benefits:</h3>
+                <ul>
+                    <li><strong>Consistency:</strong> All servers built from same code are identical</li>
+                    <li><strong>Security:</strong> Hardening is built into code, not afterthought</li>
+                    <li><strong>Repeatability:</strong> Rebuild servers anytime if needed</li>
+                    <li><strong>Auditability:</strong> Git history shows all changes</li>
+                    <li><strong>Speed:</strong> Deploy 100 servers in minutes, not days</li>
+                    <li><strong>Documentation:</strong> Code IS the documentation</li>
+                </ul>
+            </div>
+
+            <!-- MAINTENANCE WINDOWS -->
+            <div class="content-section" id="maintenance">
+                <h2>Maintenance Windows</h2>
+
+                <h3>What is a Maintenance Window?</h3>
+                <p>A <strong>scheduled, planned period of time</strong> when IT systems are taken offline (or partially offline) to apply patches, updates, configuration changes, or system upgrades. Users are notified in advance. Systems are unavailable during the window, which is why windows are scheduled during low-activity times.</p>
+
+                <h3>Standard Maintenance Window Schedule:</h3>
+
+                <div class="concept-box">
+                    <strong>PRIMARY MAINTENANCE WINDOW</strong><br>
+                    <strong>When:</strong> Every Sunday, 10:00 PM to 6:00 AM Monday<br>
+                    <strong>Duration:</strong> 8 hours<br>
+                    <strong>Frequency:</strong> Weekly<br>
+                    <strong>Why this time?</strong> Minimum business impact - users are sleeping, weekend is slower than weekday
+                </div>
+
+                <div class="concept-box">
+                    <strong>SECONDARY MAINTENANCE WINDOW</strong><br>
+                    <strong>When:</strong> 2nd Sunday of month, same time (10 PM - 6 AM)<br>
+                    <strong>Duration:</strong> 8 hours<br>
+                    <strong>Frequency:</strong> Monthly<br>
+                    <strong>Purpose:</strong> Catch missed patches from primary, deploy major updates requiring more time
+                </div>
+
+                <h3>Pre-Maintenance Checklist:</h3>
+                <ul>
+                    <li><strong>Full system backup:</strong> Create complete backup BEFORE any changes</li>
+                    <li><strong>Document baseline:</strong> Record all version numbers, configurations, system state</li>
+                    <li><strong>Prepare rollback plan:</strong> Detailed steps to revert changes if something breaks</li>
+                    <li><strong>User notification (1 week before):</strong> Email: "Maintenance window Sunday 10 PM, expect downtime"</li>
+                    <li><strong>Final reminder (24 hours before):</strong> Remind users, confirm on-call staff available</li>
+                    <li><strong>Test in staging:</strong> Apply all patches to non-production system first</li>
+                    <li><strong>Brief all personnel:</strong> Make sure IT staff know their roles</li>
+                </ul>
+
+                <h3>During Maintenance Window - 7-Step Process:</h3>
+                <ol>
+                    <li><strong>Gracefully stop user access:</strong> Disconnect users, display: "System maintenance in progress, check back at 6 AM"</li>
+                    <li><strong>Deploy patches:</strong> Apply all tested patches to systems</li>
+                    <li><strong>Test critical functionality:</strong> System boots? Key apps respond? Database works?</li>
+                    <li><strong>Security verification:</strong> Firewalls in place? Encryption enabled? IDS responding?</li>
+                    <li><strong>Monitor for errors:</strong> Watch system logs for ERROR or CRITICAL messages</li>
+                    <li><strong>Bring systems online:</strong> Allow users to reconnect</li>
+                    <li><strong>Monitor post-deployment:</strong> Watch closely for 1+ hour for any problems</li>
+                </ol>
+
+                <h3>⚠️ MAINTENANCE WINDOWS ARE HIGH-RISK - THE 4 BIG DANGERS:</h3>
+
+                <div class="key-point">
+                    Maintenance windows are when organizations are MOST VULNERABLE to attack. This is when many breaches happen.
+                </div>
+
+                <div class="info-box">
+                    <strong>RISK 1: Systems Might FAIL from Patches</strong><br>
+                    A patch might:<br>
+                    • Break an application<br>
+                    • Prevent system from booting<br>
+                    • Corrupt a database<br>
+                    • Cause critical service to crash<br><br>
+                    Result: System is DOWN and UNDEFENDED during recovery attempts.
+                </div>
+
+                <div class="info-box">
+                    <strong>RISK 2: Security MONITORING Might be OFFLINE</strong><br>
+                    During maintenance:<br>
+                    • SIEM (Security Information & Event Management) might be patched<br>
+                    • IDS/IPS (Intrusion Detection) might be offline<br>
+                    • Firewalls might be reconfigured<br>
+                    • EDR (Endpoint Detection) agents might be updated<br><br>
+                    Result: Attackers can exploit systems and go UNDETECTED because monitoring is down.
+                </div>
+
+                <div class="info-box">
+                    <strong>RISK 3: Authentication/MFA Systems Might be DOWN</strong><br>
+                    Critical systems being patched:<br>
+                    • Active Directory (Windows user authentication)<br>
+                    • LDAP servers<br>
+                    • MFA systems<br>
+                    • Password managers<br><br>
+                    Result: Emergency access procedures might be needed, which attackers can exploit.
+                </div>
+
+                <div class="info-box">
+                    <strong>RISK 4: Attackers SPECIFICALLY TARGET Maintenance Windows</strong><br>
+                    • Attackers know companies patch on Sunday nights<br>
+                    • They know monitoring is lighter during windows<br>
+                    • They know staff is tired and rushing<br>
+                    • They launch attacks knowing defenses are weakened<br><br>
+                    Result: Organized attackers actively scan for maintenance window vulnerability.
+                </div>
+
+                <h3>Defenses During Maintenance Windows:</h3>
+                <ul>
+                    <li><strong>Out-of-band monitoring:</strong> Separate monitoring system (NOT being patched) watches for suspicious activity</li>
+                    <li><strong>Multiple approval layers:</strong> Require CISO + Operations approval before window starts</li>
+                    <li><strong>Dedicated security staff on-call:</strong> Have security team available 24/7 during window</li>
+                    <li><strong>Detailed logging:</strong> Log every change made - create audit trail</li>
+                    <li><strong>Quick rollback ability:</strong> Be able to revert all changes within 1 hour if critical issue found</li>
+                    <li><strong>Staggered deployments:</strong> Don't patch everything at once - do in waves to catch problems early</li>
+                    <li><strong>Clear communication:</strong> Keep all stakeholders informed: "Patch A deployed successfully, B starting now"</li>
+                    <li><strong>Randomized window time:</strong> Don't always do Sunday - occasionally do different days/times to surprise attackers</li>
+                </ul>
+
+                <h3>Post-Maintenance Window Verification:</h3>
+                <ul>
+                    <li><strong>Verify all systems online:</strong> Confirm all applications responding</li>
+                    <li><strong>Check security controls:</strong> Verify firewalls, detection systems, encryption all working</li>
+                    <li><strong>Performance baseline:</strong> Compare system performance to pre-window baseline</li>
+                    <li><strong>User feedback:</strong> Ask: "Is everything working normally for you?"</li>
+                    <li><strong>Monitor for 1+ week:</strong> Watch for delayed issues or patch side effects</li>
+                    <li><strong>Post-incident review (if issues found):</strong> "What went wrong? How do we prevent this next time?"</li>
+                </ul>
+            </div>
+
+            <!-- RESOURCES & LINKS -->
+            <div class="content-section" id="resources">
+                <h2>⚙️ Resources & Links</h2>
+
+                <h3>CyberEdge Cybersecurity Analyst Objectives Covered</h3>
+                <ul>
+                    <li><strong>1.1</strong> - Review policies and governance</li>
+                    <li><strong>1.2</strong> - Explore risk management principles</li>
+                    <li><strong>1.3</strong> - Understand types of controls</li>
+                    <li><strong>1.4</strong> - Review attack surface management</li>
+                    <li><strong>1.5</strong> - Explore patch & configuration management</li>
+                    <li><strong>1.6</strong> - Review maintenance windows</li>
+                </ul>
+
+                <h3>Additional Reading & Standards</h3>
+                <ul>
+                    <li><strong>NIST Cybersecurity Framework:</strong> <a href="https://www.nist.gov/cyberframework" class="resource-link" target="_blank">https://www.nist.gov/cyberframework</a></li>
+                    <li><strong>CIS Benchmarks™:</strong> <a href="https://www.cisecurity.org/" class="resource-link" target="_blank">https://www.cisecurity.org/</a></li>
+                    <li><strong>NIST SP 800-53:</strong> <a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final" class="resource-link" target="_blank">https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final</a></li>
+                </ul>
+
+                <h3>Tools & Resources</h3>
+                <ul>
+                    <li><strong>Chef:</strong> <a href="https://www.chef.io/" class="resource-link" target="_blank">https://www.chef.io/</a></li>
+                    <li><strong>Puppet:</strong> <a href="https://puppet.com/" class="resource-link" target="_blank">https://puppet.com/</a></li>
+                    <li><strong>Ansible:</strong> <a href="https://www.ansible.com/" class="resource-link" target="_blank">https://www.ansible.com/</a></li>
+                    <li><strong>Terraform:</strong> <a href="https://www.terraform.io/" class="resource-link" target="_blank">https://www.terraform.io/</a></li>
+                </ul>
+            </div>
+
+            <!-- COMMANDS & TOOLS -->
+            <div class="content-section" id="commands">
+                <h2>🔧 Commands & Tool Reference</h2>
+
+                <h3>Configuration Management Tools - Detailed Comparison</h3>
+                <p>These tools automate infrastructure management, ensure consistency, and reduce manual configuration errors:</p>
+
+                <div class="concept-box">
+                    <strong>CHEF (Recipe-Based)</strong><br>
+                    <strong>How it works:</strong> Write "recipes" (Ruby code) that describe how to configure systems<br>
+                    <strong>Philosophy:</strong> Procedural - describe the steps to reach desired state<br>
+                    <strong>Use case example:</strong> "Recipe: Install Apache, enable SSL, configure firewall rules, deploy web app"<br>
+                    <strong>Best for:</strong> Complex infrastructure with many custom rules<br>
+                    <strong>Learning curve:</strong> Medium - requires Ruby knowledge<br>
+                    <strong>Real-world use:</strong> Large companies managing thousands of servers
+                </div>
+
+                <div class="concept-box">
+                    <strong>PUPPET (Model-Based)</strong><br>
+                    <strong>How it works:</strong> Define desired state of system. Puppet continuously enforces it.<br>
+                    <strong>Philosophy:</strong> Declarative - describe WHAT you want, Puppet figures out HOW<br>
+                    <strong>Use case example:</strong> "Server should have: Apache installed, TLS 1.3 enabled, SSH on port 22"<br>
+                    <strong>Best for:</strong> Large complex environments where continuous compliance is critical<br>
+                    <strong>Learning curve:</strong> Medium - requires Puppet DSL<br>
+                    <strong>Real-world use:</strong> Enterprise environments, government systems
+                </div>
+
+                <div class="concept-box">
+                    <strong>ANSIBLE (Agentless)</strong><br>
+                    <strong>How it works:</strong> Write YAML configuration files, push changes via SSH<br>
+                    <strong>Philosophy:</strong> Simple, agentless - no software needed on target systems<br>
+                    <strong>Use case example:</strong> "Install Docker, pull image, start container"<br>
+                    <strong>Best for:</strong> Simplicity, quick learning, multi-platform support<br>
+                    <strong>Learning curve:</strong> Low - YAML is simple, very straightforward<br>
+                    <strong>Real-world use:</strong> DevOps teams, cloud environments, rapid deployment
+                </div>
+
+                <div class="concept-box">
+                    <strong>TERRAFORM (Infrastructure Provisioning)</strong><br>
+                    <strong>How it works:</strong> Define entire infrastructure (VMs, networks, storage) in code<br>
+                    <strong>Philosophy:</strong> IaC - infrastructure defined as code, version controlled<br>
+                    <strong>Use case example:</strong> "Create 100 VMs in AWS, configure security groups, attach storage"<br>
+                    <strong>Best for:</strong> Cloud infrastructure, multi-cloud deployments, entire environment setup<br>
+                    <strong>Learning curve:</strong> Medium - HCL language is easy<br>
+                    <strong>Real-world use:</strong> Cloud-native companies, DevOps, infrastructure teams
+                </div>
+
+                <h3>Tool Comparison Table:</h3>
+                <table>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Chef</th>
+                        <th>Puppet</th>
+                        <th>Ansible</th>
+                        <th>Terraform</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Type</strong></td>
+                        <td>Procedural</td>
+                        <td>Declarative</td>
+                        <td>Procedural</td>
+                        <td>Declarative</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Agent Required</strong></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Language</strong></td>
+                        <td>Ruby</td>
+                        <td>Puppet DSL</td>
+                        <td>YAML</td>
+                        <td>HCL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Learning Curve</strong></td>
+                        <td>Medium-Hard</td>
+                        <td>Medium-Hard</td>
+                        <td>Easy</td>
+                        <td>Easy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Continuous Compliance</strong></td>
+                        <td>Yes (with agent)</td>
+                        <td>Yes (with agent)</td>
+                        <td>No (push-based)</td>
+                        <td>On-demand</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best Use Case</strong></td>
+                        <td>Complex infrastructure</td>
+                        <td>Large enterprise</td>
+                        <td>Quick deployment</td>
+                        <td>Cloud infrastructure</td>
+                    </tr>
+                </table>
+
+                <h3>Hardening Standards & Compliance Frameworks:</h3>
+
+                <div class="info-box">
+                    <strong>CIS Benchmarks™ (Center for Internet Security)</strong><br>
+                    <strong>What:</strong> Step-by-step hardening guides for systems, applications, cloud platforms<br>
+                    <strong>Coverage:</strong> Windows, Linux, macOS, Docker, Kubernetes, AWS, Azure, etc.<br>
+                    <strong>Example:</strong> "CIS Windows Server 2019 Level 1" has 270+ security recommendations<br>
+                    <strong>How to use:</strong> Follow each recommendation (Enable feature X, Disable feature Y)<br>
+                    <strong>Real-world:</strong> Standard requirement for government contracts, regulated industries<br>
+                    <strong>Website:</strong> https://www.cisecurity.org/
+                </div>
+
+                <div class="info-box">
+                    <strong>STIGs (Security Technical Implementation Guides - DoD)</strong><br>
+                    <strong>What:</strong> United States Department of Defense hardening standards<br>
+                    <strong>Coverage:</strong> Windows, Linux, network devices, applications<br>
+                    <strong>Example:</strong> "Windows 10 STIG" - hundreds of security settings<br>
+                    <strong>Who uses:</strong> Government agencies, defense contractors, high-security environments<br>
+                    <strong>Strictness:</strong> More stringent than CIS in some areas<br>
+                    <strong>Website:</strong> https://public.cyber.mil/
+                </div>
+
+                <div class="info-box">
+                    <strong>NIST SP 800-53 (National Institute of Standards & Technology)</strong><br>
+                    <strong>What:</strong> Comprehensive security control framework for federal systems<br>
+                    <strong>Focus:</strong> Not just "how to configure" but "what controls to implement"<br>
+                    <strong>Coverage:</strong> 188+ security controls across 14 categories (Access Control, Incident Response, etc.)<br>
+                    <strong>Who uses:</strong> Federal agencies, contractors, regulated industries<br>
+                    <strong>Used with:</strong> NIST SP 800-171 (contractors), NIST CSF (all organizations)<br>
+                    <strong>Website:</strong> https://csrc.nist.gov/publications/detail/sp/800-53
+                </div>
+
+                <h3>Patch Management Tools:</h3>
+                <ul>
+                    <li><strong>WSUS (Windows Server Update Services):</strong> Microsoft's tool for patching Windows systems. Commonly used in organizations to manage Windows updates centrally.</li>
+                    <li><strong>SCCM (System Center Configuration Manager):</strong> Enterprise-grade tool from Microsoft. Manages updates, software deployment, and system configuration for entire organizations.</li>
+                    <li><strong>apt (Debian/Ubuntu Linux):</strong> Package manager for Linux systems. Command: `apt update && apt upgrade` applies patches.</li>
+                    <li><strong>yum (RedHat/CentOS Linux):</strong> Package manager for Linux systems. Command: `yum update` applies patches.</li>
+                    <li><strong>Ansible:</strong> Can orchestrate patching across heterogeneous environments (Windows + Linux simultaneously).</li>
+                    <li><strong>Terraform:</strong> Can manage patches as part of infrastructure-as-code (rebuild entire systems with latest patches).</li>
+                </ul>
+
+                <h3>Monitoring & Detection Tools (For Reference):</h3>
+                <ul>
+                    <li><strong>SIEM (Security Information & Event Management):</strong> Collects logs from all systems, detects suspicious patterns. Examples: Splunk, ArcSight, IBM QRadar</li>
+                    <li><strong>IDS/IPS (Intrusion Detection/Prevention):</strong> Monitors network traffic for attacks. Examples: Snort, Suricata, Zeek</li>
+                    <li><strong>EDR (Endpoint Detection & Response):</strong> Monitors endpoints for threats. Examples: CrowdStrike, Microsoft Defender for Endpoint</li>
+                </ul>
+            </div>
+
+            <!-- ASSIGNMENTS & ASSESSMENTS -->
+            <div class="content-section" id="assignments">
+                <h2>📋 Assignments & Assessments</h2>
+
+                <h3>Today's Activities</h3>
+
+                <h3>Review Activities (RA)</h3>
+                <div class="assignment-item">
+                    <div class="assignment-type">RA 180.L1</div>
+                    <strong>Understanding Vulnerability Response Handling & Management Review Activity</strong><br>
+                    <span style="color: #666; font-size: 11px;">Review key concepts from lesson materials. Complete before moving to labs.</span>
+                </div>
+
+                <h3>Guided Lab Activities (GLAB)</h3>
+                <div class="assignment-item">
+                    <div class="assignment-type">GLAB 180.L1</div>
+                    <strong>Assisted Live Lab: Exploring the Lab Environment</strong><br>
+                    <span style="color: #666; font-size: 11px;">Introduction to the virtual lab environment. Follow along with instructor guidance.</span>
+                </div>
+
+                <div class="assignment-item">
+                    <div class="assignment-type">GLAB 180.L1 01B</div>
+                    <strong>Assisted Live Lab: Configuring Controls</strong><br>
+                    <span style="color: #666; font-size: 11px;">Hands-on practice configuring technical, operational, and managerial controls. Instructor will guide through each step.</span>
+                </div>
+
+                <h3>Assessments (Graded)</h3>
+                <div class="assignment-item" style="border-left-color: #e74c3c;">
+                    <div class="assignment-type" style="color: #e74c3c;">ASSESSMENT</div>
+                    <strong>Quiz 180.L1: Understanding Vulnerability Response, Handling, and Management</strong><br>
+                    <span style="color: #666; font-size: 11px;">Graded assessment. Complete in Self-Check Quiz tab for practice, then submit official quiz when ready.</span>
+                </div>
+
+                <h3>Completion Requirements</h3>
+                <ul>
+                    <li>✓ Complete RA 180.L1 review activity</li>
+                    <li>✓ Complete GLAB 180.L1 (Exploring Lab)</li>
+                    <li>✓ Complete GLAB 180.L1 01B (Configuring Controls)</li>
+                    <li>✓ Pass Quiz 180.L1 (target: 80%+)</li>
+                </ul>
+
+                <h3>Scoring</h3>
+                <p><strong>Self-Check Quiz:</strong> Not graded, just for feedback. See how many you get right!</p>
+                <p><strong>Official Quiz 180.L1:</strong> Graded assessment. You must score 80%+ to pass.</p>
+            </div>
+
+            <!-- LAB GUIDE -->
+            <div class="content-section" id="lab">
+                <h2>Lab Exercise (30-40 minutes)</h2>
+
+                <h3>Scenario</h3>
+                <p>You are a security analyst at TechCorp Inc. The CISO asks you to create a governance framework for patch management.</p>
+
+                <h3>Part 1: Attack Surface Inventory (10 minutes)</h3>
+                <p><strong>Create a spreadsheet with these columns:</strong></p>
+                <ul>
+                    <li>Asset Name</li>
+                    <li>Asset Type (Server/Workstation/Network)</li>
+                    <li>Services Running</li>
+                    <li>Internet-Facing? (Yes/No)</li>
+                    <li>Last Patched (Date)</li>
+                    <li>Risk Level (High/Medium/Low)</li>
+                </ul>
+                <p><strong>Add 5 example assets:</strong> Web server, database server, file server, printer, router</p>
+
+                <h3>Part 2: Risk Assessment (10 minutes)</h3>
+                <p><strong>For each scenario, choose a risk response:</strong></p>
+                <ol>
+                    <li>Unpatched web server with known RCE, attackers actively exploiting</li>
+                    <li>Old router running old firmware, not connected to network</li>
+                    <li>Legacy system with weak passwords but isolated from network</li>
+                </ol>
+
+                <h3>Part 3: Patch Management Policy (10 minutes)</h3>
+                <p><strong>Draft a simple policy with:</strong></p>
+                <ul>
+                    <li>Patch Classification & Timeline</li>
+                    <li>Primary & Secondary Maintenance Windows</li>
+                    <li>Who approves patches</li>
+                    <li>Rollback Procedure</li>
+                </ul>
+
+                <h3>Part 4: Governance Roles (5 minutes)</h3>
+                <p><strong>Identify these roles:</strong></p>
+                <ul>
+                    <li>CISO (ultimate security decision maker)</li>
+                    <li>Patch Manager (manages patches)</li>
+                    <li>Change Control (approves windows)</li>
+                    <li>System Admin (executes patches)</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>Submit:</strong> One document with all 4 parts as PDF</p>
+            </div>
+
+            <!-- SELF-CHECK QUIZ -->
+            <div class="content-section" id="quiz">
+                <h2>✅ Self-Check Quiz</h2>
+                <p><em>Not graded, just for feedback. Click "Check Answer" after each question to see if you're right!</em></p>
+
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <h3>Question 1: Risk Response Selection</h3>
+                    <p>You discover that 50 servers are running outdated Apache with a known vulnerability. Attackers are actively scanning for this version. What is the BEST risk response?</p>
+                    
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="a"> 
+                            <span class="quiz-option-text">A) AVOID - Stop using Apache
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="b"> 
+                            <span class="quiz-option-text">B) ACCEPT - The vulnerability is too common to worry about
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="c"> 
+                            <span class="quiz-option-text">C) MITIGATE - Patch all servers within 48 hours
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="d"> 
+                            <span class="quiz-option-text">D) TRANSFER - Buy cyber insurance and wait
+                        </span></label>
+                    </div>
+
+                    <button class="quiz-btn" onclick="checkAnswer(1, 'c')">Check Answer</button>
+                    <div class="quiz-result" id="result1"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <h3>Question 2: Attack Surface Reduction</h3>
+                    <p>Your team identifies a file server with 20 open network ports. Only 5 are actually needed for operations. What should you do?</p>
+                    
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="a"> 
+                            <span class="quiz-option-text">A) Monitor all 20 ports closely
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="b"> 
+                            <span class="quiz-option-text">B) Disable the 15 unnecessary ports
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="c"> 
+                            <span class="quiz-option-text">C) Accept the risk of extra ports
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q2" value="d"> 
+                            <span class="quiz-option-text">D) Buy a more powerful firewall
+                        </span></label>
+                    </div>
+
+                    <button class="quiz-btn" onclick="checkAnswer(2, 'b')">Check Answer</button>
+                    <div class="quiz-result" id="result2"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <h3>Question 3: Control Categories</h3>
+                    <p>A company implements MFA (technology), phishing training (people), and quarterly security audits (governance). Which control categories are represented?</p>
+                    
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="a"> 
+                            <span class="quiz-option-text">A) Only Technical Controls
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="b"> 
+                            <span class="quiz-option-text">B) Technical and Operational only
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="c"> 
+                            <span class="quiz-option-text">C) Technical, Operational, and Managerial
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="d"> 
+                            <span class="quiz-option-text">D) Only Managerial Controls
+                        </span></label>
+                    </div>
+
+                    <button class="quiz-btn" onclick="checkAnswer(3, 'c')">Check Answer</button>
+                    <div class="quiz-result" id="result3"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question">
+                    <h3>Question 4: Governance Foundation</h3>
+                    <p>Why does governance come FIRST in the security framework?</p>
+                    
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q4" value="a"> 
+                            <span class="quiz-option-text">A) It's the cheapest security control to implement
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q4" value="b"> 
+                            <span class="quiz-option-text">B) It defines WHO decides WHAT to protect and HOW
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q4" value="c"> 
+                            <span class="quiz-option-text">C) It's required by law in every country
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q4" value="d"> 
+                            <span class="quiz-option-text">D) It makes security 100% effective
+                        </span></label>
+                    </div>
+
+                    <button class="quiz-btn" onclick="checkAnswer(4, 'b')">Check Answer</button>
+                    <div class="quiz-result" id="result4"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question">
+                    <h3>Question 5: Maintenance Window Risk</h3>
+                    <p>Why are maintenance windows considered HIGH-RISK periods?</p>
+                    
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q5" value="a"> 
+                            <span class="quiz-option-text">A) Systems can have problems from failed patches
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q5" value="b"> 
+                            <span class="quiz-option-text">B) Monitoring and authentication might be offline
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q5" value="c"> 
+                            <span class="quiz-option-text">C) Attackers know when they happen
+                        </span></label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q5" value="d"> 
+                            <span class="quiz-option-text">D) All of the above
+                        </span></label>
+                    </div>
+
+                    <button class="quiz-btn" onclick="checkAnswer(5, 'd')">Check Answer</button>
+                    <div class="quiz-result" id="result5"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="right-sidebar">
+                        <!-- GLOSSARY -->
+            <div class="right-section">
+                <h3>📖 GLOSSARY</h3>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">GOVERNANCE</div>
+                    <div class="glossary-def">Decision-making framework for what to protect, how, who's responsible, when</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">CISO</div>
+                    <div class="glossary-def">Chief Information Security Officer - top security leader</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">SLO</div>
+                    <div class="glossary-def">Service Level Objective - quantitative performance target</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">MITIGATE</div>
+                    <div class="glossary-def">Risk response using controls to reduce likelihood or impact</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">CVE</div>
+                    <div class="glossary-def">Common Vulnerabilities and Exposures - publicly known vulnerability</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">IaC</div>
+                    <div class="glossary-def">Infrastructure as Code - configuration defined in code</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">MTTD</div>
+                    <div class="glossary-def">Mean Time to Detect - how fast you discover a breach</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">MTTR</div>
+                    <div class="glossary-def">Mean Time to Recover - how fast you restore systems</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">SIEM</div>
+                    <div class="glossary-def">Security Information & Event Management - central log monitoring</div>
+                </div>
+
+                <div class="glossary-item">
+                    <div class="glossary-term">SOC</div>
+                    <div class="glossary-def">Security Operations Center - 24/7 monitoring team</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update progress
+            const sectionOrder = ['scenario', 'governance', 'risk', 'controls', 'attack-surface', 'patch', 'config', 'maintenance', 'resources', 'commands', 'assignments', 'lab', 'quiz'];
+            const currentIndex = sectionOrder.indexOf(sectionId);
+            const progressPercent = Math.round(((currentIndex + 1) / sectionOrder.length) * 100);
+            document.getElementById('progress-percent').textContent = progressPercent + '%';
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+        }
+
+        function checkAnswer(questionNum, correctAnswer) {
+            const selectedOption = document.querySelector(`input[name="q${questionNum}"]:checked`);
+            const resultDiv = document.getElementById(`result${questionNum}`);
+
+            if (!selectedOption) {
+                alert('Please select an answer!');
+                return;
+            }
+
+            const userAnswer = selectedOption.value;
+
+            if (userAnswer === correctAnswer) {
+                // CORRECT
+                resultDiv.className = 'quiz-result correct';
+                resultDiv.innerHTML = '✓ CORRECT!<div class="quiz-explanation">' + getExplanation(questionNum, true) + '</div>';
+            } else {
+                // INCORRECT
+                resultDiv.className = 'quiz-result incorrect';
+                resultDiv.innerHTML = '✗ INCORRECT<div class="quiz-explanation"><strong>Correct Answer:</strong> ' + 
+                    getCorrectAnswer(questionNum) + '<br><br><strong>Explanation:</strong> ' + 
+                    getExplanation(questionNum, false) + '</div>';
+            }
+        }
+
+        function getCorrectAnswer(questionNum) {
+            const answers = {
+                1: 'C) MITIGATE - Patch all servers within 48 hours',
+                2: 'B) Disable the 15 unnecessary ports',
+                3: 'C) Technical, Operational, and Managerial',
+                4: 'B) It defines WHO decides WHAT to protect and HOW',
+                5: 'D) All of the above'
+            };
+            return answers[questionNum];
+        }
+
+        function getExplanation(questionNum, isCorrect) {
+            const explanations = {
+                1: isCorrect ? 
+                    'High likelihood + High impact = MITIGATE immediately. Waiting for insurance won\'t stop the current attack. Avoiding Apache means business disruption. Accepting leaves you vulnerable.' :
+                    'High likelihood + High impact requires immediate mitigation. Other responses would leave systems vulnerable while attackers are actively exploiting.',
+                
+                2: isCorrect ? 
+                    'Fewer ports = smaller attack surface. Each disabled port eliminates a potential entry point for attackers.' :
+                    'Just monitoring doesn\'t reduce risk. The extra ports remain exploitable.',
+                
+                3: isCorrect ? 
+                    'All three categories needed: MFA (technical), training (operational), audits (managerial). Technology + Process + Governance = complete security.' :
+                    'You need all three. Technical alone fails. Operational alone fails. Managerial alone fails. Together they defend.',
+                
+                4: isCorrect ? 
+                    'Without governance, security is random. With governance, everyone knows what to protect and how. It creates the framework for all other security efforts.' :
+                    'Governance defines the decision-making framework that guides all other security controls.',
+                
+                5: isCorrect ? 
+                    'All are true: systems might fail from patches, monitoring is down, authentication disabled, and attackers specifically target maintenance windows.' :
+                    'Maintenance windows have multiple risk factors. That\'s why you need extra controls during them.'
+            };
+            return explanations[questionNum];
+        }
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+    <div>
+        <a href="javascript:history.back()" class="nav-btn">◀ Back</a>
+        <a href="lesson2_learner_portal.html" class="nav-btn">Next ▶</a>
+    </div>
+</div>
+</html>

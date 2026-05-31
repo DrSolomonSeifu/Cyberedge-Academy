@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10: Applying Tools to Identify Malicious Activity - Learner Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #ffd700;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header h3 {
+            font-size: 1.3em;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .header p {
+            margin-top: 15px;
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        .learner-badge {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .nav-tabs {
+            background: #f8f9fa;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px 10px;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-right: 1px solid #dee2e6;
+            color: #495057;
+        }
+
+        .nav-tab:hover {
+            background: #dee2e6;
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .content-section {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-section h2 {
+            color: #2a5298;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content-section h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .content-section h4 {
+            color: #6c757d;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .content-section p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #495057;
+        }
+
+        .content-section ul, .content-section ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .content-section li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #e7f0ff;
+        }
+
+        .quiz-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+            display: block;
+        }
+
+        .quiz-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Glossary Styles */
+        .glossary-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .glossary-term {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .glossary-term-name {
+            font-weight: bold;
+            color: #2a5298;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .glossary-term-definition {
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        /* Resource Links */
+        .resource-links {
+            background: linear-gradient(135deg, #e7f3ff 0%, #cfe2ff 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .resource-link {
+            background: white;
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-link:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .resource-link a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resource-link a:hover {
+            text-decoration: underline;
+        }
+
+        .resource-description {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Practical Guide */
+        .practical-guide {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .practical-guide-header {
+            font-weight: bold;
+            color: #856404;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .practical-guide-steps {
+            color: #856404;
+        }
+
+        .practical-guide-steps ol {
+            margin-left: 20px;
+        }
+
+        .practical-guide-steps li {
+            margin: 10px 0;
+        }
+
+        /* Key Concept Box */
+        .key-concept {
+            background: linear-gradient(135deg, #e7f3ff 0%, #cfe2ff 100%);
+            border-left: 5px solid #0d6efd;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .key-concept-header {
+            font-weight: bold;
+            color: #084298;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .key-concept-content {
+            color: #084298;
+            line-height: 1.8;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2a5298;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-container {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .header h2 { font-size: 1.3em; }
+            .nav-tab { min-width: 100%; }
+            .content-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CyberEdge Academy</h1>
+        <p style="font-size:13px;opacity:0.85;margin-top:4px;">Lesson 10: Applying Tools to Identify Malicious Activity</p>
+            <p>Dr. Solomon Seifu | CyberEdge Academy</p>
+            <div class="learner-badge">📖 LEARNER PORTAL 📖</div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-tab" onclick="showSection('tools')">Analysis Tools</button>
+            <button class="nav-tab" onclick="showSection('frameworks')">Attack Frameworks</button>
+            <button class="nav-tab" onclick="showSection('email')">Email Analysis</button>
+            <button class="nav-tab" onclick="showSection('quiz')">Knowledge Check</button>
+            <button class="nav-tab" onclick="showSection('glossary')">Glossary</button>
+            <button class="nav-tab" onclick="showSection('resources')">Resources</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <h2>📚 Welcome to Lesson 10</h2>
+            
+            <div class="key-concept">
+                <div class="key-concept-header">🎯 Lesson Objective</div>
+                <div class="key-concept-content">
+                    Learn to apply practical tools and techniques to identify and analyze malicious activity in real-world cybersecurity scenarios. You'll gain hands-on experience with packet capture, domain analysis, attack frameworks, email investigation, and command-line forensics.
+                </div>
+            </div>
+
+            <div class="progress-tracker">
+                <strong>Your Learning Progress</strong>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progress-bar">0%</div>
+                </div>
+                <p style="margin-top: 10px; color: #6c757d; font-size: 0.9em;">Complete all sections to track your progress!</p>
+            </div>
+
+            <h3>What You'll Learn</h3>
+            <table class="data-table">
+                <tr>
+                    <th>Topic</th>
+                    <th>Skills You'll Develop</th>
+                </tr>
+                <tr>
+                    <td>Packet Capture Tools</td>
+                    <td>Use Wireshark and tcpdump to capture and analyze network traffic</td>
+                </tr>
+                <tr>
+                    <td>EDR & Analysis Tools</td>
+                    <td>Understand endpoint detection and use WHOIS, strings, and other investigative tools</td>
+                </tr>
+                <tr>
+                    <td>Attack Frameworks</td>
+                    <td>Map attacks using Cyber Kill Chain and MITRE ATT&CK</td>
+                </tr>
+                <tr>
+                    <td>Email Analysis</td>
+                    <td>Investigate phishing emails, analyze headers, understand SPF/DKIM/DMARC</td>
+                </tr>
+                <tr>
+                    <td>Command-Line Forensics</td>
+                    <td>Identify suspicious commands and detect abuse of legitimate tools</td>
+                </tr>
+            </table>
+
+            <h3>Why This Matters</h3>
+            <p>According to recent cybersecurity reports:</p>
+            <ul>
+                <li>The average time to detect a breach is <strong>16-21 days</strong></li>
+                <li><strong>90%+</strong> of cyberattacks start with a phishing email</li>
+                <li>Attackers spend an average of <strong>200+ days</strong> in a network before detection</li>
+                <li>The tools you learn today are what <strong>real security analysts use every day</strong></li>
+            </ul>
+
+            <p><strong>The faster you can detect and analyze threats, the less damage they can cause.</strong></p>
+
+            <h3>How to Use This Portal</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">📖 Study Guide</div>
+                <div class="practical-guide-steps">
+                    <ol>
+                        <li><strong>Read each section carefully</strong> - Don't skip concepts</li>
+                        <li><strong>Try the practical examples</strong> - Hands-on practice is key</li>
+                        <li><strong>Take the knowledge check quiz</strong> - Test your understanding</li>
+                        <li><strong>Use the glossary</strong> - Reference key terms as needed</li>
+                        <li><strong>Explore additional resources</strong> - Deepen your knowledge</li>
+                        <li><strong>Practice in a lab environment</strong> - Apply what you've learned</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Tools Section -->
+        <div id="tools" class="content-section">
+            <h2>🔍 Analysis Tools & Techniques</h2>
+
+            <h3>Packet Capture with Wireshark</h3>
+            <div class="key-concept">
+                <div class="key-concept-header">What is Wireshark?</div>
+                <div class="key-concept-content">
+                    Wireshark is a free, open-source packet analyzer that captures and displays network traffic in real-time. It's like having X-ray vision for your network—you can see every conversation between computers.
+                </div>
+            </div>
+
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li><strong>Live Capture:</strong> Watch network traffic as it happens</li>
+                <li><strong>Protocol Analysis:</strong> Understand HTTP, DNS, TCP, and hundreds of other protocols</li>
+                <li><strong>Display Filters:</strong> Focus on specific traffic types</li>
+                <li><strong>Follow Streams:</strong> Reconstruct entire conversations</li>
+                <li><strong>Export Capabilities:</strong> Save captures as PCAP files for later analysis</li>
+            </ul>
+
+            <h4>Wireshark Interface Layout</h4>
+            <table class="data-table">
+                <tr>
+                    <th>Pane</th>
+                    <th>What It Shows</th>
+                    <th>Use Case</th>
+                </tr>
+                <tr>
+                    <td>Top - Packet List</td>
+                    <td>All captured packets with time, source, destination, protocol</td>
+                    <td>Quick overview, spot patterns, find suspicious traffic</td>
+                </tr>
+                <tr>
+                    <td>Middle - Packet Details</td>
+                    <td>Layer-by-layer breakdown of selected packet</td>
+                    <td>Deep protocol analysis, understand packet structure</td>
+                </tr>
+                <tr>
+                    <td>Bottom - Packet Bytes</td>
+                    <td>Raw hexadecimal and ASCII data</td>
+                    <td>Forensic analysis, finding hidden data</td>
+                </tr>
+            </table>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">🔬 Try It Yourself: Wireshark Basics</div>
+                <div class="practical-guide-steps">
+                    <ol>
+                        <li><strong>Install Wireshark</strong> - Download from wireshark.org (free)</li>
+                        <li><strong>Select your network interface</strong> - Usually Wi-Fi or Ethernet</li>
+                        <li><strong>Start capturing</strong> - Click the blue shark fin icon</li>
+                        <li><strong>Generate traffic</strong> - Visit http://example.com in your browser</li>
+                        <li><strong>Stop capture</strong> - Red square button</li>
+                        <li><strong>Apply filter</strong> - Type <code>http</code> in the filter bar</li>
+                        <li><strong>Find HTTP GET request</strong> - Look for request to example.com</li>
+                        <li><strong>Right-click → Follow → HTTP Stream</strong> - See the full conversation</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Common Display Filters</h3>
+            <div class="code-block">
+# Show only HTTP traffic
+http
+
+# Show traffic to/from specific IP
+ip.addr == 192.168.1.100
+
+# Show DNS queries
+dns
+
+# Show only SYN packets (connection attempts)
+tcp.flags.syn == 1
+
+# Show traffic on specific port
+tcp.port == 443
+            </div>
+
+            <h3>WHOIS - Domain Investigation</h3>
+            <div class="key-concept">
+                <div class="key-concept-header">What is WHOIS?</div>
+                <div class="key-concept-content">
+                    WHOIS is like a phone book for the internet. It tells you who owns a domain, when it was registered, and how to contact them. Security analysts use it to investigate suspicious websites and track down threat actors.
+                </div>
+            </div>
+
+            <p><strong>Information WHOIS Provides:</strong></p>
+            <ul>
+                <li><strong>Domain Owner:</strong> Organization or individual name</li>
+                <li><strong>Registration Date:</strong> When was the domain created?</li>
+                <li><strong>Expiration Date:</strong> When does registration expire?</li>
+                <li><strong>Registrar:</strong> Company that registered the domain</li>
+                <li><strong>Name Servers:</strong> DNS servers for the domain</li>
+                <li><strong>Contact Information:</strong> Email, phone (often privacy-protected)</li>
+            </ul>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">🔍 Investigate a Suspicious Domain</div>
+                <div class="practical-guide-steps">
+                    <strong>Red Flags to Look For:</strong>
+                    <ol>
+                        <li><strong>Recently Registered:</strong> Domains created in last 30-90 days are often suspicious</li>
+                        <li><strong>Privacy Protection:</strong> Hidden owner information can indicate shady activities</li>
+                        <li><strong>Mismatched Information:</strong> Location doesn't match claimed organization</li>
+                        <li><strong>Unusual Registrar:</strong> Registered through services known for abuse</li>
+                        <li><strong>Short Expiration:</strong> Only registered for 1 year (vs legitimate sites with 5-10 years)</li>
+                    </ol>
+                    <strong>Try it:</strong> Use who.is or whois.domaintools.com to look up any suspicious domain
+                </div>
+            </div>
+
+            <h3>The Strings Command</h3>
+            <p><strong>What it does:</strong> Extracts readable text from binary files (like malware executables)</p>
+            
+            <div class="code-block">
+# Basic usage
+strings suspicious.exe
+
+# Show strings at least 10 characters long
+strings -n 10 malware.bin
+
+# Search for URLs
+strings malware.exe | grep "http"
+
+# Find IP addresses
+strings malware.exe | grep -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+            </div>
+
+            <p><strong>What you might find:</strong></p>
+            <ul>
+                <li>Command and Control (C2) server URLs</li>
+                <li>Hardcoded IP addresses</li>
+                <li>File paths the malware uses</li>
+                <li>Error messages or debug strings</li>
+                <li>Encryption keys or passwords</li>
+            </ul>
+        </div>
+
+        <!-- More sections continue... -->
+
+
+        <!-- Attack Frameworks Section -->
+        <div id="frameworks" class="content-section">
+            <h2>⚔️ Attack Frameworks</h2>
+
+            <h3>The Cyber Kill Chain</h3>
+            <div class="key-concept">
+                <div class="key-concept-header">Understanding the Kill Chain</div>
+                <div class="key-concept-content">
+                    The Cyber Kill Chain breaks down cyberattacks into 7 distinct stages. Understanding these stages helps defenders identify where to intervene and stop attacks before they succeed.
+                </div>
+            </div>
+
+            <table class="data-table">
+                <tr>
+                    <th>Stage</th>
+                    <th>Attacker Actions</th>
+                    <th>Defender Response</th>
+                </tr>
+                <tr>
+                    <td>1. Reconnaissance</td>
+                    <td>Gather information about target</td>
+                    <td>Monitor for scanning, use deception</td>
+                </tr>
+                <tr>
+                    <td>2. Weaponization</td>
+                    <td>Create malware or exploit</td>
+                    <td>Threat intelligence, sandboxing</td>
+                </tr>
+                <tr>
+                    <td>3. Delivery</td>
+                    <td>Send payload to victim</td>
+                    <td>Email filtering, user training</td>
+                </tr>
+                <tr>
+                    <td>4. Exploitation</td>
+                    <td>Trigger vulnerability</td>
+                    <td>Patching, endpoint protection</td>
+                </tr>
+                <tr>
+                    <td>5. Installation</td>
+                    <td>Install malware, create backdoor</td>
+                    <td>Application whitelisting, EDR</td>
+                </tr>
+                <tr>
+                    <td>6. Command & Control</td>
+                    <td>Establish C2 channel</td>
+                    <td>Firewall rules, network monitoring</td>
+                </tr>
+                <tr>
+                    <td>7. Actions on Objectives</td>
+                    <td>Achieve goal (steal, destroy, disrupt)</td>
+                    <td>DLP, backups, incident response</td>
+                </tr>
+            </table>
+
+            <p><strong>Key Insight:</strong> Breaking the chain at ANY stage stops the attack. The earlier you intervene, the less damage occurs.</p>
+
+            <h3>MITRE ATT&CK Framework</h3>
+            <p><strong>What is ATT&CK?</strong> Adversarial Tactics, Techniques, and Common Knowledge - a comprehensive knowledge base of real-world attacker behavior.</p>
+
+            <p><strong>The 14 Tactics (Why attackers do things):</strong></p>
+            <ol>
+                <li>Reconnaissance - Gather information</li>
+                <li>Resource Development - Prepare infrastructure</li>
+                <li>Initial Access - Get inside</li>
+                <li>Execution - Run malicious code</li>
+                <li>Persistence - Maintain access</li>
+                <li>Privilege Escalation - Get higher permissions</li>
+                <li>Defense Evasion - Avoid detection</li>
+                <li>Credential Access - Steal credentials</li>
+                <li>Discovery - Learn about the environment</li>
+                <li>Lateral Movement - Spread through network</li>
+                <li>Collection - Gather data</li>
+                <li>Command and Control - Communicate with infected systems</li>
+                <li>Exfiltration - Steal data</li>
+                <li>Impact - Disrupt operations</li>
+            </ol>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">🎯 Using MITRE ATT&CK</div>
+                <div class="practical-guide-steps">
+                    <strong>Practical Applications:</strong>
+                    <ol>
+                        <li><strong>Map detected attacks:</strong> Identify which techniques attackers used</li>
+                        <li><strong>Gap analysis:</strong> Find blind spots in your defenses</li>
+                        <li><strong>Threat hunting:</strong> Proactively search for specific techniques</li>
+                        <li><strong>Purple teaming:</strong> Red team uses techniques, blue team detects them</li>
+                        <li><strong>Tool selection:</strong> Choose security tools based on technique coverage</li>
+                    </ol>
+                    <strong>Explore:</strong> Visit attack.mitre.org to browse the full matrix
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Analysis Section -->
+        <div id="email" class="content-section">
+            <h2>📧 Email Analysis</h2>
+
+            <h3>Why Email Analysis Matters</h3>
+            <p><strong>Critical Statistics:</strong></p>
+            <ul>
+                <li>90%+ of cyberattacks start with email</li>
+                <li>Phishing is the #1 initial access method</li>
+                <li>Business Email Compromise (BEC) costs billions annually</li>
+                <li>Email headers contain forensic evidence attackers can't easily hide</li>
+            </ul>
+
+            <h3>Email Header Analysis</h3>
+            <p><strong>Key Headers to Check:</strong></p>
+            <table class="data-table">
+                <tr>
+                    <th>Header</th>
+                    <th>What It Shows</th>
+                    <th>Can It Be Spoofed?</th>
+                </tr>
+                <tr>
+                    <td>From</td>
+                    <td>Claimed sender address</td>
+                    <td>✓ Yes - Easy to fake</td>
+                </tr>
+                <tr>
+                    <td>Return-Path</td>
+                    <td>Where bounces should go</td>
+                    <td>⚠️ Harder to fake</td>
+                </tr>
+                <tr>
+                    <td>Received</td>
+                    <td>Each mail server's handling</td>
+                    <td>✗ Added by real servers</td>
+                </tr>
+                <tr>
+                    <td>X-Originating-IP</td>
+                    <td>Sender's IP address</td>
+                    <td>⚠️ Harder to fake</td>
+                </tr>
+                <tr>
+                    <td>Authentication-Results</td>
+                    <td>SPF, DKIM, DMARC results</td>
+                    <td>✗ Added by receiver</td>
+                </tr>
+            </table>
+
+            <h3>SPF, DKIM, and DMARC</h3>
+            
+            <div class="glossary-term">
+                <div class="glossary-term-name">SPF (Sender Policy Framework)</div>
+                <div class="glossary-term-definition">
+                    <strong>What it does:</strong> Specifies which mail servers can send email for a domain<br>
+                    <strong>Analogy:</strong> Like a guest list at a party - only approved servers can send mail<br>
+                    <strong>Check:</strong> Look for "SPF: PASS" in Authentication-Results header
+                </div>
+            </div>
+
+            <div class="glossary-term">
+                <div class="glossary-term-name">DKIM (DomainKeys Identified Mail)</div>
+                <div class="glossary-term-definition">
+                    <strong>What it does:</strong> Digital signature proving email hasn't been altered<br>
+                    <strong>Analogy:</strong> Like a wax seal on an envelope - if broken, it's been tampered with<br>
+                    <strong>Check:</strong> Look for "DKIM: PASS" in Authentication-Results header
+                </div>
+            </div>
+
+            <div class="glossary-term">
+                <div class="glossary-term-name">DMARC (Domain-based Message Authentication, Reporting, and Conformance)</div>
+                <div class="glossary-term-definition">
+                    <strong>What it does:</strong> Tells receivers what to do if SPF/DKIM fail<br>
+                    <strong>Policy Options:</strong> none (monitor), quarantine (spam folder), reject (block)<br>
+                    <strong>Check:</strong> Look for "DMARC: PASS" in Authentication-Results header
+                </div>
+            </div>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">🔍 Analyzing a Suspicious Email</div>
+                <div class="practical-guide-steps">
+                    <strong>Step-by-Step Investigation:</strong>
+                    <ol>
+                        <li><strong>View Full Headers</strong> - In Gmail: More (⋮) → Show original</li>
+                        <li><strong>Check SPF/DKIM/DMARC</strong> - Look for "FAIL" results</li>
+                        <li><strong>Examine "Received" Headers</strong> - Read bottom to top (reverse chronological)</li>
+                        <li><strong>Check X-Originating-IP</strong> - WHOIS lookup on this IP</li>
+                        <li><strong>Verify Return-Path</strong> - Does it match the "From" domain?</li>
+                        <li><strong>Analyze Links</strong> - Hover (don't click!) to see real destination</li>
+                        <li><strong>Check Attachments</strong> - Scan with VirusTotal if suspicious</li>
+                    </ol>
+                    <strong>Red Flags:</strong>
+                    <ul>
+                        <li>SPF/DKIM/DMARC failures</li>
+                        <li>"From" domain doesn't match originating server</li>
+                        <li>Recently registered domain (WHOIS check)</li>
+                        <li>Unusual sending country for claimed organization</li>
+                        <li>Mismatched link URLs</li>
+                        <li>Suspicious attachment file types (.exe, .vbs, .js)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" class="content-section">
+            <h2>✅ Knowledge Check Quiz</h2>
+            <p>Test your understanding of the concepts covered in this lesson. Select your answer and click "Check Answer" to see if you're correct!</p>
+
+            <!-- Quiz 1 -->
+            <div class="quiz-container">
+                <div class="quiz-question">1. Which Wireshark pane shows the layer-by-layer protocol breakdown of a selected packet?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="1" data-answer="A">A) Top pane - Packet List</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="B">B) Middle pane - Packet Details</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="C">C) Bottom pane - Packet Bytes</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="D">D) Filter toolbar</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(1, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-1"></div>
+            </div>
+
+            <!-- Quiz 2 -->
+            <div class="quiz-container">
+                <div class="quiz-question">2. What does WHOIS primarily tell you about a domain?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="2" data-answer="A">A) The domain's current DNS records</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="B">B) Who owns it, when it was registered, and contact information</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="C">C) The website's SSL certificate details</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="D">D) All visitors to the website</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(2, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-2"></div>
+            </div>
+
+            <!-- Quiz 3 -->
+            <div class="quiz-container">
+                <div class="quiz-question">3. In the Cyber Kill Chain, which stage involves the attacker creating malicious tools or exploits?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="3" data-answer="A">A) Reconnaissance</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="B">B) Weaponization</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="C">C) Delivery</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="D">D) Exploitation</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(3, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-3"></div>
+            </div>
+
+            <!-- Quiz 4 -->
+            <div class="quiz-container">
+                <div class="quiz-question">4. Which email authentication method uses a digital signature to verify the email hasn't been altered?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="4" data-answer="A">A) SPF</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="B">B) DKIM</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="C">C) DMARC</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="D">D) SMTP</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(4, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-4"></div>
+            </div>
+
+            <!-- Quiz 5 -->
+            <div class="quiz-container">
+                <div class="quiz-question">5. What is a key difference between the Cyber Kill Chain and MITRE ATT&CK?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="5" data-answer="A">A) Kill Chain is linear; ATT&CK is flexible and detailed</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="B">B) ATT&CK only covers malware; Kill Chain covers all attacks</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="C">C) Kill Chain is newer than ATT&CK</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="D">D) They are the same framework</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(5, 'A')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-5"></div>
+            </div>
+
+            <!-- Quiz 6 -->
+            <div class="quiz-container">
+                <div class="quiz-question">6. Which command is commonly abused by attackers to create unauthorized admin accounts on Windows?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="6" data-answer="A">A) ipconfig</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="B">B) ping</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="C">C) net user</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="D">D) tasklist</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(6, 'C')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-6"></div>
+            </div>
+
+            <div class="quiz-container" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-color: #28a745;">
+                <div style="text-align: center;">
+                    <h3>🎓 Quiz Complete!</h3>
+                    <p>Review any questions you missed and make sure you understand the concepts before the exam.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Glossary Section -->
+        <div id="glossary" class="content-section">
+            <h2>📖 Glossary of Key Terms</h2>
+            <p>Quick reference for important terminology used in this lesson.</p>
+
+            <div class="glossary-container">
+                <div class="glossary-term">
+                    <div class="glossary-term-name">ATT&CK (Adversarial Tactics, Techniques, and Common Knowledge)</div>
+                    <div class="glossary-term-definition">
+                        A knowledge base maintained by MITRE that catalogues real-world attacker behaviors, tactics, and techniques used in cyberattacks.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Base64 Encoding</div>
+                    <div class="glossary-term-definition">
+                        A binary-to-text encoding scheme used to safely transmit binary data through text-based systems. Commonly used in emails and by attackers to obfuscate malicious content.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">C2 (Command and Control)</div>
+                    <div class="glossary-term-definition">
+                        A channel through which attackers communicate with compromised systems to send commands and receive stolen data.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Cyber Kill Chain</div>
+                    <div class="glossary-term-definition">
+                        A 7-stage framework developed by Lockheed Martin that describes the phases of a cyberattack: Reconnaissance, Weaponization, Delivery, Exploitation, Installation, Command & Control, and Actions on Objectives.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">DKIM (DomainKeys Identified Mail)</div>
+                    <div class="glossary-term-definition">
+                        An email authentication method that uses cryptographic signatures to verify that an email hasn't been altered during transmission.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">DMARC (Domain-based Message Authentication, Reporting, and Conformance)</div>
+                    <div class="glossary-term-definition">
+                        An email authentication protocol that builds on SPF and DKIM, telling receiving servers what to do if authentication fails and providing reporting mechanisms.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">EDR (Endpoint Detection and Response)</div>
+                    <div class="glossary-term-definition">
+                        Security solution that continuously monitors endpoints (workstations, servers) for malicious activity, providing detection, investigation, and response capabilities beyond traditional antivirus.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">IoC (Indicator of Compromise)</div>
+                    <div class="glossary-term-definition">
+                        Evidence that a system has been breached or infected, such as unusual network traffic, suspicious file hashes, or known malicious IPs.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Lateral Movement</div>
+                    <div class="glossary-term-definition">
+                        Techniques attackers use to move through a network after initial compromise, accessing additional systems and escalating privileges.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">MTA (Message Transfer Agent)</div>
+                    <div class="glossary-term-definition">
+                        A mail server responsible for routing and delivering email messages across the internet using protocols like SMTP.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">PCAP (Packet Capture)</div>
+                    <div class="glossary-term-definition">
+                        A file format for saving captured network packets, commonly used with Wireshark and tcpdump for network analysis and forensics.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Phishing</div>
+                    <div class="glossary-term-definition">
+                        Social engineering attack that uses deceptive emails to trick recipients into revealing sensitive information or executing malicious code.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Reverse Shell</div>
+                    <div class="glossary-term-definition">
+                        A technique where the victim system initiates an outbound connection to the attacker, bypassing firewall restrictions and giving the attacker command-line access.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">SIEM (Security Information and Event Management)</div>
+                    <div class="glossary-term-definition">
+                        A centralized security solution that collects, correlates, and analyzes log data from across an organization to detect threats and support incident response.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">SPF (Sender Policy Framework)</div>
+                    <div class="glossary-term-definition">
+                        An email authentication method that specifies which mail servers are authorized to send email for a domain, helping prevent email spoofing.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Strings Command</div>
+                    <div class="glossary-term-definition">
+                        A Unix/Linux utility that extracts printable character sequences from binary files, useful for analyzing malware and finding embedded URLs or IP addresses.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">tcpdump</div>
+                    <div class="glossary-term-definition">
+                        A command-line packet capture tool for Unix/Linux systems, similar to Wireshark but without a GUI, ideal for remote servers and automation.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">TTP (Tactics, Techniques, and Procedures)</div>
+                    <div class="glossary-term-definition">
+                        Patterns of behavior that characterize how threat actors operate, including their goals (tactics), methods (techniques), and specific implementations (procedures).
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">WHOIS</div>
+                    <div class="glossary-term-definition">
+                        A query protocol that provides information about domain registration, including owner, registration date, and contact information.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Wireshark</div>
+                    <div class="glossary-term-definition">
+                        Free, open-source packet analyzer with a graphical interface, widely used for network troubleshooting, analysis, and security investigations.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div id="resources" class="content-section">
+            <h2>🌐 Additional Resources</h2>
+            <p>Expand your knowledge with these curated resources for further learning and practice.</p>
+
+            <h3>Official Documentation & Frameworks</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://attack.mitre.org/" target="_blank">MITRE ATT&CK Framework</a>
+                    <div class="resource-description">The official ATT&CK matrix with all tactics, techniques, and procedures. Essential reference for threat analysis.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html" target="_blank">Cyber Kill Chain (Lockheed Martin)</a>
+                    <div class="resource-description">Original documentation of the Kill Chain framework with detailed explanations and use cases.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.wireshark.org/docs/" target="_blank">Wireshark Official Documentation</a>
+                    <div class="resource-description">Comprehensive guides, tutorials, and reference materials for mastering Wireshark.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://dmarc.org/" target="_blank">DMARC.org</a>
+                    <div class="resource-description">Learn about email authentication with SPF, DKIM, and DMARC. Includes implementation guides.</div>
+                </div>
+            </div>
+
+            <h3>Practice & Learning Platforms</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.malware-traffic-analysis.net/" target="_blank">Malware Traffic Analysis</a>
+                    <div class="resource-description">Free PCAP files and exercises for practicing packet analysis skills. Real malware scenarios!</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://tryhackme.com/room/wireshark" target="_blank">TryHackMe - Wireshark Room</a>
+                    <div class="resource-description">Interactive Wireshark challenges and tutorials. Hands-on practice in a safe environment.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.phishtool.com/" target="_blank">PhishTool</a>
+                    <div class="resource-description">Free email analysis tool for investigating phishing emails. Great for practicing header analysis.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://cyberdefenders.org/" target="_blank">CyberDefenders</a>
+                    <div class="resource-description">Blue team CTF challenges including network analysis, log analysis, and incident response scenarios.</div>
+                </div>
+            </div>
+
+            <h3>Analysis Tools (Free)</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.virustotal.com/" target="_blank">VirusTotal</a>
+                    <div class="resource-description">Scan files, URLs, and domains against 70+ antivirus engines. Free malware analysis service.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://mxtoolbox.com/" target="_blank">MX Toolbox</a>
+                    <div class="resource-description">Email header analyzer, DMARC checker, DNS lookup, and more email security tools.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.whois.com/" target="_blank">WHOIS Lookup</a>
+                    <div class="resource-description">Fast WHOIS domain lookups with easy-to-read results.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://urlscan.io/" target="_blank">URLscan.io</a>
+                    <div class="resource-description">Scan and analyze websites for malicious content. See screenshots, DOM, HTTP transactions.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://gchq.github.io/CyberChef/" target="_blank">CyberChef</a>
+                    <div class="resource-description">"The Cyber Swiss Army Knife" - decode Base64, analyze data, extract IPs, and much more.</div>
+                </div>
+            </div>
+
+            <h3>Books & Study Guides</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.comptia.org/training/books/cysa-cs0-003-study-guide" target="_blank">CyberEdge Cybersecurity Analyst Official Study Guide</a>
+                    <div class="resource-description">Official CompTIA study guide covering all exam objectives including tool usage.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://nostarch.com/packetanalysis3" target="_blank">Practical Packet Analysis (No Starch Press)</a>
+                    <div class="resource-description">Comprehensive guide to Wireshark and packet analysis techniques.</div>
+                </div>
+            </div>
+
+            <h3>YouTube Channels</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.youtube.com/@NetworkChuck" target="_blank">NetworkChuck</a>
+                    <div class="resource-description">Engaging cybersecurity tutorials including Wireshark, hacking, and certification prep.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.youtube.com/@JohnHammond010" target="_blank">John Hammond</a>
+                    <div class="resource-description">CTF walkthroughs, malware analysis, and cybersecurity tool demonstrations.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.youtube.com/@ippsec" target="_blank">IppSec</a>
+                    <div class="resource-description">HackTheBox walkthroughs covering offensive and defensive techniques.</div>
+                </div>
+            </div>
+
+            <h3>Community & Forums</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.reddit.com/r/cybersecurity/" target="_blank">r/cybersecurity</a>
+                    <div class="resource-description">Active Reddit community for cybersecurity news, questions, and discussions.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.reddit.com/r/AskNetsec/" target="_blank">r/AskNetsec</a>
+                    <div class="resource-description">Ask technical security questions and learn from experienced professionals.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://discord.gg/infosec" target="_blank">InfoSec Community Discord</a>
+                    <div class="resource-description">Real-time chat with other cybersecurity students and professionals.</div>
+                </div>
+            </div>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">💡 Study Tips</div>
+                <div class="practical-guide-steps">
+                    <strong>To maximize your learning:</strong>
+                    <ol>
+                        <li><strong>Install and use the tools</strong> - Reading about Wireshark isn't the same as using it</li>
+                        <li><strong>Practice with real scenarios</strong> - Use sites like Malware Traffic Analysis for realistic practice</li>
+                        <li><strong>Join CTF competitions</strong> - Apply your skills in competitive environments</li>
+                        <li><strong>Build a home lab</strong> - Set up VMs to safely practice techniques</li>
+                        <li><strong>Document what you learn</strong> - Keep notes on commands, techniques, and discoveries</li>
+                        <li><strong>Teach others</strong> - Explaining concepts solidifies your understanding</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>CyberEdge Academy</strong></p>
+            <p>CyberEdge Cybersecurity Analyst 003 - Lesson 10: Applying Tools to Identify Malicious Activity</p>
+            <p>Learner Portal | © 2024</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedAnswers = {};
+        let correctAnswers = 0;
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Update progress
+            updateProgress();
+        }
+
+        // Quiz functionality
+        document.querySelectorAll('.quiz-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const quizNum = this.getAttribute('data-quiz');
+                const answer = this.getAttribute('data-answer');
+                
+                // Deselect all options for this quiz
+                document.querySelectorAll(`[data-quiz="${quizNum}"]`).forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Select this option
+                this.classList.add('selected');
+                selectedAnswers[quizNum] = answer;
+            });
+        });
+
+        function checkAnswer(quizNum, correctAnswer) {
+            const selected = selectedAnswers[quizNum];
+            const feedback = document.getElementById(`feedback-${quizNum}`);
+            const options = document.querySelectorAll(`[data-quiz="${quizNum}"]`);
+            
+            if (!selected) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            // Show correct/incorrect on options
+            options.forEach(option => {
+                const answer = option.getAttribute('data-answer');
+                if (answer === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (answer === selected && answer !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            // Show feedback
+            if (selected === correctAnswer) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.innerHTML = `<strong>✓ Correct!</strong> ${getFeedback(quizNum, true)}`;
+                correctAnswers++;
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.innerHTML = `<strong>✗ Incorrect.</strong> ${getFeedback(quizNum, false)}`;
+            }
+
+            updateProgress();
+        }
+
+        function getFeedback(quizNum, isCorrect) {
+            const feedbacks = {
+                1: {
+                    correct: "The middle pane shows detailed protocol information layer by layer (Frame → IP → TCP/UDP → Application).",
+                    incorrect: "The middle pane (Packet Details) shows the protocol breakdown. The top pane shows the packet list, and bottom shows raw bytes."
+                },
+                2: {
+                    correct: "WHOIS provides registration information including owner, dates, and contact details.",
+                    incorrect: "WHOIS provides domain registration details. For DNS records, you'd use nslookup or dig."
+                },
+                3: {
+                    correct: "Weaponization is when attackers create or acquire tools (malware, exploits) to use in the attack.",
+                    incorrect: "Weaponization comes after reconnaissance. It's when attackers prepare their attack tools."
+                },
+                4: {
+                    correct: "DKIM uses cryptographic signatures to ensure email integrity and authenticity.",
+                    incorrect: "DKIM provides the digital signature. SPF authorizes senders, DMARC enforces policies."
+                },
+                5: {
+                    correct: "Kill Chain is a linear 7-stage model, while ATT&CK is a comprehensive matrix of flexible tactics and techniques.",
+                    incorrect: "ATT&CK is more detailed and flexible than the linear Kill Chain model."
+                },
+                6: {
+                    correct: "'net user' can create new accounts and add them to groups, commonly abused for persistence.",
+                    incorrect: "'net user' is the Windows command for account management, often abused to create backdoor accounts."
+                }
+            };
+
+            return feedbacks[quizNum][isCorrect ? 'correct' : 'incorrect'];
+        }
+
+        function updateProgress() {
+            // Simple progress tracking
+            const sections = ['overview', 'tools', 'frameworks', 'email'];
+            const visitedSections = sections.filter(section => 
+                document.getElementById(section).classList.contains('active') || 
+                document.getElementById(section).hasAttribute('data-visited')
+            );
+
+            visitedSections.forEach(section => {
+                document.getElementById(section).setAttribute('data-visited', 'true');
+            });
+
+            const progress = Math.min(100, (visitedSections.length / sections.length) * 80 + (correctAnswers / 6) * 20);
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-bar').textContent = Math.round(progress) + '%';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            const tabs = Array.from(document.querySelectorAll('.nav-tab'));
+            const activeTab = document.querySelector('.nav-tab.active');
+            const currentIndex = tabs.indexOf(activeTab);
+
+            if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
+                tabs[currentIndex + 1].click();
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                tabs[currentIndex - 1].click();
+            }
+        });
+
+        // Initialize
+        updateProgress();
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson9_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson11_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

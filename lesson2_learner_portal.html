@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CyberEdge Lesson 2 - Threat Intelligence &amp; Threat Hunting</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #1a237e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-bottom: 5px solid #ff6f00;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            margin-bottom: 5px;
+            opacity: 0.95;
+        }
+
+        .header .badge {
+            background: rgba(255,107,0,0.25);
+            padding: 12px 20px;
+            display: inline-block;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid #ff6f00;
+        }
+
+        .header .created-by {
+            background: rgba(255,255,255,0.15);
+            padding: 12px 20px;
+            display: inline-block;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 20px auto;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            color: #1a237e;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #283593;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .nav-item:hover {
+            background: #e8eaf6;
+            border-left-color: #283593;
+            color: #283593;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #e8eaf6 0%, #c5cae9 100%);
+            border-left-color: #1a237e;
+            color: #1a237e;
+            font-weight: 700;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 32px;
+            color: #1a237e;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff6f00;
+        }
+
+        h2 {
+            color: #1a237e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 24px;
+            border-left: 5px solid #ff6f00;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #283593;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin: 15px 0 20px 30px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 5px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 5px solid #f57c00;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
+            border-left: 5px solid #f9a825;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .important {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 5px solid #d32f2f;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 5px solid #388e3c;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        /* INSTRUCTOR-SPECIFIC STYLES */
+        .instructor-note {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border: 3px solid #ff6f00;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .instructor-note h4 {
+            color: #e65100;
+            margin-bottom: 12px;
+            font-size: 16px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .discussion-prompt {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-left: 5px solid #7b1fa2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .discussion-prompt h4 {
+            color: #4a148c;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .teaching-strategy {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            border-left: 5px solid #00796b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .teaching-strategy h4 {
+            color: #004d40;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .expected-response {
+            background: #f1f8e9;
+            border-left: 4px solid #689f38;
+            padding: 15px;
+            margin: 15px 0 15px 30px;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        .misconception {
+            background: #fce4ec;
+            border-left: 4px solid #c2185b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .misconception h5 {
+            color: #880e4f;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .download-btn {
+            background: #ff6f00;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 30px;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: #e65100;
+        }
+
+        @media print {
+            .sidebar, .download-btn { display: none; }
+            .main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+<h1>CYBEREDGE LESSON 2</h1>
+<div class="subtitle">Threat Intelligence &amp; Threat Hunting</div>
+<div class="created-by">CyberEdge Academy</div><div class="created-by">Dr. Solomon Seifu | CyberEdge Academy</div>
+</div>
+<div class="container">
+<div class="sidebar">
+<h3>📚 Lesson Topics</h3>
+<div class="nav-item active" onclick="showSection('objectives')">
+            🎓 Learning Objectives
+        </div>
+<div class="nav-item" onclick="showSection('threat-actors')">
+            👥 Threat Actor Types
+        </div>
+<div class="nav-item" onclick="showSection('apts')">
+            🎯 Advanced Persistent Threats
+        </div>
+<div class="nav-item" onclick="showSection('ttps')">
+            🔍 TTPs &amp; MITRE ATT&amp;CK
+        </div>
+<div class="nav-item" onclick="showSection('osint')">
+            🔎 Open-Source Intelligence
+        </div>
+<div class="nav-item" onclick="showSection('threat-intel')">
+            📊 Threat Intelligence
+        </div>
+<div class="nav-item" onclick="showSection('isacs')">
+            🤝 ISACs &amp; Sharing
+        </div>
+<div class="nav-item" onclick="showSection('threat-hunting')">
+            🎯 Threat Hunting
+        </div>
+<div class="nav-item" onclick="showSection('ioc-ioa')">
+            ⚠️ IOCs vs IOAs
+        </div>
+<div class="nav-item" onclick="showSection('honeypots')">
+            🍯 Honeypots &amp; Deception
+        </div>
+<div class="nav-item" onclick="showSection('comprehensive-quiz')">
+            📝 Knowledge Quiz Guide
+        </div>
+<button class="download-btn" onclick="window.print()">
+            📥 Download PDF
+        </button>
+</div>
+<div class="main-content">
+<!-- NOTE: Objectives, Threat-Actors, APTs, and TTPs sections completed in previous file -->
+<!-- This file continues from OSINT section -->
+<!-- OBJECTIVES SECTION -->
+<div class="content-section active" id="objectives">
+<div class="section-title">🎓 Learning Objectives</div>
+<div class="section-subtitle">Master These Core Competencies</div>
+<p>By the end of this lesson, students will be able to:</p>
+<ul>
+<li><strong>Understand threat actor concepts</strong> - Identify and analyze 6 major types of threat actors, their motivations, capabilities, and attack methodologies</li>
+<li><strong>Explore Advanced Persistent Threats (APTs)</strong> - Understand the characteristics, lifecycle, and impact of APT campaigns on organizations</li>
+<li><strong>Review Tactics, Techniques, and Procedures (TTPs)</strong> - Learn how defenders use TTP analysis to understand and predict attacker behavior</li>
+<li><strong>Apply MITRE ATT&amp;CK Framework</strong> - Navigate and use the definitive knowledge base of adversary TTPs in real-world scenarios</li>
+<li><strong>Understand the importance of identifying active threats</strong> - Master threat detection and active threat identification methodologies</li>
+<li><strong>Review Open-Source Intelligence (OSINT) concepts</strong> - Analyze publicly available information and its security implications</li>
+<li><strong>Review information-sharing concepts</strong> - Understand ISACs, threat intelligence sharing, and collaborative defense</li>
+<li><strong>Review different types of threat-hunting activities</strong> - Develop skills in proactive threat detection and hunting methodologies</li>
+<li><strong>Understand the importance of Indicators of Compromise (IoC)</strong> - Learn to identify, validate, and act on IoCs</li>
+<li><strong>Review decoy methods</strong> - Understand honeypots, active defense, and deception techniques</li>
+</ul>
+<div class="highlight-box">
+<strong>🎯 Key Point:</strong> This lesson bridges threat intelligence (learning about threats from external sources) with threat hunting (actively searching for threats in your environment). Together, they form the foundation of a strong defensive posture.
+            </div>
+</div>
+<!-- THREAT ACTORS SECTION -->
+<div class="content-section" id="threat-actors">
+<div class="section-title">👥 Threat Actor Types</div>
+<div class="section-subtitle">Understanding the 6 Categories of Attackers</div>
+<p>Threat actors vary dramatically in their motivations, resources, capabilities, and target selection. Understanding these differences is essential for building effective defenses. CompTIA identifies 6 major threat actor types:</p>
+<h2>1. Nation-State Actors</h2>
+<p>Nation-states are governments with dedicated cybersecurity expertise for both military and commercial goals. These are the most sophisticated and well-resourced attackers.</p>
+<div class="definition-box">
+<strong>Key Historical Moment:</strong> Mandiant's APT1 report (2013) was groundbreaking because it was the first public attribution of cyberattacks directly to a nation-state (Chinese PLA Unit 61398). This report fundamentally changed how the world understands state-sponsored cyber operations.
+            </div>
+<h3>Motivations:</h3>
+<ul>
+<li><strong>Espionage</strong> - Stealing state secrets, government intelligence, military capabilities</li>
+<li><strong>Strategic Advantage</strong> - Gaining competitive advantages in technology, economics, politics</li>
+<li><strong>Political Objectives</strong> - Election interference, destabilization, propaganda</li>
+<li><strong>Infrastructure Disruption</strong> - Targeting power grids, water systems, communications</li>
+<li><strong>Commercial Gain</strong> - Stealing intellectual property to benefit domestic companies</li>
+</ul>
+<h3>Characteristics:</h3>
+<ul>
+<li>UNLIMITED budgets from government funding</li>
+<li>Access to specialized expertise (computer scientists, mathematicians, engineers)</li>
+<li>Access to zero-day exploits and classified tools</li>
+<li>Can sustain campaigns over many years (5+ years common)</li>
+<li>Sponsor MULTIPLE different adversary groups</li>
+<li>Different groups may have different objectives and resources</li>
+</ul>
+<h3>Real Examples:</h3>
+<ul>
+<li><strong>Russia GRU:</strong> 2016 US election interference, targeting military contractors, power grid attacks</li>
+<li><strong>Russia SVR:</strong> APT29 (Cozy Bear) - SolarWinds supply chain attack, government espionage</li>
+<li><strong>China PLA Unit 61398:</strong> APT1 - Years of IP theft from Fortune 500 companies</li>
+<li><strong>China MSS:</strong> APT41 - Espionage plus financial cybercrime operations</li>
+<li><strong>North Korea Bureau 121:</strong> Lazarus Group - Financial theft, WannaCry ransomware, Sony Pictures attack</li>
+<li><strong>Iran IRGC:</strong> Critical infrastructure targeting, disruptive attacks</li>
+</ul>
+<h2>2. Organized Crime</h2>
+<p>Organized crime is pure profit-motivated. Unlike nation-states, they don't care about political objectives. They just want to make money through illegal means.</p>
+<h3>Critical Statistic:</h3>
+<div class="highlight-box">
+<strong>In many countries, CYBERCRIME now exceeds physical crime in both number of incidents AND financial losses.</strong> More money is stolen through ransomware than through bank robberies. More fraud happens via credential compromise than shoplifting.
+            </div>
+<h3>Characteristics:</h3>
+<ul>
+<li>Can operate from countries with weak law enforcement or friendly governments</li>
+<li>Difficult to prosecute due to geographic jurisdiction issues</li>
+<li>Target victims in other countries where they have no legal liability</li>
+<li>Use a mix of custom and publicly available tools</li>
+<li>Often less sophisticated than nation-states BUT still effective against vulnerable organizations</li>
+</ul>
+<h3>Primary Revenue Models:</h3>
+<ul>
+<li><strong>Ransomware:</strong> Encrypt data, demand payment for decryption key (healthcare is prime target)</li>
+<li><strong>Credential Theft:</strong> Steal login credentials, sell or use for fraud</li>
+<li><strong>Data Monetization:</strong> Steal healthcare data, payment cards, personal information - sell to other criminals</li>
+<li><strong>Extortion/Blackmail:</strong> Steal data, demand payment to prevent public release</li>
+<li><strong>Financial Fraud:</strong> Wire transfer fraud, account takeover, payment system exploitation</li>
+</ul>
+<div class="example-box">
+<strong>Real-World Example: Colonial Pipeline (2021)</strong><br/>
+                DarkSide ransomware group (Russian-speaking criminals) encrypted Colonial Pipeline systems. Company paid $4.4M ransom to restore fuel delivery to US East Coast. This wasn't nation-state espionage - pure criminal profit motive. Pipeline shutdown caused panic buying and fuel shortages across multiple states.
+            </div>
+<h3>High-Value Targets:</h3>
+<ul>
+<li><strong>Healthcare:</strong> Patient data is valuable; hospitals often pay ransom quickly to restore services</li>
+<li><strong>Financial Institutions:</strong> Direct access to money; perfect target for theft and fraud</li>
+<li><strong>Individuals:</strong> Credit card holders, users with financial assets, anyone with money</li>
+<li><strong>Retail/E-commerce:</strong> Payment cards, customer data, transaction systems</li>
+</ul>
+<h2>3. Hacktivists</h2>
+<p>Hacktivists are motivated by ideology, not money. They use cyber weapons to promote political agendas or expose what they believe is wrongdoing.</p>
+<h3>Famous Groups:</h3>
+<ul>
+<li><strong>Anonymous:</strong> Decentralized collective, politically motivated, targets governments and corporations</li>
+<li><strong>WikiLeaks:</strong> Focus on transparency, releases classified/confidential documents</li>
+<li><strong>LulzSec:</strong> Hacker collective, internet "vigilantes," attack for attention and ideology</li>
+</ul>
+<div class="example-box">
+<strong>Example: Anonymous vs HBGary Federal (2011)</strong><br/>
+                After HBGary Federal CEO claimed he could identify Anonymous members, Anonymous hacked HBGary, stole 70,000+ emails, defaced websites, and publicly humiliated the company. CEO resigned. Company reputation destroyed. This wasn't about money - it was retaliation and sending a message.
+            </div>
+<h3>Attack Methods:</h3>
+<ul>
+<li><strong>Website Defacement:</strong> Modify website content to display political message</li>
+<li><strong>Denial of Service (DoS):</strong> Overwhelm and shutdown target services</li>
+<li><strong>Data Theft &amp; Release:</strong> Steal confidential information and publish publicly</li>
+<li><strong>Social Engineering:</strong> Manipulate people to support their cause</li>
+</ul>
+<h3>Targets:</h3>
+<p>Political organizations, media companies, financial institutions, corporations tied to causes they oppose (environmental, animal rights, government accountability)</p>
+<h2>4. Insider Threats</h2>
+<p>Insiders are people who work for the organization and have legitimate access. They pose unique risks because they don't need to bypass security systems.</p>
+<h3>Two Types of Insiders:</h3>
+<ul>
+<li><strong>Permanent Privileges:</strong> Full-time employees with ongoing system access</li>
+<li><strong>Temporary Privileges:</strong> Contractors, consultants, guests with limited-time access</li>
+</ul>
+<h3>INTENTIONAL INSIDERS:</h3>
+<p>Fully aware of malicious actions and deliberately causing harm:</p>
+<ul>
+<li>Steal data for competitors or foreign governments</li>
+<li>Sabotage systems out of revenge or anger</li>
+<li>Sell credentials to external attackers for profit</li>
+<li>Install backdoors for espionage or future exploitation</li>
+</ul>
+<div class="example-box">
+<strong>Real Case: Edward Snowden (2013)</strong><br/>
+                NSA contractor with top-secret clearance. Downloaded classified documents about government surveillance programs. Leaked to journalists. Fled to Russia. Regardless of your opinion on whether his actions were justified, from a security perspective this was a massive insider threat - trusted person with legitimate access stealing classified data.
+            </div>
+<h3>UNINTENTIONAL INSIDERS:</h3>
+<p>Cause damage through carelessness or by being manipulated:</p>
+<ul>
+<li>Click phishing links and enter credentials</li>
+<li>Misconfigure systems, creating security gaps</li>
+<li>Use Shadow IT (unauthorized software/cloud services)</li>
+<li>Leave systems unlocked or passwords visible</li>
+<li>Share passwords with unauthorized people</li>
+</ul>
+<div class="important">
+<strong>⚠️ CRITICAL INSIGHT:</strong> Unintentional insiders may pose the GREATEST risk statistically. Why? There are far more careless employees than malicious ones. Even 1% of 1000 employees = 10 compromised accounts. Just one phishing click can compromise the entire network.
+            </div>
+<h2>5. Script Kiddies</h2>
+<p>Script kiddies use hacker tools without understanding how they work or ability to create new attacks. Often young/inexperienced, motivated by attention or proving ability.</p>
+<h3>Characteristics:</h3>
+<ul>
+<li>Use freely available tools (MetaSploit, automated scanners, exploit kits)</li>
+<li>Don't understand underlying attack mechanisms</li>
+<li>Often no specific target - random scanning and opportunistic attacks</li>
+<li>Goals are vague ("whatever works") - attention, learning, curiosity</li>
+<li>Low sophistication but can cause significant harm if systems are unpatched</li>
+</ul>
+<div class="tip-box">
+<strong>💡 Important:</strong> Script kiddies are often dismissed as low-threat. DON'T make this mistake. If they find an unpatched vulnerability, they can compromise systems just as effectively as sophisticated attackers.
+            </div>
+<h2>6. Supply Chain Access</h2>
+<p>Instead of attacking an organization directly, attackers compromise a TRUSTED VENDOR to gain access to the organization. This is devastatingly effective because organizations trust their vendors.</p>
+<h3>Why Supply Chain Attacks Work:</h3>
+<ul>
+<li>Organizations trust vendors implicitly</li>
+<li>Software updates/patches from vendors are auto-installed without suspicion</li>
+<li>Hardware from trusted vendors bypasses security scrutiny</li>
+<li>Compromising one vendor can affect thousands of organizations</li>
+</ul>
+<h3>Real-World Supply Chain Attacks:</h3>
+<div class="example-box">
+<strong>SolarWinds Breach (2020):</strong> Nation-state actors compromised SolarWinds Orion software updates. When 18,000+ customers installed "legitimate" updates, they unknowingly installed backdoors. Affected Pentagon, Treasury Department, Commerce Department, and major corporations globally. Some organizations didn't discover the breach until YEARS later.
+            </div>
+<div class="example-box">
+<strong>NotPetya (2017):</strong> Attackers trojanized legitimate Ukrainian accounting software (M.E.Doc). When organizations installed software updates, they installed the NotPetya wiper malware. Caused billions in damages globally, affected international shipping, healthcare, energy.
+            </div>
+<div class="example-box">
+<strong>3CX Breach (2023):</strong> Attackers compromised developers' build systems. Official 3CX software distributions contained malware. Affected financial services, government agencies, critical infrastructure operators worldwide.
+            </div>
+<h3>Defense Implications:</h3>
+<ul>
+<li>Vendor security assessments are critical</li>
+<li>Software Bill of Materials (SBOM) - Know what's in your software</li>
+<li>Vendor risk management programs required</li>
+<li>Monitor what vendors are doing</li>
+<li>Require security certifications from vendors</li>
+<li>Have contingency plans if vendors are compromised</li>
+</ul>
+</div>
+<!-- APTs SECTION -->
+<div class="content-section" id="apts">
+<div class="section-title">🎯 Advanced Persistent Threats (APTs)</div>
+<div class="section-subtitle">Understanding Long-Term, Sophisticated Campaigns</div>
+<div class="definition-box">
+<strong>What is an APT?</strong><br/>
+                NOT a specific malware. NOT a single attack. An APT is a LONG-TERM, SOPHISTICATED, MULTI-STAGE CAMPAIGN conducted by advanced adversaries (typically nation-states) targeting specific high-value organizations over extended periods (months to years).
+            </div>
+<h2>The Three Components of APT</h2>
+<h3>1. ADVANCED</h3>
+<p>Sophisticated attack capabilities not available to the general public:</p>
+<ul>
+<li><strong>Custom Tools:</strong> Develop attack tools specific to the target</li>
+<li><strong>Zero-Day Exploits:</strong> Use vulnerabilities unknown to vendors</li>
+<li><strong>Advanced Techniques:</strong> Evasion methods, anti-forensics, sophisticated command &amp; control</li>
+<li><strong>Specialized Expertise:</strong> Teams of skilled developers, system administrators, network engineers</li>
+<li><strong>Reverse Engineering:</strong> Analyze target systems to find custom attack paths</li>
+</ul>
+<h3>2. PERSISTENT</h3>
+<p>Goal is long-term presence in the target network, not one-time data theft:</p>
+<ul>
+<li><strong>Duration:</strong> Campaigns can last MONTHS or YEARS</li>
+<li><strong>Average Dwell Time:</strong> Time from breach to detection = 200+ days (some breaches discovered YEARS later)</li>
+<li><strong>Persistence Methods:</strong>
+<ul>
+<li>Install backdoors and rootkits</li>
+<li>Create hidden administrative accounts</li>
+<li>Establish Command &amp; Control (C2) infrastructure</li>
+<li>Use "living off the land" techniques (exploit legitimate tools)</li>
+<li>Maintain multiple redundant access points</li>
+</ul>
+</li>
+</ul>
+<div class="important">
+<strong>⚠️ Critical Stat:</strong> Average dwell time (breach to detection) is 200+ days. That means attackers are inside your network for 6-7 MONTHS before you notice. Some campaigns go YEARS undetected.
+            </div>
+<h3>3. THREAT</h3>
+<p>Specific organizations selected for attack, not random or opportunistic:</p>
+<ul>
+<li><strong>High-Value Targets:</strong>
+<ul>
+<li>Large organizations storing Personally Identifiable Information (PII)</li>
+<li>Government agencies and contractors</li>
+<li>Critical infrastructure (energy, utilities, transportation)</li>
+<li>Defense contractors and military suppliers</li>
+<li>Technology companies with valuable IP</li>
+<li>Financial institutions</li>
+</ul>
+</li>
+<li><strong>Specific Objectives:</strong> Nation-states target specific information or capabilities they want to steal or disrupt</li>
+</ul>
+<h2>APT Attack Lifecycle (The Kill Chain)</h2>
+<div class="definition-box">
+<strong>Lockheed Martin Cyber Kill Chain:</strong> A framework describing the stages of an APT attack from initial reconnaissance to achieving objectives. Understanding this helps defenders stop attacks at early stages.
+            </div>
+<p><strong>The 7 Stages:</strong></p>
+<ol>
+<li><strong>Reconnaissance:</strong> Research and identify targets, gather intelligence</li>
+<li><strong>Weaponization:</strong> Create malicious payload, pair exploit with backdoor</li>
+<li><strong>Delivery:</strong> Transmit weapon to target (email attachment, USB drive, watering hole)</li>
+<li><strong>Exploitation:</strong> Execute code, trigger vulnerability</li>
+<li><strong>Installation:</strong> Install persistent backdoor/malware</li>
+<li><strong>Command &amp; Control (C2):</strong> Establish communication channel with attacker infrastructure</li>
+<li><strong>Actions on Objectives:</strong> Achieve mission goals (data theft, sabotage, espionage)</li>
+</ol>
+<h2>Why APTs are Difficult to Detect</h2>
+<ul>
+<li><strong>Patience:</strong> No rush - can wait months for the perfect opportunity</li>
+<li><strong>Stealth:</strong> Designed to evade detection, blend in with normal traffic</li>
+<li><strong>Adaptability:</strong> If one method is blocked, try another approach</li>
+<li><strong>Living off the Land:</strong> Use legitimate tools to avoid malware detection</li>
+<li><strong>Low and Slow:</strong> Exfiltrate data slowly to avoid triggering data loss prevention (DLP) alerts</li>
+<li><strong>Zero-Days:</strong> Exploit unknown vulnerabilities that can't be patched</li>
+</ul>
+<h2>Defense Against APTs</h2>
+<p>Because APTs are sophisticated and persistent, defense requires multiple layers:</p>
+<ul>
+<li><strong>Assume Breach Mentality:</strong> Don't assume you're safe - actively hunt for threats</li>
+<li><strong>Network Segmentation:</strong> Limit lateral movement if attackers get in</li>
+<li><strong>Least Privilege:</strong> Limit damage if accounts are compromised</li>
+<li><strong>Behavioral Analytics:</strong> Detect abnormal patterns, not just known malware signatures</li>
+<li><strong>Threat Intelligence:</strong> Learn from other organizations' APT encounters</li>
+<li><strong>Continuous Monitoring:</strong> 24/7 security operations center (SOC)</li>
+<li><strong>Incident Response Plan:</strong> Know what to do when (not if) you're compromised</li>
+<li><strong>Threat Hunting:</strong> Proactively search for hidden threats</li>
+</ul>
+<div class="highlight-box">
+<strong>🎯 Key Takeaway:</strong> You cannot PREVENT all APT attacks. The goal is to detect them faster, contain them quicker, and minimize damage. Average dwell time of 200+ days is too long - defenders aim to reduce this to days or hours.
+            </div>
+</div>
+<!-- TTPS SECTION -->
+<div class="content-section" id="ttps">
+<div class="section-title">🔍 Tactics, Techniques &amp; Procedures (TTPs)</div>
+<div class="section-subtitle">Understanding Attacker Behavior Patterns</div>
+<h2>TTP Hierarchy</h2>
+<div class="definition-box">
+<strong>What are TTPs?</strong><br/>
+                TTPs describe the behavior patterns and methods that threat actors use to plan, execute, and achieve their objectives. Understanding TTPs allows defenders to focus on attacker behavior rather than specific tools or malware.
+            </div>
+<h3>1. TACTICS (WHAT)</h3>
+<p>The adversary's technical goals - the 'WHY' behind their actions. Tactics answer: <em>"What is the attacker trying to accomplish?"</em></p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><strong>Initial Access:</strong> Get into the target network</li>
+<li><strong>Execution:</strong> Run malicious code</li>
+<li><strong>Persistence:</strong> Maintain access over time</li>
+<li><strong>Privilege Escalation:</strong> Get higher-level permissions</li>
+<li><strong>Defense Evasion:</strong> Avoid being detected</li>
+<li><strong>Credential Access:</strong> Steal usernames and passwords</li>
+<li><strong>Discovery:</strong> Learn about the environment</li>
+<li><strong>Lateral Movement:</strong> Spread to other systems</li>
+<li><strong>Collection:</strong> Gather data to steal</li>
+<li><strong>Exfiltration:</strong> Send data out of the network</li>
+<li><strong>Impact:</strong> Disrupt, destroy, or manipulate data</li>
+</ul>
+<h3>2. TECHNIQUES (HOW)</h3>
+<p>The specific methods used to accomplish each tactic. Techniques answer: <em>"HOW does the attacker achieve the tactic?"</em></p>
+<p><strong>Examples for Credential Access tactic:</strong></p>
+<ul>
+<li><strong>Brute Force:</strong> Try many password combinations</li>
+<li><strong>Credential Dumping:</strong> Extract credentials from system memory (Mimikatz)</li>
+<li><strong>Input Capture:</strong> Keylogging to capture typed passwords</li>
+<li><strong>Network Sniffing:</strong> Capture credentials transmitted over network</li>
+<li><strong>Phishing:</strong> Trick users into revealing credentials</li>
+</ul>
+<h3>3. PROCEDURES (THE SPECIFICS)</h3>
+<p>The exact implementation details - the step-by-step HOW. Procedures are the most specific level.</p>
+<p><strong>Example Procedure for "Credential Dumping" technique:</strong></p>
+<ol>
+<li>Attacker gains initial access via phishing email</li>
+<li>Download Mimikatz tool to compromised system</li>
+<li>Execute Mimikatz with specific command: <code>sekurlsa::logonpasswords</code></li>
+<li>Extract plaintext passwords from LSASS process memory</li>
+<li>Save credentials to text file</li>
+<li>Exfiltrate credentials via HTTPS to attacker server</li>
+<li>Use stolen admin credentials to access other systems</li>
+</ol>
+<h2>MITRE ATT&amp;CK Framework</h2>
+<div class="definition-box">
+<strong>MITRE ATT&amp;CK:</strong> A globally-accessible knowledge base of adversary tactics and techniques based on real-world observations. It's the industry-standard framework for understanding attacker behavior. ATT&amp;CK = Adversarial Tactics, Techniques, and Common Knowledge.
+            </div>
+<h3>How ATT&amp;CK is Organized:</h3>
+<ul>
+<li><strong>14 Tactics (columns):</strong> High-level adversary goals</li>
+<li><strong>193+ Techniques:</strong> Methods to achieve tactics</li>
+<li><strong>401+ Sub-Techniques:</strong> More specific variations</li>
+<li><strong>Procedures:</strong> Real-world examples from specific threat groups</li>
+</ul>
+<h3>MITRE ATT&amp;CK Matrices:</h3>
+<ul>
+<li><strong>Enterprise:</strong> Attacks against Windows, macOS, Linux, cloud environments</li>
+<li><strong>Mobile:</strong> Attacks against iOS and Android devices</li>
+<li><strong>ICS:</strong> Attacks against Industrial Control Systems (power plants, factories)</li>
+</ul>
+<div class="highlight-box">
+<strong>🎯 Industry Standard:</strong> Major security vendors (Microsoft, CrowdStrike, Palo Alto) map their detections to ATT&amp;CK. When you see "Detected MITRE T1003 - Credential Dumping," you immediately know what happened and can look up mitigations.
+            </div>
+<h3>Practical Uses of ATT&amp;CK:</h3>
+<ol>
+<li><strong>Threat Intelligence:</strong> Understand which techniques specific APT groups use</li>
+<li><strong>Detection Development:</strong> Build security rules to detect specific techniques</li>
+<li><strong>Gap Analysis:</strong> Identify which techniques you CAN'T detect yet</li>
+<li><strong>Purple Teaming:</strong> Red team uses techniques, blue team tests detection</li>
+<li><strong>Incident Response:</strong> Map observed behaviors to known techniques</li>
+<li><strong>Security Planning:</strong> Prioritize investments based on common techniques</li>
+</ol>
+<div class="example-box">
+<strong>Real-World Example: Detecting Lateral Movement</strong><br/>
+                Your SIEM alerts: "Unusual PsExec usage detected."<br/>
+                You look up ATT&amp;CK T1570 (Lateral Tool Transfer) and T1021.002 (Remote Services: SMB/Windows Admin Shares).<br/>
+                ATT&amp;CK tells you: This is common for lateral movement. Check: (1) Is this admin account supposed to be using PsExec? (2) What systems is it accessing? (3) What processes is it launching?<br/>
+                ATT&amp;CK provides detection logic and investigation steps.
+            </div>
+</div>
+</div>
+<!-- OSINT SECTION -->
+<div class="content-section" id="osint">
+<div class="section-title">🔎 Open-Source Intelligence (OSINT)</div>
+<div class="section-subtitle">Publicly Available Information &amp; Its Security Implications</div>
+<div class="definition-box">
+<strong>OSINT Definition:</strong> Intelligence gathering using PUBLICLY AVAILABLE information from web searches, social media, documents, registries, and other non-classified sources. Anyone can access this information—both attackers AND defenders use OSINT.
+            </div>
+<h2>Key OSINT Sources</h2>
+<h3>1. Social Media (LinkedIn, Twitter/X, Facebook, Instagram)</h3>
+<ul>
+<li><strong>LinkedIn:</strong>
+<ul>
+<li>Employee names, positions, roles</li>
+<li>Company organizational structure (who reports to whom)</li>
+<li>Technologies used ("Experienced in VMware, Cisco, Palo Alto firewalls")</li>
+<li>Company growth patterns and hiring</li>
+<li>Professional connections revealing business relationships</li>
+</ul>
+</li>
+<li><strong>Twitter/X:</strong>
+<ul>
+<li>Company announcements about new products/services</li>
+<li>Operational updates and infrastructure changes</li>
+<li>Partnerships and integrations</li>
+<li>Employee discussions about internal systems</li>
+</ul>
+</li>
+<li><strong>Facebook:</strong>
+<ul>
+<li>Employee personal information (hobbies, locations, family)</li>
+<li>Company events and gatherings</li>
+<li>Office location details</li>
+</ul>
+</li>
+<li><strong>Instagram:</strong>
+<ul>
+<li>Office photos revealing locations and security measures</li>
+<li>Employee information and relationships</li>
+<li>Equipment and infrastructure visible in photos</li>
+</ul>
+</li>
+</ul>
+<p><strong>Attacker Value:</strong> Use personal details for targeted phishing. Social engineering of employees. Identification of key personnel to target. Understanding company operations and security practices.</p>
+<div class="example-box">
+<strong>Real-World Example: Badge Visible in Photo</strong><br/>
+                Security researcher finds Instagram photo of employee celebrating birthday in office. Photo shows employee badge clearly. Badge has name, photo, AND employee ID barcode visible. Attacker could: (1) Photoshop this into fake badge, (2) Use employee ID for social engineering ("Hi, I'm employee #12847, I need help with..."), (3) Target that specific person with spear-phishing.
+            </div>
+<h3>2. HTML Code &amp; Website Content</h3>
+<p>Organizations often leave sensitive information embedded in website HTML:</p>
+<ul>
+<li><strong>HTML Comments:</strong>
+<ul>
+<li>"TEMPORARY FIX - DO NOT COMMIT TO PRODUCTION"</li>
+<li>Admin panel location or URLs</li>
+<li>API endpoints and authentication mechanisms</li>
+<li>Debugging information and error messages</li>
+</ul>
+</li>
+<li><strong>JavaScript Files:</strong>
+<ul>
+<li>API keys and credentials (common developer mistake)</li>
+<li>Backend server URLs</li>
+<li>Authentication tokens</li>
+<li>System information</li>
+</ul>
+</li>
+<li><strong>Other Code Elements:</strong>
+<ul>
+<li>IP addresses and server names</li>
+<li>Server software versions and configurations</li>
+<li>File paths revealing system structure</li>
+<li>Development practices and security awareness level</li>
+</ul>
+</li>
+</ul>
+<p><strong>Extraction Method:</strong> Right-click → Inspect Element in web browser. Automated web scrapers can extract at scale.</p>
+<h3>3. Document Metadata</h3>
+<p>Documents posted publicly (PDFs, Word docs, Excel files) contain embedded metadata:</p>
+<ul>
+<li><strong>What's Revealed:</strong>
+<ul>
+<li>Author name and email address</li>
+<li>Company name</li>
+<li>Creation and modification dates</li>
+<li>List of users who edited document</li>
+<li>Software versions used (Microsoft Office 2019, Adobe Acrobat X, etc.)</li>
+<li>Internal file paths and server names</li>
+<li>Computer hostnames</li>
+<li>Organizational structure hints</li>
+</ul>
+</li>
+<li><strong>Extraction Tool:</strong> <strong>FOCA</strong> (Fingerprinting Organizations with Collected Archives) - automatically finds and downloads public documents from organization websites, then extracts and analyzes metadata</li>
+</ul>
+<div class="example-box">
+<strong>Real Example: NATO Documents</strong><br/>
+                In 2009, researcher used metadata extraction on publicly posted NATO documents. Found: (1) Internal server paths like "\\NATOserver\classified\", (2) Employee names and email addresses, (3) Software versions revealing unpatched systems, (4) Timeline of when documents were created showing operational patterns.
+            </div>
+<h3>4. Public Registries &amp; Databases</h3>
+<ul>
+<li><strong>WHOIS Records:</strong> Domain ownership information (can identify company/person who registered domain)</li>
+<li><strong>DNS Records:</strong> Mail servers (MX records), name servers, subdomains, DNS history</li>
+<li><strong>IP Address Ranges:</strong> Public IP blocks assigned to organizations, ASN (Autonomous System Number) info</li>
+<li><strong>SEC Filings:</strong> For public companies—detailed financial and operational disclosures</li>
+<li><strong>Business Registrations:</strong> State business registries, corporate filings</li>
+<li><strong>Real Estate Records:</strong> Office locations, facilities information</li>
+</ul>
+<h2>Defensive OSINT</h2>
+<p>Organizations should conduct the SAME reconnaissance attackers do, then FIX the exposures:</p>
+<h3>Step 1: Google Your Organization</h3>
+<ul>
+<li>Search organization name + "credentials", "password", "API key", "secret"</li>
+<li>Check Google caches and archived versions of pages</li>
+<li>Look for accidentally committed code on GitHub</li>
+</ul>
+<h3>Step 2: Review Employee Profiles</h3>
+<ul>
+<li>Search employees on LinkedIn, social media</li>
+<li>What company information are they revealing?</li>
+<li>Are they posting about projects and technologies?</li>
+</ul>
+<h3>Step 3: Extract Website Metadata</h3>
+<ul>
+<li>Run FOCA on your website to see what metadata is exposed</li>
+<li>Remove sensitive information before posting documents</li>
+<li>Scrub metadata from all public documents</li>
+</ul>
+<h3>Step 4: Scan Your IP Addresses</h3>
+<ul>
+<li>Use Shodan (shodan.io) to see what services/ports are publicly visible</li>
+<li>Are you exposing services that should be internal?</li>
+<li>Are default credentials still active on public-facing systems?</li>
+</ul>
+<h3>Step 5: Check Dark Web &amp; Leak Databases</h3>
+<ul>
+<li>Monitor dark web for mentions of your organization</li>
+<li>Check if employee credentials appear in breach databases</li>
+<li>Use Have I Been Pwned to check for employee accounts in breaches</li>
+</ul>
+</div>
+<!-- THREAT INTELLIGENCE SECTION -->
+<div class="content-section" id="threat-intel">
+<div class="section-title">📊 Threat Intelligence &amp; Information Sharing</div>
+<div class="section-subtitle">Sources, Quality Metrics, and Collaborative Defense</div>
+<h2>Open-Source vs. Proprietary Intelligence</h2>
+<h3>Open-Source Intelligence (Free)</h3>
+<ul>
+<li><strong>Public Repositories:</strong> WHOIS, DNS records, IP registries, routing information</li>
+<li><strong>Government Bulletins:</strong> CISA (Cybersecurity &amp; Infrastructure Security Agency), NSA cybersecurity advisories, DHS alerts</li>
+<li><strong>Vulnerability Databases:</strong> NVD (National Vulnerability Database), CVSS scores, patch information</li>
+<li><strong>Security Blogs &amp; Research:</strong> Mandiant reports, SANS research, conference talks, academic papers</li>
+<li><strong>Forum Discussions:</strong> Threat actor chatter on forums, Reddit, GitHub</li>
+<li><strong>Automated Feeds:</strong> Abuse.ch, AlienVault OTX, Emerging Threats</li>
+</ul>
+<h3>Proprietary/Closed-Source Intelligence (Paid)</h3>
+<ul>
+<li><strong>Commercial Threat Intelligence Platforms:</strong> Recorded Future, ThreatConnect, Anomali, CrowdStrike Falcon Intelligence</li>
+<li><strong>What You're Paying For:</strong>
+<ul>
+<li>Earlier access to threat intel (timeliness)</li>
+<li>Higher confidence ratings (quality validation)</li>
+<li>Curated and analyzed data (not just raw feeds)</li>
+<li>Industry-specific intelligence tailored to your sector</li>
+<li>Attribution (who's behind attacks)</li>
+<li>Proprietary research and investigations</li>
+<li>Integration with your security tools</li>
+<li>24/7 analyst support</li>
+</ul>
+</li>
+</ul>
+<h2>Intelligence Quality Metrics</h2>
+<div class="definition-box">
+<strong>Not All Intelligence is Equal:</strong> Threat intelligence must be evaluated for quality before acting on it. Low-quality intel wastes time and resources. High-quality intel prevents breaches.
+            </div>
+<h3>Admiralty Code (Confidence Rating)</h3>
+<p>A standard system for rating source reliability and information credibility:</p>
+<p><strong>Source Reliability (A-F):</strong></p>
+<ul>
+<li><strong>A:</strong> Completely reliable (e.g., government agency, trusted vendor)</li>
+<li><strong>B:</strong> Usually reliable (e.g., established security researcher)</li>
+<li><strong>C:</strong> Fairly reliable (e.g., known forum member)</li>
+<li><strong>D:</strong> Not usually reliable (e.g., anonymous tip)</li>
+<li><strong>E:</strong> Unreliable (e.g., unverified social media post)</li>
+<li><strong>F:</strong> Reliability cannot be judged</li>
+</ul>
+<p><strong>Information Credibility (1-6):</strong></p>
+<ul>
+<li><strong>1:</strong> Confirmed by other sources (corroborated)</li>
+<li><strong>2:</strong> Probably true (logical and consistent)</li>
+<li><strong>3:</strong> Possibly true (somewhat consistent)</li>
+<li><strong>4:</strong> Doubtful (questionable)</li>
+<li><strong>5:</strong> Improbable (unlikely)</li>
+<li><strong>6:</strong> Truth cannot be judged</li>
+</ul>
+<p><strong>Example Rating: B2</strong> = Usually reliable source + Probably true information</p>
+<h3>Timeliness</h3>
+<p>Threat intelligence value decreases over time:</p>
+<ul>
+<li><strong>Real-Time:</strong> Attacks happening NOW (highest value)</li>
+<li><strong>Near Real-Time:</strong> Hours old (very high value)</li>
+<li><strong>Recent:</strong> Days old (moderate value)</li>
+<li><strong>Historical:</strong> Weeks/months old (low tactical value, but strategic value for trends)</li>
+</ul>
+<div class="example-box">
+<strong>Timeliness Example:</strong><br/>
+                You receive intel that IP address 203.0.113.45 is being used in active phishing campaigns targeting financial institutions.<br/><br/>
+<strong>If received 1 hour ago:</strong> BLOCK IT NOW. Attacks are likely ongoing.<br/>
+<strong>If received 1 week ago:</strong> Probably too late - attackers have likely moved to different infrastructure. Still worth checking logs to see if you were targeted.<br/>
+<strong>If received 6 months ago:</strong> Historical record only. Don't waste resources blocking it now.
+            </div>
+<h3>Relevance</h3>
+<p>Intelligence must be applicable to YOUR environment:</p>
+<ul>
+<li><strong>Industry-Specific:</strong> Healthcare threats ≠ Manufacturing threats</li>
+<li><strong>Technology-Specific:</strong> Windows exploits don't affect Linux-only shops</li>
+<li><strong>Geography-Specific:</strong> Some threats target specific regions</li>
+<li><strong>Size-Specific:</strong> APTs target large organizations, not SMBs</li>
+</ul>
+<h3>Actionability</h3>
+<p>Intelligence must provide specific information you can ACT on:</p>
+<ul>
+<li><strong>Actionable:</strong> "Block IP 203.0.113.45" (specific action)</li>
+<li><strong>Actionable:</strong> "Patch CVE-2023-12345 immediately" (specific vulnerability)</li>
+<li><strong>Not Actionable:</strong> "APT groups are targeting your industry" (too vague)</li>
+<li><strong>Not Actionable:</strong> "Phishing attacks are increasing" (no specific action)</li>
+</ul>
+<h2>Threat Intelligence Sharing</h2>
+<h3>Why Sharing Matters</h3>
+<div class="highlight-box">
+<strong>Core Principle:</strong> If Company A gets breached and doesn't share details, Company B will likely face the SAME attack. Sharing intelligence creates collective defense.
+            </div>
+<p><strong>Benefits of Sharing:</strong></p>
+<ul>
+<li>Earlier warning of emerging threats</li>
+<li>Learn from others' incidents without being compromised yourself</li>
+<li>Identify attack patterns and campaigns targeting your industry</li>
+<li>Contribute to community defense</li>
+<li>Access to intelligence you couldn't generate alone</li>
+</ul>
+<h3>Sharing Mechanisms</h3>
+<ul>
+<li><strong>ISACs:</strong> Information Sharing and Analysis Centers (sector-specific) - covered in next section</li>
+<li><strong>TLP (Traffic Light Protocol):</strong> Standard for marking sensitivity of shared intelligence
+                    <ul>
+<li><strong>TLP:RED:</strong> Recipients only, no sharing</li>
+<li><strong>TLP:AMBER:</strong> Limited sharing within organization</li>
+<li><strong>TLP:GREEN:</strong> Community sharing allowed</li>
+<li><strong>TLP:WHITE:</strong> Public, unlimited distribution</li>
+</ul>
+</li>
+<li><strong>STIX/TAXII:</strong> Structured formats for sharing cyber threat intelligence
+                    <ul>
+<li><strong>STIX:</strong> Structured Threat Information eXpression (data format)</li>
+<li><strong>TAXII:</strong> Trusted Automated eXchange of Intelligence Information (transport protocol)</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- ISACs SECTION -->
+<div class="content-section" id="isacs">
+<div class="section-title">🤝 ISACs &amp; Critical Infrastructure</div>
+<div class="section-subtitle">Information Sharing &amp; Analysis Centers</div>
+<div class="definition-box">
+<strong>ISAC Definition:</strong> Information Sharing and Analysis Centers are public-private partnerships that facilitate the sharing of threat information and best practices between government and private sector organizations within specific critical infrastructure sectors.
+            </div>
+<h2>What ISACs Do</h2>
+<ul>
+<li><strong>Collect Threat Intelligence:</strong> Gather threat data from members and government sources</li>
+<li><strong>Analyze Threats:</strong> Identify patterns, campaigns, and sector-specific threats</li>
+<li><strong>Share Intelligence:</strong> Distribute actionable intelligence to member organizations</li>
+<li><strong>Facilitate Communication:</strong> Provide secure channels for peer-to-peer sharing</li>
+<li><strong>Coordinate Response:</strong> Help organizations respond to sector-wide threats</li>
+<li><strong>Provide Guidance:</strong> Publish best practices and security recommendations</li>
+</ul>
+<h2>Major ISACs by Sector</h2>
+<div class="example-box">
+<strong>16 Critical Infrastructure Sectors (Presidential Directive 21):</strong><br/>
+                Each sector has corresponding ISAC or information sharing organization:
+            </div>
+<ul>
+<li><strong>FS-ISAC:</strong> Financial Services (banks, credit unions, payment processors)</li>
+<li><strong>H-ISAC:</strong> Healthcare and Public Health</li>
+<li><strong>E-ISAC:</strong> Energy (electricity, oil &amp; gas)</li>
+<li><strong>WaterISAC:</strong> Water and Wastewater systems</li>
+<li><strong>IT-ISAC:</strong> Information Technology sector</li>
+<li><strong>MS-ISAC:</strong> Multi-State (state, local, tribal, territorial government)</li>
+<li><strong>DSAC:</strong> Defense (defense industrial base)</li>
+<li><strong>A-ISAC:</strong> Aviation (airlines, airports)</li>
+<li><strong>Auto-ISAC:</strong> Automotive</li>
+<li><strong>Others:</strong> Communications, Transportation, Manufacturing, Chemical, Commercial Facilities, Dams, Nuclear, Emergency Services</li>
+</ul>
+<h2>How ISACs Work</h2>
+<h3>Membership Model</h3>
+<ul>
+<li>Organizations join their sector's ISAC (usually paid membership)</li>
+<li>Members agree to share threat intelligence with the ISAC</li>
+<li>ISAC aggregates, anonymizes, and analyzes data</li>
+<li>ISAC distributes intelligence back to all members</li>
+<li>Government agencies (FBI, CISA, DHS) also contribute intelligence</li>
+</ul>
+<h3>Trust &amp; Anonymity</h3>
+<ul>
+<li><strong>Trusted Environment:</strong> Members know who else is in the ISAC (vetted membership)</li>
+<li><strong>Anonymized Sharing:</strong> When Hospital A reports ransomware, ISAC shares "A healthcare organization was hit by ransomware" - not "Hospital A specifically"</li>
+<li><strong>Legal Protections:</strong> Certain legal protections for sharing cyber threat information</li>
+</ul>
+<h3>Communication Channels</h3>
+<ul>
+<li><strong>Alerts &amp; Advisories:</strong> Urgent threat notifications</li>
+<li><strong>Indicators:</strong> IOCs (IP addresses, file hashes, domains)</li>
+<li><strong>Intelligence Reports:</strong> Detailed analysis of campaigns and TTPs</li>
+<li><strong>Member Portal:</strong> Secure website for accessing intelligence</li>
+<li><strong>Email Lists:</strong> Rapid dissemination of critical alerts</li>
+<li><strong>Conferences &amp; Meetings:</strong> In-person collaboration and networking</li>
+</ul>
+<div class="example-box">
+<strong>Real-World Example: WannaCry (2017)</strong><br/>
+                H-ISAC (Healthcare ISAC) received early warnings about WannaCry ransomware from UK hospitals. They immediately alerted US healthcare members BEFORE WannaCry hit the US. Some hospitals had time to patch or disconnect vulnerable systems. Those who acted on H-ISAC intelligence avoided infections. Those who didn't were hit hard.
+            </div>
+<h2>ISAC Success Factors</h2>
+<p><strong>What Makes ISACs Effective:</strong></p>
+<ul>
+<li><strong>Sector Relevance:</strong> Intelligence is specific to your industry's threats and technologies</li>
+<li><strong>Timeliness:</strong> Real-time or near-real-time threat sharing</li>
+<li><strong>Two-Way Sharing:</strong> Members both RECEIVE and CONTRIBUTE intelligence</li>
+<li><strong>Trust:</strong> Vetted membership creates confidence in shared information</li>
+<li><strong>Government Participation:</strong> Access to classified or sensitive government threat intelligence</li>
+<li><strong>Actionability:</strong> Provides specific IOCs and mitigation guidance</li>
+</ul>
+<h2>Challenges &amp; Limitations</h2>
+<ul>
+<li><strong>Membership Costs:</strong> Not all organizations can afford to join</li>
+<li><strong>Participation Varies:</strong> Some members share actively, others only consume</li>
+<li><strong>Trust Issues:</strong> Some organizations still reluctant to share breach details</li>
+<li><strong>Information Overload:</strong> Too many alerts can cause fatigue</li>
+<li><strong>Speed vs Accuracy:</strong> Tension between fast sharing and verified intelligence</li>
+</ul>
+<h2>Government Role: CISA</h2>
+<div class="definition-box">
+<strong>CISA (Cybersecurity &amp; Infrastructure Security Agency):</strong> Federal agency responsible for protecting U.S. critical infrastructure. Acts as a central hub connecting all ISACs and facilitating public-private information sharing.
+            </div>
+<p><strong>CISA Functions:</strong></p>
+<ul>
+<li>Coordinates information sharing across all 16 critical infrastructure sectors</li>
+<li>Provides threat intelligence to ISACs and private sector</li>
+<li>Issues urgent cyber security alerts and advisories</li>
+<li>Operates National Cybersecurity and Communications Integration Center (NCCIC)</li>
+<li>Responds to major cyber incidents affecting critical infrastructure</li>
+<li>Offers free vulnerability scanning and assessment services</li>
+</ul>
+<div class="highlight-box">
+<strong>🎯 Key Takeaway:</strong> ISACs enable trusted, sector-specific threat intelligence sharing. They solve the problem of "I don't want to publicly admit I was breached, but I want to warn others." By joining ISACs, organizations contribute to and benefit from collective defense.
+            </div>
+</div>
+<!-- THREAT HUNTING SECTION -->
+<div class="content-section" id="threat-hunting">
+<div class="section-title">🎯 Threat Hunting</div>
+<div class="section-subtitle">Proactive Threat Detection &amp; Analysis</div>
+<div class="definition-box">
+<strong>Threat Hunting:</strong> The systematic, manual, and proactive process of searching for threats that may have evaded automated detection systems. Based on "assume breach" mentality - assume attackers are ALREADY in your network, and your job is to find them quickly.
+            </div>
+<h2>Why Threat Hunting is Necessary</h2>
+<div class="highlight-box">
+<strong>The Problem:</strong> Automated security tools (SIEM, IDS, antivirus) are NOT perfect. They miss threats. Average dwell time = 200+ days. If you wait for alerts, attackers are already inside for months.
+            </div>
+<ul>
+<li><strong>Advanced Threats Evade Detection:</strong> APTs use custom malware, living-off-the-land techniques, zero-days</li>
+<li><strong>Alert Fatigue:</strong> Security teams get thousands of alerts daily - can't investigate all of them</li>
+<li><strong>Unknown Unknowns:</strong> You can't create detection rules for threats you don't know exist</li>
+<li><strong>Business Impact:</strong> The longer attackers dwell, the more damage they cause</li>
+</ul>
+<h2>The Threat Hunting Process</h2>
+<h3>Step 1: Create a Hypothesis</h3>
+<p>Start with an educated guess about what threats MIGHT be present:</p>
+<p><strong>Example Hypotheses:</strong></p>
+<ul>
+<li>"Attackers might be using PowerShell for lateral movement because we've seen this TTP in recent APT campaigns"</li>
+<li>"There might be unauthorized RDP connections from unusual source IPs"</li>
+<li>"Attackers might have established persistence through scheduled tasks"</li>
+<li>"There might be data exfiltration happening during non-business hours"</li>
+</ul>
+<h3>Step 2: Collect Data</h3>
+<p>Gather relevant data sources to investigate the hypothesis:</p>
+<ul>
+<li><strong>Network Logs:</strong> Firewall logs, proxy logs, NetFlow data</li>
+<li><strong>Endpoint Logs:</strong> Process execution, file creation, registry changes</li>
+<li><strong>Authentication Logs:</strong> Login attempts, privilege escalation, account usage</li>
+<li><strong>DNS Logs:</strong> Domain queries, suspicious TLDs, DGA patterns</li>
+<li><strong>Application Logs:</strong> Database access, API calls, user actions</li>
+</ul>
+<h3>Step 3: Analyze Data</h3>
+<p>Look for patterns, anomalies, and indicators supporting or refuting the hypothesis:</p>
+<ul>
+<li><strong>Statistical Analysis:</strong> Baseline normal behavior, detect deviations</li>
+<li><strong>Pattern Recognition:</strong> Identify suspicious sequences of events</li>
+<li><strong>Timeline Analysis:</strong> Reconstruct attacker actions chronologically</li>
+<li><strong>Correlation:</strong> Connect related events across multiple data sources</li>
+</ul>
+<div class="example-box">
+<strong>Example Hunt: PowerShell Lateral Movement</strong><br/><br/>
+<strong>Hypothesis:</strong> "Attackers might be using PowerShell remoting for lateral movement."<br/><br/>
+<strong>Data Collection:</strong> Query endpoint logs for PowerShell execution with network connections<br/><br/>
+<strong>Analysis Findings:</strong><br/>
+                • Account "admin_john" executed PowerShell on 47 different systems in 2 hours<br/>
+                • All executions happened at 2 AM (outside business hours)<br/>
+                • PowerShell commands included "Invoke-Mimikatz" (credential dumping tool)<br/>
+                • Same commands executed on all 47 systems (scripted/automated)<br/><br/>
+<strong>Conclusion:</strong> This is NOT normal admin activity. This is lateral movement by an attacker using compromised admin account.
+            </div>
+<h3>Step 4: Investigate Findings</h3>
+<p>If anomalies are found, investigate further:</p>
+<ul>
+<li>Is this malicious activity or legitimate business operation?</li>
+<li>What is the scope of the compromise?</li>
+<li>How did the attacker gain initial access?</li>
+<li>What data has been accessed or exfiltrated?</li>
+<li>Are there other affected systems?</li>
+</ul>
+<h3>Step 5: Respond &amp; Remediate</h3>
+<p>If a threat is confirmed:</p>
+<ul>
+<li>Contain the threat (isolate affected systems)</li>
+<li>Eradicate the threat (remove malware, close backdoors)</li>
+<li>Recover (restore systems, verify clean state)</li>
+<li>Document findings for future reference</li>
+</ul>
+<h3>Step 6: Improve Defenses</h3>
+<p>Use findings to strengthen security:</p>
+<ul>
+<li>Create detection rules for similar threats</li>
+<li>Update threat intelligence</li>
+<li>Improve monitoring coverage</li>
+<li>Train other analysts on findings</li>
+</ul>
+<h2>Types of Threat Hunting</h2>
+<h3>1. Intelligence-Driven Hunting</h3>
+<p>Hunt based on external threat intelligence</p>
+<p><strong>Example:</strong> "CISA alert says APT28 is using CVE-2023-12345 against government contractors. We're a contractor. Let's hunt for exploitation of that CVE in our environment."</p>
+<h3>2. Hypothesis-Driven Hunting</h3>
+<p>Hunt based on suspected TTPs or attack scenarios</p>
+<p><strong>Example:</strong> "Attackers often use living-off-the-land techniques. Let's hunt for unusual use of legitimate admin tools like PsExec, WMI, or PowerShell."</p>
+<h3>3. Baseline Anomaly Hunting</h3>
+<p>Hunt for deviations from normal behavior patterns</p>
+<p><strong>Example:</strong> "Establish baseline: How much data typically leaves our network daily? Hunt for: Days with 10x normal data transfer (possible exfiltration)."</p>
+<h3>4. Custom-Detection Hunting</h3>
+<p>Hunt in areas where automated detection has gaps</p>
+<p><strong>Example:</strong> "Our SIEM doesn't monitor DNS queries well. Let's manually hunt for suspicious DNS patterns like DGA (domain generation algorithms) or DNS tunneling."</p>
+<h2>Skills Required for Threat Hunting</h2>
+<ul>
+<li><strong>Technical Skills:</strong> Understanding of networks, operating systems, attacker TTPs</li>
+<li><strong>Analytical Skills:</strong> Pattern recognition, statistical analysis, critical thinking</li>
+<li><strong>Tool Proficiency:</strong> SIEM, EDR, log analysis tools, scripting</li>
+<li><strong>Threat Intelligence:</strong> Understanding current threat landscape and adversary behavior</li>
+<li><strong>Communication:</strong> Document findings clearly for incident response teams</li>
+<li><strong>Patience &amp; Persistence:</strong> Many hunts find nothing - that's okay</li>
+</ul>
+<div class="highlight-box">
+<strong>🎯 Key Takeaway:</strong> Threat hunting is proactive security. It assumes attackers are already inside and systematically searches for them. It's human intelligence augmenting automated detection. Without hunting, advanced threats can dwell undetected for months.
+            </div>
+</div>
+<!-- IOC-IOA SECTION -->
+<div class="content-section" id="ioc-ioa">
+<div class="section-title">⚠️ Indicators of Compromise vs. Attack</div>
+<div class="section-subtitle">Identifying Past Breaches and Active Attacks</div>
+<h2>Indicators of Compromise (IoCs)</h2>
+<div class="definition-box">
+<strong>IoC Definition:</strong> Forensic artifacts that indicate a system has ALREADY been compromised. IoCs are evidence LEFT BEHIND after an attack. They're like fingerprints at a crime scene - they prove a crime happened.
+            </div>
+<h3>Common Types of IoCs</h3>
+<ul>
+<li><strong>File Hashes:</strong> MD5, SHA-1, SHA-256 of malicious files
+                    <ul>
+<li>Example: SHA-256: 9a3f7b2c... (known ransomware variant)</li>
+<li>Use: Search all systems for this exact file</li>
+</ul>
+</li>
+<li><strong>IP Addresses:</strong> Known malicious or Command &amp; Control (C2) servers
+                    <ul>
+<li>Example: 203.0.113.45 (APT28 C2 server)</li>
+<li>Use: Block in firewall, search logs for connections to this IP</li>
+</ul>
+</li>
+<li><strong>Domain Names:</strong> Malicious domains used for C2, phishing, or malware distribution
+                    <ul>
+<li>Example: evil-domain.com (phishing site)</li>
+<li>Use: Block in DNS, search DNS logs for queries</li>
+</ul>
+</li>
+<li><strong>URLs:</strong> Specific malicious web addresses
+                    <ul>
+<li>Example: http://malicious.com/payload.exe</li>
+<li>Use: Block in web proxy, search proxy logs</li>
+</ul>
+</li>
+<li><strong>Email Addresses:</strong> Sender addresses used in phishing campaigns
+                    <ul>
+<li>Example: <a class="__cf_email__" data-cfemail="02646369674272637b72636e2f71676177706b767b2c616d6f" href="/cdn-cgi/l/email-protection">[email protected]</a></li>
+<li>Use: Block in email gateway, search mailbox logs</li>
+</ul>
+</li>
+<li><strong>File Names:</strong> Specific malicious file names
+                    <ul>
+<li>Example: invoice_2023.pdf.exe (malware disguised as PDF)</li>
+<li>Use: Search file systems for this filename</li>
+</ul>
+</li>
+<li><strong>Registry Keys:</strong> Windows registry entries created by malware
+                    <ul>
+<li>Example: HKLM\Software\Malware\Config</li>
+<li>Use: Search Windows systems for this registry key</li>
+</ul>
+</li>
+<li><strong>Mutex Names:</strong> Unique identifiers malware uses to prevent multiple infections
+                    <ul>
+<li>Example: Global\MalwareMutex2023</li>
+<li>Use: Search running processes for this mutex</li>
+</ul>
+</li>
+</ul>
+<div class="example-box">
+<strong>IOC Usage Example:</strong><br/>
+                You receive threat intel: "Ransomware family XYZ is spreading. IOCs:<br/>
+                • File Hash: 9a3f7b2c5d8e...<br/>
+                • C2 IP: 203.0.113.45<br/>
+                • Mutex: Global\XYZMutex"<br/><br/>
+<strong>Your Actions:</strong><br/>
+                1. Search all systems for file with that hash (forensic hunting)<br/>
+                2. Block IP 203.0.113.45 in firewall (prevent C2 communication)<br/>
+                3. Search logs for past connections to that IP (see if you were targeted)<br/>
+                4. Check running processes for mutex (see if ransomware is running now)
+            </div>
+<h3>Limitations of IoCs</h3>
+<div class="important">
+<strong>⚠️ The IoC Problem:</strong> Attackers can change IOCs easily. New malware = new file hash. New C2 server = new IP address. IOCs become outdated quickly. They're useful for known threats but useless against NEW variants.
+            </div>
+<ul>
+<li><strong>Easy to Change:</strong> Attacker compiles malware again = different hash</li>
+<li><strong>Short Lifespan:</strong> Attackers rotate infrastructure (new IPs, domains) frequently</li>
+<li><strong>Reactive:</strong> You need to be breached first to get IOCs</li>
+<li><strong>Volume:</strong> Thousands of new IOCs daily - can't block them all</li>
+</ul>
+<h2>Indicators of Attack (IoAs)</h2>
+<div class="definition-box">
+<strong>IoA Definition:</strong> Behavioral patterns that indicate an attack is CURRENTLY IN PROGRESS. IoAs focus on WHAT attackers are DOING (tactics, techniques), not what specific tools they're using. IoAs are harder for attackers to change.
+            </div>
+<h3>Common IoAs (Behavioral Indicators)</h3>
+<ul>
+<li><strong>Credential Dumping Activity:</strong>
+<ul>
+<li>Accessing LSASS process memory (where Windows stores credentials)</li>
+<li>Unusual use of credential dumping tools (Mimikatz, ProcDump)</li>
+<li>Doesn't matter WHICH tool - behavior is "accessing protected credential storage"</li>
+</ul>
+</li>
+<li><strong>Lateral Movement Patterns:</strong>
+<ul>
+<li>Rapid connections from one system to many others</li>
+<li>Use of admin tools (PsExec, WMI) from non-admin workstations</li>
+<li>Behavior: "Spreading through network" regardless of specific tool</li>
+</ul>
+</li>
+<li><strong>Privilege Escalation Attempts:</strong>
+<ul>
+<li>Exploiting vulnerabilities to gain higher privileges</li>
+<li>Attempting to access restricted files/registries</li>
+<li>Unusual elevation requests</li>
+</ul>
+</li>
+<li><strong>Data Staging &amp; Exfiltration:</strong>
+<ul>
+<li>Large files being compressed (attacker preparing for exfiltration)</li>
+<li>Unusual outbound network traffic</li>
+<li>Data moving to staging directory before leaving network</li>
+</ul>
+</li>
+<li><strong>Command &amp; Control Communication:</strong>
+<ul>
+<li>Regular beaconing (periodic connections to external IP)</li>
+<li>Unusual DNS queries</li>
+<li>Encrypted traffic to suspicious destinations</li>
+</ul>
+</li>
+<li><strong>Living off the Land:</strong>
+<ul>
+<li>Unusual use of PowerShell, WMI, or other legitimate tools</li>
+<li>Scripts executing from unusual locations (Temp folder)</li>
+<li>System tools doing things they normally don't do</li>
+</ul>
+</li>
+</ul>
+<div class="example-box">
+<strong>IOA Detection Example:</strong><br/><br/>
+<strong>Scenario:</strong> Your EDR detects:<br/>
+                • PowerShell.exe accessing LSASS.exe process memory<br/>
+                • Running from user workstation (not IT admin system)<br/>
+                • At 3 AM (outside business hours)<br/>
+                • User account "john.smith" - but John is on vacation<br/><br/>
+<strong>This is an IOA for credential dumping:</strong><br/>
+                • Behavior: Accessing protected credential storage<br/>
+                • Context: Unusual time, unusual system, account compromise likely<br/>
+                • Action: RESPOND NOW - attack is in progress
+            </div>
+<h3>Why IoAs are More Valuable</h3>
+<ul>
+<li><strong>Harder to Evade:</strong> Attackers must perform certain actions to achieve goals</li>
+<li><strong>Detect New Threats:</strong> Find attacks never seen before based on behavior</li>
+<li><strong>Earlier Detection:</strong> Catch attacks IN PROGRESS, not after completion</li>
+<li><strong>Longer Lifespan:</strong> Attack behaviors change slower than specific tools</li>
+<li><strong>Proactive:</strong> Prevent damage before it's done</li>
+</ul>
+<h2>IOC vs IOA: Side-by-Side Comparison</h2>
+<table>
+<tr>
+<th>Aspect</th>
+<th>IOC (Indicator of Compromise)</th>
+<th>IOA (Indicator of Attack)</th>
+</tr>
+<tr>
+<td><strong>What it detects</strong></td>
+<td>Evidence of PAST compromise</td>
+<td>ACTIVE attack in progress</td>
+</tr>
+<tr>
+<td><strong>Focus</strong></td>
+<td>Specific artifacts (files, IPs)</td>
+<td>Behaviors and patterns</td>
+</tr>
+<tr>
+<td><strong>Examples</strong></td>
+<td>File hash, IP address, domain</td>
+<td>Credential dumping, lateral movement</td>
+</tr>
+<tr>
+<td><strong>Lifespan</strong></td>
+<td>Short (attackers change tools)</td>
+<td>Longer (behaviors harder to change)</td>
+</tr>
+<tr>
+<td><strong>When useful</strong></td>
+<td>Forensics, hunting known threats</td>
+<td>Real-time detection, prevention</td>
+</tr>
+<tr>
+<td><strong>Evasion difficulty</strong></td>
+<td>Easy (change hash, IP)</td>
+<td>Hard (must achieve objective somehow)</td>
+</tr>
+<tr>
+<td><strong>Response urgency</strong></td>
+<td>Investigate (damage may be done)</td>
+<td>RESPOND NOW (attack ongoing)</td>
+</tr>
+</table>
+<h2>Practical Application: Using IOCs and IOAs Together</h2>
+<div class="highlight-box">
+<strong>🎯 Key Takeaway:</strong> IOCs are specific artifacts indicating past compromise. IOAs are behavioral patterns indicating active attacks. IOCs are reactive and short-lived. IOAs are proactive and durable. Both are valuable - use them together for comprehensive threat detection.
+            </div>
+</div>
+<!-- HONEYPOTS SECTION -->
+<div class="content-section" id="honeypots">
+<div class="section-title">🍯 Honeypots &amp; Active Defense</div>
+<div class="section-subtitle">Decoys, Deception, and Threat Intelligence Collection</div>
+<div class="definition-box">
+<strong>Honeypot:</strong> A decoy system designed to look like a real system but is actually isolated and monitored. Attracts attackers while protecting real assets and collecting intelligence on their methods.
+            </div>
+<h2>How Honeypots Work</h2>
+<h3>The Key Principle: Zero Legitimate Traffic</h3>
+<div class="highlight-box">
+<strong>Critical Concept:</strong> Honeypots have NO legitimate business purpose. No real users. No real services. No real data. Therefore, ANY activity is automatically suspicious. If someone connects to a honeypot, they're either: (1) Attacker, (2) Automated scanner, or (3) Someone who shouldn't be there.
+            </div>
+<p><strong>This makes detection incredibly clear:</strong></p>
+<ul>
+<li>Production system: 10,000 connections/day - which are malicious? (Hard to tell)</li>
+<li>Honeypot: 1 connection/day - is it malicious? (YES, definitely)</li>
+</ul>
+<h3>What Honeypots Look Like</h3>
+<p>Honeypots are designed to appear as legitimate, valuable targets:</p>
+<ul>
+<li><strong>Servers:</strong> Fake web servers, database servers, file servers</li>
+<li><strong>Workstations:</strong> Fake employee computers with tempting filenames</li>
+<li><strong>Network Devices:</strong> Fake routers, switches, IoT devices</li>
+<li><strong>Services:</strong> SSH, RDP, HTTP, FTP, SMB - all fake but responding</li>
+<li><strong>Credentials:</strong> Fake usernames/passwords deliberately easy to find</li>
+<li><strong>Data:</strong> Fake documents with names like "Customer_Credit_Cards.xlsx" or "Executive_Salaries.pdf"</li>
+</ul>
+<h2>Types of Honeypots</h2>
+<h3>By Level of Interaction</h3>
+<ul>
+<li><strong>Low-Interaction Honeypots:</strong>
+<ul>
+<li>Simulate services (e.g., fake SSH server responds to login attempts but doesn't actually run SSH)</li>
+<li>Limited attacker interaction - just enough to log the attempt</li>
+<li>Safer (attacker can't do much)</li>
+<li>Less intelligence gathered</li>
+<li>Examples: Honeyd, Artillery</li>
+</ul>
+</li>
+<li><strong>High-Interaction Honeypots:</strong>
+<ul>
+<li>Real systems, real services (e.g., actual Windows Server running actual applications)</li>
+<li>Attacker can fully compromise and interact with system</li>
+<li>More dangerous (must be carefully isolated)</li>
+<li>Much better intelligence (see EXACTLY what attackers do)</li>
+<li>Examples: Full VM or bare-metal systems</li>
+</ul>
+</li>
+</ul>
+<h3>By Scope &amp; Purpose</h3>
+<ul>
+<li><strong>Production Honeypots:</strong>
+<ul>
+<li>Deployed WITHIN your production network</li>
+<li>Purpose: Detect attackers who've breached perimeter</li>
+<li>Example: Fake file server on internal network - any connection = internal breach</li>
+</ul>
+</li>
+<li><strong>Research Honeypots:</strong>
+<ul>
+<li>Deployed specifically to gather intelligence</li>
+<li>Purpose: Study attacker behaviors, collect malware samples, understand TTPs</li>
+<li>Example: Universities, security companies run these to research threats</li>
+</ul>
+</li>
+</ul>
+<h2>What You Learn from Honeypots</h2>
+<ul>
+<li><strong>Attack Methods:</strong> How attackers probe, exploit, and compromise systems</li>
+<li><strong>New Malware:</strong> Capture malware samples that haven't been seen elsewhere</li>
+<li><strong>Attacker TTPs:</strong> Observe real-world tactics, techniques, procedures</li>
+<li><strong>Zero-Days:</strong> Discover exploitation of unknown vulnerabilities</li>
+<li><strong>Credentials Used:</strong> What username/password combinations attackers try</li>
+<li><strong>Automation vs Human:</strong> Distinguish automated scanning from targeted attacks</li>
+<li><strong>Dwell Time:</strong> How long attackers stay in compromised systems</li>
+<li><strong>Exfiltration Patterns:</strong> What data they look for and how they steal it</li>
+</ul>
+<div class="example-box">
+<strong>Real-World Example: Operation SMB Honeypot</strong><br/>
+                Security researcher deployed honeypots simulating Windows file shares (SMB) on the internet. Within hours, automated attacks began:<br/>
+                • Attempted to access "Admin$" share (administrative share)<br/>
+                • Tried default credentials (admin/admin, administrator/password)<br/>
+                • Attempted to upload ransomware once access gained<br/>
+                • Tried lateral movement to other IPs<br/><br/>
+<strong>Intelligence Gained:</strong><br/>
+                • Most attacks fully automated (bots, not humans)<br/>
+                • Ransomware spreading via SMB vulnerabilities<br/>
+                • Attackers didn't differentiate honeypot from real systems<br/>
+                • Malware samples collected for analysis
+            </div>
+<h2>Honeynet</h2>
+<div class="definition-box">
+<strong>Honeynet:</strong> A network of multiple honeypots working together. Creates a more realistic environment - multiple systems, domains, services. Attackers see what looks like a complete infrastructure.
+            </div>
+<p><strong>Honeynet Components:</strong></p>
+<ul>
+<li>Fake domain controller</li>
+<li>Fake file servers</li>
+<li>Fake workstations</li>
+<li>Fake databases</li>
+<li>All interconnected to simulate real corporate network</li>
+</ul>
+<h2>Honeytokens &amp; Honeyfiles</h2>
+<div class="definition-box">
+<strong>Honeytoken:</strong> Fake credentials or data deliberately planted to detect unauthorized access. If these credentials are used, you know someone unauthorized found them.
+            </div>
+<p><strong>Examples:</strong></p>
+<ul>
+<li><strong>Fake Database Records:</strong> Insert fake credit card number into database - if it's used, database was breached</li>
+<li><strong>Fake Credentials:</strong> Create fake admin account - if it logs in, someone found stolen credentials</li>
+<li><strong>Canary Tokens:</strong> Special URLs that alert you when accessed (often used in documents)</li>
+<li><strong>Fake API Keys:</strong> Plant fake API keys in code - if used, code repository was compromised</li>
+</ul>
+<div class="definition-box">
+<strong>Honeyfile:</strong> Fake file with tempting name designed to attract attackers. File is monitored - any access triggers alert.
+            </div>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>"Executive_Salaries_2024.xlsx" - anyone opening this is snooping</li>
+<li>"Passwords_DO_NOT_SHARE.txt" - irresistible to attackers</li>
+<li>"Customer_SSN_List.csv" - highly sensitive-looking name</li>
+</ul>
+<h2>Legal &amp; Ethical Considerations</h2>
+<div class="important">
+<strong>⚠️ Important Warning:</strong> "Active defense" (hacking back, offensive actions against attackers) is ILLEGAL in most jurisdictions. Honeypots for DEFENSIVE purposes (detection, intelligence) are legal. Attacking back is NOT.
+            </div>
+<p><strong>Legal Guidelines:</strong></p>
+<ul>
+<li><strong>Allowed:</strong> Deploy honeypots to DETECT and STUDY attackers</li>
+<li><strong>Allowed:</strong> Log attacker activities, collect intelligence</li>
+<li><strong>Allowed:</strong> Share intelligence with law enforcement</li>
+<li><strong>NOT Allowed:</strong> Hack back against attackers</li>
+<li><strong>NOT Allowed:</strong> Delete attacker files on their systems</li>
+<li><strong>NOT Allowed:</strong> Launch DDoS against attacker infrastructure</li>
+<li><strong>Risk:</strong> If your honeypot is compromised and used to attack others, YOU could be liable</li>
+</ul>
+<h2>Limitations of Honeypots</h2>
+<ul>
+<li><strong>Only Catches Attackers Who Find Them:</strong> If attacker never touches honeypot, you don't detect them</li>
+<li><strong>Skilled Attackers May Recognize Them:</strong> Experienced attackers can sometimes identify honeypots</li>
+<li><strong>Resource Intensive:</strong> Must monitor and maintain honeypots continuously</li>
+<li><strong>False Sense of Security:</strong> Honeypot silence doesn't mean "no attackers" - just means "no attackers touched honeypot"</li>
+<li><strong>Legal Risks:</strong> If compromised honeypot attacks others, you could face liability</li>
+</ul>
+<div class="highlight-box">
+<strong>🎯 Key Takeaway:</strong> Honeypots are decoy systems with zero legitimate purpose - all activity is suspicious. They provide early warning of attackers, collect threat intelligence, and help understand attacker TTPs. Use for detection and intelligence, NOT as primary defense. Always isolate properly and understand legal boundaries.
+            </div>
+</div>
+<!-- ASSESSMENT SECTION -->
+<div class="content-section" id="comprehensive-quiz"><div class="section-title">📝 Comprehensive Knowledge Quiz</div><div class="section-subtitle">Test Your Understanding of Lesson 2</div><p><strong>Instructions: </strong>Answer all 20 questions below to test your mastery of Threat Intelligence and Threat Hunting concepts. Click "Submit Quiz" when complete to see your score.</p><div class="quiz-container" id="quiz"><div class="question"><div class="question-text">Question 1: Which threat actor type is primarily motivated by PROFIT through illegal means?</div><div class="option"><input id="q1_opt0" name="q1" type="radio" value="0"/><label for="q1_opt0">A) Nation-State Actors</label></div><div class="option"><input id="q1_opt1" name="q1" type="radio" value="1"/><label for="q1_opt1">B) Organized Crime</label></div><div class="option"><input id="q1_opt2" name="q1" type="radio" value="2"/><label for="q1_opt2">C) Hacktivists</label></div><div class="option"><input id="q1_opt3" name="q1" type="radio" value="3"/><label for="q1_opt3">D) Script Kiddies</label></div></div><div class="question"><div class="question-text">Question 2: What does APT stand for?</div><div class="option"><input id="q2_opt0" name="q2" type="radio" value="0"/><label for="q2_opt0">A) Advanced Persistent Threat</label></div><div class="option"><input id="q2_opt1" name="q2" type="radio" value="1"/><label for="q2_opt1">B) Automated Protection Technology</label></div><div class="option"><input id="q2_opt2" name="q2" type="radio" value="2"/><label for="q2_opt2">C) Active Prevention Tool</label></div><div class="option"><input id="q2_opt3" name="q2" type="radio" value="3"/><label for="q2_opt3">D) Advanced Phishing Technique</label></div></div><div class="question"><div class="question-text">Question 3: In the TTP hierarchy, what does "Tactics" refer to?</div><div class="option"><input id="q3_opt0" name="q3" type="radio" value="0"/><label for="q3_opt0">A) The specific tools attackers use</label></div><div class="option"><input id="q3_opt1" name="q3" type="radio" value="1"/><label for="q3_opt1">B) The adversary's technical goals (the "WHAT")</label></div><div class="option"><input id="q3_opt2" name="q3" type="radio" value="2"/><label for="q3_opt2">C) The step-by-step implementation details</label></div><div class="option"><input id="q3_opt3" name="q3" type="radio" value="3"/><label for="q3_opt3">D) The malware signatures used</label></div></div><div class="question"><div class="question-text">Question 4: What does OSINT stand for?</div><div class="option"><input id="q4_opt0" name="q4" type="radio" value="0"/><label for="q4_opt0">A) Operational Security Intelligence Network</label></div><div class="option"><input id="q4_opt1" name="q4" type="radio" value="1"/><label for="q4_opt1">B) Open-Source Intelligence</label></div><div class="option"><input id="q4_opt2" name="q4" type="radio" value="2"/><label for="q4_opt2">C) Offensive Security Integration Tool</label></div><div class="option"><input id="q4_opt3" name="q4" type="radio" value="3"/><label for="q4_opt3">D) Online Security Information Technology</label></div></div><div class="question"><div class="question-text">Question 5: What is the primary characteristic of threat hunting?</div><div class="option"><input id="q5_opt0" name="q5" type="radio" value="0"/><label for="q5_opt0">A) Waiting for security alerts and responding to them</label></div><div class="option"><input id="q5_opt1" name="q5" type="radio" value="1"/><label for="q5_opt1">B) Proactively searching for threats that evaded detection</label></div><div class="option"><input id="q5_opt2" name="q5" type="radio" value="2"/><label for="q5_opt2">C) Installing antivirus software on all systems</label></div><div class="option"><input id="q5_opt3" name="q5" type="radio" value="3"/><label for="q5_opt3">D) Blocking known malicious IP addresses</label></div></div><div class="question"><div class="question-text">Question 6: Which of the following BEST describes the difference between IOC and IOA?</div><div class="option"><input id="q6_opt0" name="q6" type="radio" value="0"/><label for="q6_opt0">A) IOCs are more valuable than IOAs</label></div><div class="option"><input id="q6_opt1" name="q6" type="radio" value="1"/><label for="q6_opt1">B) IOCs indicate PAST compromise; IOAs indicate ACTIVE attacks</label></div><div class="option"><input id="q6_opt2" name="q6" type="radio" value="2"/><label for="q6_opt2">C) IOCs are behavioral; IOAs are artifact-based</label></div><div class="option"><input id="q6_opt3" name="q6" type="radio" value="3"/><label for="q6_opt3">D) There is no difference</label></div></div><div class="question"><div class="question-text">Question 7: What is the primary purpose of a honeypot?</div><div class="option"><input id="q7_opt0" name="q7" type="radio" value="0"/><label for="q7_opt0">A) Store sensitive production data securely</label></div><div class="option"><input id="q7_opt1" name="q7" type="radio" value="1"/><label for="q7_opt1">B) Act as a decoy to attract attackers and collect intelligence</label></div><div class="option"><input id="q7_opt2" name="q7" type="radio" value="2"/><label for="q7_opt2">C) Provide backup storage for critical systems</label></div><div class="option"><input id="q7_opt3" name="q7" type="radio" value="3"/><label for="q7_opt3">D) Speed up network performance</label></div></div><div class="question"><div class="question-text">Question 8: What does ISAC stand for?</div><div class="option"><input id="q8_opt0" name="q8" type="radio" value="0"/><label for="q8_opt0">A) Internet Security Analysis Center</label></div><div class="option"><input id="q8_opt1" name="q8" type="radio" value="1"/><label for="q8_opt1">B) Information Sharing and Analysis Center</label></div><div class="option"><input id="q8_opt2" name="q8" type="radio" value="2"/><label for="q8_opt2">C) International Security Assessment Committee</label></div><div class="option"><input id="q8_opt3" name="q8" type="radio" value="3"/><label for="q8_opt3">D) Intrusion System Alert Coordination</label></div></div><div class="question"><div class="question-text">Question 9: Which component is MISSING if an attack uses publicly available tools but maintains access for 14 months?</div><div class="option"><input id="q9_opt0" name="q9" type="radio" value="0"/><label for="q9_opt0">A) Advanced - lacks sophisticated custom tools</label></div><div class="option"><input id="q9_opt1" name="q9" type="radio" value="1"/><label for="q9_opt1">B) Persistent - 14 months is too short</label></div><div class="option"><input id="q9_opt2" name="q9" type="radio" value="2"/><label for="q9_opt2">C) Threat - not targeting high-value organizations</label></div><div class="option"><input id="q9_opt3" name="q9" type="radio" value="3"/><label for="q9_opt3">D) All APT components are present</label></div></div><div class="question"><div class="question-text">Question 10: What is the MITRE ATT&amp;CK framework primarily used for?</div><div class="option"><input id="q10_opt0" name="q10" type="radio" value="0"/><label for="q10_opt0">A) Installing antivirus software</label></div><div class="option"><input id="q10_opt1" name="q10" type="radio" value="1"/><label for="q10_opt1">B) Cataloging adversary tactics and techniques</label></div><div class="option"><input id="q10_opt2" name="q10" type="radio" value="2"/><label for="q10_opt2">C) Encrypting sensitive data</label></div><div class="option"><input id="q10_opt3" name="q10" type="radio" value="3"/><label for="q10_opt3">D) Managing user passwords</label></div></div><div class="question"><div class="question-text">Question 11: Which is an example of defensive OSINT?</div><div class="option"><input id="q11_opt0" name="q11" type="radio" value="0"/><label for="q11_opt0">A) Deploying a firewall</label></div><div class="option"><input id="q11_opt1" name="q11" type="radio" value="1"/><label for="q11_opt1">B) Installing EDR software</label></div><div class="option"><input id="q11_opt2" name="q11" type="radio" value="2"/><label for="q11_opt2">C) Searching for your organization's exposed credentials online</label></div><div class="option"><input id="q11_opt3" name="q11" type="radio" value="3"/><label for="q11_opt3">D) Running antivirus scans</label></div></div><div class="question"><div class="question-text">Question 12: What does the Admiralty Code measure in threat intelligence?</div><div class="option"><input id="q12_opt0" name="q12" type="radio" value="0"/><label for="q12_opt0">A) Network bandwidth</label></div><div class="option"><input id="q12_opt1" name="q12" type="radio" value="1"/><label for="q12_opt1">B) Source reliability and information credibility</label></div><div class="option"><input id="q12_opt2" name="q12" type="radio" value="2"/><label for="q12_opt2">C) Malware severity</label></div><div class="option"><input id="q12_opt3" name="q12" type="radio" value="3"/><label for="q12_opt3">D) User access levels</label></div></div><div class="question"><div class="question-text">Question 13: What is the main value of joining an ISAC?</div><div class="option"><input id="q13_opt0" name="q13" type="radio" value="0"/><label for="q13_opt0">A) Free antivirus software</label></div><div class="option"><input id="q13_opt1" name="q13" type="radio" value="1"/><label for="q13_opt1">B) Early warning about threats affecting your sector</label></div><div class="option"><input id="q13_opt2" name="q13" type="radio" value="2"/><label for="q13_opt2">C) Discounted security tools</label></div><div class="option"><input id="q13_opt3" name="q13" type="radio" value="3"/><label for="q13_opt3">D) Automatic incident response</label></div></div><div class="question"><div class="question-text">Question 14: The first step in threat hunting is to:</div><div class="option"><input id="q14_opt0" name="q14" type="radio" value="0"/><label for="q14_opt0">A) Deploy new security tools</label></div><div class="option"><input id="q14_opt1" name="q14" type="radio" value="1"/><label for="q14_opt1">B) Create a hypothesis about potential threats</label></div><div class="option"><input id="q14_opt2" name="q14" type="radio" value="2"/><label for="q14_opt2">C) Wait for an alert</label></div><div class="option"><input id="q14_opt3" name="q14" type="radio" value="3"/><label for="q14_opt3">D) Hire more analysts</label></div></div><div class="question"><div class="question-text">Question 15: Which detection method is MORE durable over time?</div><div class="option"><input id="q15_opt0" name="q15" type="radio" value="0"/><label for="q15_opt0">A) File hash blocking (IOC)</label></div><div class="option"><input id="q15_opt1" name="q15" type="radio" value="1"/><label for="q15_opt1">B) IP address blocking (IOC)</label></div><div class="option"><input id="q15_opt2" name="q15" type="radio" value="2"/><label for="q15_opt2">C) Behavioral pattern detection (IOA)</label></div><div class="option"><input id="q15_opt3" name="q15" type="radio" value="3"/><label for="q15_opt3">D) Domain name blocking (IOC)</label></div></div><div class="question"><div class="question-text">Question 16: Why is honeypot detection capability so clear?</div><div class="option"><input id="q16_opt0" name="q16" type="radio" value="0"/><label for="q16_opt0">A) It uses advanced AI</label></div><div class="option"><input id="q16_opt1" name="q16" type="radio" value="1"/><label for="q16_opt1">B) It has zero legitimate traffic - ALL activity is suspicious</label></div><div class="option"><input id="q16_opt2" name="q16" type="radio" value="2"/><label for="q16_opt2">C) It scans faster than production systems</label></div><div class="option"><input id="q16_opt3" name="q16" type="radio" value="3"/><label for="q16_opt3">D) It costs less to operate</label></div></div><div class="question"><div class="question-text">Question 17: What does "living off the land" mean in APT attacks?</div><div class="option"><input id="q17_opt0" name="q17" type="radio" value="0"/><label for="q17_opt0">A) Attackers hiding in rural areas</label></div><div class="option"><input id="q17_opt1" name="q17" type="radio" value="1"/><label for="q17_opt1">B) Using custom-developed malware</label></div><div class="option"><input id="q17_opt2" name="q17" type="radio" value="2"/><label for="q17_opt2">C) Using legitimate system tools for malicious purposes</label></div><div class="option"><input id="q17_opt3" name="q17" type="radio" value="3"/><label for="q17_opt3">D) Staying offline to avoid detection</label></div></div><div class="question"><div class="question-text">Question 18: In the Cyber Kill Chain, at which stage should defenders focus to have MAXIMUM impact?</div><div class="option"><input id="q18_opt0" name="q18" type="radio" value="0"/><label for="q18_opt0">A) Actions on Objectives (too late)</label></div><div class="option"><input id="q18_opt1" name="q18" type="radio" value="1"/><label for="q18_opt1">B) Delivery (prevent initial access)</label></div><div class="option"><input id="q18_opt2" name="q18" type="radio" value="2"/><label for="q18_opt2">C) Command &amp; Control (isolate the threat)</label></div><div class="option"><input id="q18_opt3" name="q18" type="radio" value="3"/><label for="q18_opt3">D) All stages are equally important</label></div></div><div class="question"><div class="question-text">Question 19: Which threat actor is MOST likely responsible for a 6-month campaign using zero-day exploits to steal defense contractor IP?</div><div class="option"><input id="q19_opt0" name="q19" type="radio" value="0"/><label for="q19_opt0">A) Script Kiddie</label></div><div class="option"><input id="q19_opt1" name="q19" type="radio" value="1"/><label for="q19_opt1">B) Hacktivist</label></div><div class="option"><input id="q19_opt2" name="q19" type="radio" value="2"/><label for="q19_opt2">C) Nation-State Actor</label></div><div class="option"><input id="q19_opt3" name="q19" type="radio" value="3"/><label for="q19_opt3">D) Organized Crime</label></div></div><div class="question"><div class="question-text">Question 20: What is the average dwell time (breach to detection) for APT attacks?</div><div class="option"><input id="q20_opt0" name="q20" type="radio" value="0"/><label for="q20_opt0">A) 24 hours</label></div><div class="option"><input id="q20_opt1" name="q20" type="radio" value="1"/><label for="q20_opt1">B) 7 days</label></div><div class="option"><input id="q20_opt2" name="q20" type="radio" value="2"/><label for="q20_opt2">C) 200+ days</label></div><div class="option"><input id="q20_opt3" name="q20" type="radio" value="3"/><label for="q20_opt3">D) 1 year exactly</label></div></div></div><button class="submit-quiz" onclick="submitQuiz()">Submit Quiz</button><div class="quiz-result" id="quiz-result"><h3>Your Score: <span id="score"></span></h3><p id="performance-message"></p></div></div></div>
+<script>
+function showSection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.content-section');
+    sections.forEach(section => section.classList.remove('active'));
+    
+    // Show selected section
+    document.getElementById(sectionId).classList.add('active');
+    
+    // Update navigation
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    // Scroll to top of main content
+    window.scrollTo(0, 0);
+}
+
+
+function submitQuiz() {
+    const answers = [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 2];
+    let score = 0;
+    
+    for (let i = 1; i <= 20; i++) {
+        const selected = document.querySelector('input[name="q' + i + '"]:checked');
+        if (selected && parseInt(selected.value) === answers[i-1]) {
+            score++;
+        }
+    }
+    
+    document.getElementById('score').textContent = score + '/20';
+    
+    const percentage = (score / 20) * 100;
+    let message = '';
+    
+    if (percentage >= 90) {
+        message = '🌟 Outstanding! You have excellent mastery of Lesson 2 material.';
+    } else if (percentage >= 80) {
+        message = '👍 Great job! You have strong understanding of the concepts.';
+    } else if (percentage >= 70) {
+        message = '📚 Good work! Review the questions you missed to strengthen your knowledge.';
+    } else {
+        message = '⚠️ Additional study recommended. Review the lesson material and try again.';
+    }
+    
+    document.getElementById('performance-message').textContent = message;
+    document.getElementById('quiz-result').classList.add('show');
+    
+    // Scroll to results
+    document.getElementById('quiz-result').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson1_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson3_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

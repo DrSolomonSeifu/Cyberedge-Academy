@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11: Analyzing Potentially Malicious Activity - Learner Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #ffd700;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header h3 {
+            font-size: 1.3em;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .header p {
+            margin-top: 15px;
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+
+        .learner-badge {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .nav-tabs {
+            background: #f8f9fa;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px 10px;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-right: 1px solid #dee2e6;
+            color: #495057;
+        }
+
+        .nav-tab:hover {
+            background: #dee2e6;
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -3px;
+        }
+
+        .content-section {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+            background: white;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-section h2 {
+            color: #2a5298;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content-section h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .content-section h4 {
+            color: #6c757d;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .content-section p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #495057;
+        }
+
+        .content-section ul, .content-section ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .content-section li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #e7f0ff;
+        }
+
+        .quiz-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+            display: block;
+        }
+
+        .quiz-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Glossary Styles */
+        .glossary-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .glossary-term {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .glossary-term-name {
+            font-weight: bold;
+            color: #2a5298;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .glossary-term-definition {
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        /* Resource Links */
+        .resource-links {
+            background: linear-gradient(135deg, #e7f3ff 0%, #cfe2ff 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .resource-link {
+            background: white;
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-link:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .resource-link a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resource-link a:hover {
+            text-decoration: underline;
+        }
+
+        .resource-description {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Practical Guide */
+        .practical-guide {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .practical-guide-header {
+            font-weight: bold;
+            color: #856404;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .practical-guide-steps {
+            color: #856404;
+        }
+
+        .practical-guide-steps ol {
+            margin-left: 20px;
+        }
+
+        .practical-guide-steps li {
+            margin: 10px 0;
+        }
+
+        /* Key Concept Box */
+        .key-concept {
+            background: linear-gradient(135deg, #e7f3ff 0%, #cfe2ff 100%);
+            border-left: 5px solid #0d6efd;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .key-concept-header {
+            font-weight: bold;
+            color: #084298;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .key-concept-content {
+            color: #084298;
+            line-height: 1.8;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2a5298;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-container {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .example-box {
+            background: #f8f9fa;
+            border-left: 5px solid #6c757d;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .example-box-header {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .header h2 { font-size: 1.3em; }
+            .nav-tab { min-width: 100%; }
+            .content-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CyberEdge Academy</h1>
+        <p style="font-size:13px;opacity:0.85;margin-top:4px;">Lesson 11: Analyzing Potentially Malicious Activity</p>
+            <p>Dr. Solomon Seifu | CyberEdge Academy</p>
+            <div class="learner-badge">📖 LEARNER PORTAL 📖</div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-tab" onclick="showSection('content')">Core Content</button>
+            <button class="nav-tab" onclick="showSection('practical')">Practical Guide</button>
+            <button class="nav-tab" onclick="showSection('quiz')">Knowledge Check</button>
+            <button class="nav-tab" onclick="showSection('glossary')">Glossary</button>
+            <button class="nav-tab" onclick="showSection('resources')">Resources</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <h2>📚 Welcome to Lesson 11</h2>
+            
+            <div class="key-concept">
+                <div class="key-concept-header">🎯 Lesson Objective</div>
+                <div class="key-concept-content">
+                    Master the skills needed to detect, investigate, and analyze potentially malicious activity across networks, operating systems, and data flows. Learn to identify beaconing behavior, rogue devices, suspicious processes, data exfiltration attempts, and leverage vulnerability assessment tools to strengthen security posture.
+                </div>
+            </div>
+
+            <div class="progress-tracker">
+                <strong>Your Learning Progress</strong>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progress-bar">0%</div>
+                </div>
+                <p style="margin-top: 10px; color: #6c757d; font-size: 0.9em;">Complete all sections and quizzes to track your progress!</p>
+            </div>
+
+            <h3>What You'll Learn</h3>
+            <table class="data-table">
+                <tr>
+                    <th>Topic</th>
+                    <th>Skills You'll Develop</th>
+                </tr>
+                <tr>
+                    <td>Network Attack Indicators</td>
+                    <td>Identify beaconing, abnormal traffic, DDoS patterns, protocol/port mismatches</td>
+                </tr>
+                <tr>
+                    <td>Rogue Device Detection</td>
+                    <td>Recognize unauthorized devices, WAPs, VMs, and implement protection measures</td>
+                </tr>
+                <tr>
+                    <td>OS Analysis</td>
+                    <td>Investigate processes, file system changes, registry modifications on Windows/Linux</td>
+                </tr>
+                <tr>
+                    <td>Data Exfiltration</td>
+                    <td>Detect data theft via email, cloud, FTP, DNS tunneling, USB devices</td>
+                </tr>
+                <tr>
+                    <td>Vulnerability Assessment</td>
+                    <td>Use tools like Nessus, Nmap, OpenVAS to identify and prioritize security weaknesses</td>
+                </tr>
+            </table>
+
+            <h3>Why This Matters</h3>
+            <p><strong>Real-world impact of detecting malicious activity:</strong></p>
+            <ul>
+                <li>Average time to detect a breach: <strong>16-21 days</strong></li>
+                <li>Average cost of a data breach: <strong>$4.45 million (2023)</strong></li>
+                <li>Organizations with IR teams save <strong>$2 million+</strong> on breach costs</li>
+                <li>Early detection prevents <strong>widespread infections and data loss</strong></li>
+            </ul>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">📖 Study Guide</div>
+                <div class="practical-guide-steps">
+                    <strong>How to Get the Most from This Lesson:</strong>
+                    <ol>
+                        <li><strong>Study the core content</strong> - Understand each attack indicator and detection method</li>
+                        <li><strong>Follow the practical guides</strong> - Learn how to actually perform the analysis</li>
+                        <li><strong>Take the knowledge check quizzes</strong> - Test your comprehension</li>
+                        <li><strong>Review the glossary</strong> - Master the terminology</li>
+                        <li><strong>Practice in a lab</strong> - Set up VMs and try the techniques yourself</li>
+                        <li><strong>Explore additional resources</strong> - Deepen your understanding</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section continues... -->
+
+    </div>
+
+    <script>
+        let selectedAnswers = {};
+        let correctAnswers = 0;
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            updateProgress();
+        }
+
+        function checkAnswer(quizNum, correctAnswer) {
+            const selected = selectedAnswers[quizNum];
+            const feedback = document.getElementById(`feedback-${quizNum}`);
+            const options = document.querySelectorAll(`[data-quiz="${quizNum}"]`);
+            
+            if (!selected) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            options.forEach(option => {
+                const answer = option.getAttribute('data-answer');
+                if (answer === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (answer === selected && answer !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (selected === correctAnswer) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.innerHTML = `<strong>✓ Correct!</strong> ${getFeedback(quizNum, true)}`;
+                correctAnswers++;
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.innerHTML = `<strong>✗ Incorrect.</strong> ${getFeedback(quizNum, false)}`;
+            }
+
+            updateProgress();
+        }
+
+        function getFeedback(quizNum, isCorrect) {
+            const feedbacks = {
+                1: {
+                    correct: "Beaconing shows regular, periodic communication patterns to external servers, which is a hallmark of C2 malware.",
+                    incorrect: "Beaconing is characterized by regular, periodic communication. Normal traffic is irregular and varied."
+                },
+                2: {
+                    correct: "802.1X provides network access control by requiring authentication before allowing devices to connect.",
+                    incorrect: "802.1X is a network access control protocol that authenticates devices before granting network access."
+                },
+                3: {
+                    correct: "Process Explorer shows parent-child relationships, which help identify suspicious process spawning patterns.",
+                    incorrect: "Process Explorer displays the process tree with parent-child relationships, crucial for malware detection."
+                },
+                4: {
+                    correct: "DNS TXT records can be misused to hide stolen data in DNS queries, a technique called DNS tunneling.",
+                    incorrect: "While TXT records are normally for domain verification, attackers can hide data in them for exfiltration."
+                },
+                5: {
+                    correct: "CVSS scores provide standardized severity ratings that help prioritize vulnerability remediation.",
+                    incorrect: "CVSS (Common Vulnerability Scoring System) provides severity scores from 0-10 to prioritize fixes."
+                },
+                6: {
+                    correct: "DNS queries on port 80 indicate protocol/port mismatch, which is suspicious and may indicate malware.",
+                    incorrect: "DNS normally uses port 53. Finding it on port 80 is a protocol/port mismatch indicator of compromise."
+                }
+            };
+
+            return feedbacks[quizNum][isCorrect ? 'correct' : 'incorrect'];
+        }
+
+        function updateProgress() {
+            const sections = ['overview', 'content', 'practical'];
+            const visitedSections = sections.filter(section => 
+                document.getElementById(section).classList.contains('active') || 
+                document.getElementById(section).hasAttribute('data-visited')
+            );
+
+            visitedSections.forEach(section => {
+                document.getElementById(section).setAttribute('data-visited', 'true');
+            });
+
+            const progress = Math.min(100, (visitedSections.length / sections.length) * 70 + (correctAnswers / 6) * 30);
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-bar').textContent = Math.round(progress) + '%';
+        }
+
+        // Initialize quiz options after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const quizNum = this.getAttribute('data-quiz');
+                    const answer = this.getAttribute('data-answer');
+                    
+                    // Deselect all options for this quiz
+                    document.querySelectorAll(`[data-quiz="${quizNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    selectedAnswers[quizNum] = answer;
+                });
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const tabs = Array.from(document.querySelectorAll('.nav-tab'));
+            const activeTab = document.querySelector('.nav-tab.active');
+            const currentIndex = tabs.indexOf(activeTab);
+
+            if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
+                tabs[currentIndex + 1].click();
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                tabs[currentIndex - 1].click();
+            }
+        });
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            updateProgress();
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+</html>
+
+        <!-- Core Content Section -->
+        <div id="content" class="content-section">
+            <h2>📖 Core Content: Analyzing Malicious Activity</h2>
+
+            <h3>Network Attack Indicators</h3>
+
+            <div class="key-concept">
+                <div class="key-concept-header">🔍 Beaconing Behavior</div>
+                <div class="key-concept-content">
+                    <p><strong>What is it?</strong> Regular, periodic communications from a compromised system to an external command-and-control (C2) server.</p>
+                    <p><strong>Why it matters:</strong> Normal traffic is random and varied. Beaconing is methodical—same destination, same interval, predictable pattern.</p>
+                    <p><strong>Example:</strong> Infected workstation sends 128-byte packets every 10 minutes to 203.0.113.45 on port 443.</p>
+                </div>
+            </div>
+
+            <h4>Common Network Attack Patterns</h4>
+            <ul>
+                <li><strong>Traffic Spikes:</strong> Sudden 1000%+ increase in bandwidth (potential DDoS or data exfiltration)</li>
+                <li><strong>Abnormal Destinations:</strong> Traffic to unusual geographic locations or known malicious IPs</li>
+                <li><strong>Off-Hours Activity:</strong> Large data transfers at 2 AM when nobody's working</li>
+                <li><strong>Protocol/Port Mismatches:</strong> DNS queries on port 80 instead of port 53</li>
+            </ul>
+
+            <table class="data-table">
+                <tr>
+                    <th>Indicator</th>
+                    <th>What It Looks Like</th>
+                    <th>What It Means</th>
+                </tr>
+                <tr>
+                    <td>Beaconing</td>
+                    <td>Regular packets to same IP every X minutes</td>
+                    <td>C2 malware checking for instructions</td>
+                </tr>
+                <tr>
+                    <td>DDoS Attack</td>
+                    <td>Massive traffic spike from multiple sources</td>
+                    <td>Attempt to overwhelm and crash systems</td>
+                </tr>
+                <tr>
+                    <td>Port Scan</td>
+                    <td>Sequential connection attempts to many ports</td>
+                    <td>Reconnaissance before attack</td>
+                </tr>
+                <tr>
+                    <td>Data Exfiltration</td>
+                    <td>Large outbound transfer to external IP</td>
+                    <td>Stolen data leaving the network</td>
+                </tr>
+            </table>
+
+            <h3>Rogue Devices</h3>
+            <p><strong>Definition:</strong> Unauthorized hardware or software on your network that shouldn't be there.</p>
+
+            <h4>Types of Rogue Devices</h4>
+            <ul>
+                <li><strong>Rogue Access Points:</strong> Fake WiFi networks that intercept traffic (Wi-Fi Pineapple)</li>
+                <li><strong>Unauthorized Laptops/Phones:</strong> Personal devices connecting to corporate network</li>
+                <li><strong>Malicious VMs:</strong> Virtual machines set up to host attacks</li>
+                <li><strong>Smart IoT Devices:</strong> Printers, cameras, smart TVs with weak security</li>
+                <li><strong>USB Devices:</strong> Malicious USB drives that autorun malware</li>
+            </ul>
+
+            <div class="example-box">
+                <div class="example-box-header">Real-World Example: Target Breach (2013)</div>
+                <div style="color: #495057; line-height: 1.8;">
+                    Attackers gained access through an HVAC vendor's compromised credentials. From there, they moved laterally to payment systems and stole 40 million credit card numbers. This demonstrates how a seemingly unrelated third-party device can be an entry point.
+                </div>
+            </div>
+
+            <h4>Detection Methods</h4>
+            <ul>
+                <li><strong>802.1X Authentication:</strong> Requires authentication before network access</li>
+                <li><strong>DHCP Log Monitoring:</strong> Track which devices request IP addresses</li>
+                <li><strong>MAC Address Filtering:</strong> Only allow known devices</li>
+                <li><strong>Network Scanning:</strong> Regular Nmap scans to discover all connected devices</li>
+                <li><strong>Wireless Surveys:</strong> Scan for unauthorized access points</li>
+            </ul>
+
+            <h3>Operating System Analysis</h3>
+
+            <h4>Windows Process Analysis</h4>
+            <p><strong>Key Tools:</strong></p>
+            <ul>
+                <li><strong>Process Explorer:</strong> Advanced task manager showing process trees and relationships</li>
+                <li><strong>Process Monitor:</strong> Real-time file/registry/network activity logging</li>
+                <li><strong>TCPView:</strong> View active network connections by process</li>
+                <li><strong>Autoruns:</strong> See what runs at startup (persistence mechanisms)</li>
+            </ul>
+
+            <p><strong>Critical Windows Processes to Know:</strong></p>
+            <ul>
+                <li><strong>system.exe:</strong> Windows kernel</li>
+                <li><strong>smss.exe:</strong> Session Manager</li>
+                <li><strong>csrss.exe:</strong> Client Server Runtime (GUI)</li>
+                <li><strong>lsass.exe:</strong> Local Security Authority (authentication)</li>
+                <li><strong>services.exe:</strong> Service Control Manager</li>
+            </ul>
+
+            <div class="key-concept">
+                <div class="key-concept-header">⚠️ Malware Disguise Techniques</div>
+                <div class="key-concept-content">
+                    Attackers name malware to look like legitimate processes:
+                    <ul>
+                        <li><strong>Typos:</strong> "lsas.exe" instead of "lsass.exe"</li>
+                        <li><strong>Wrong Location:</strong> Real csrss.exe is in C:\Windows\System32, fake one in C:\Temp</li>
+                        <li><strong>Wrong Parent:</strong> Chrome.exe should NOT be spawned by Word.exe</li>
+                    </ul>
+                    Always verify: File location, digital signature, parent process!
+                </div>
+            </div>
+
+            <h4>Suspicious File System Changes</h4>
+            <ul>
+                <li>New files in system directories (C:\Windows, C:\Windows\System32)</li>
+                <li>Odd filenames (xyz123.exe, temp.tmp.exe)</li>
+                <li>Modified system files or hosts file</li>
+                <li>Registry changes disabling security features</li>
+                <li>Alternate Data Streams (hidden data in NTFS files)</li>
+                <li>Cleared security logs (covering tracks)</li>
+                <li>New unauthorized admin accounts</li>
+            </ul>
+
+            <h3>Data Exfiltration Methods</h3>
+            <p><strong>How attackers steal your data:</strong></p>
+
+            <table class="data-table">
+                <tr>
+                    <th>Method</th>
+                    <th>How It Works</th>
+                    <th>Detection</th>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>Send files as attachments to external accounts</td>
+                    <td>Monitor large outbound emails, personal account usage</td>
+                </tr>
+                <tr>
+                    <td>Cloud Storage</td>
+                    <td>Upload to Dropbox, Google Drive, OneDrive</td>
+                    <td>CASB solutions, monitor cloud service connections</td>
+                </tr>
+                <tr>
+                    <td>FTP/SFTP</td>
+                    <td>Transfer files to external servers</td>
+                    <td>Monitor FTP connections, unusual port activity</td>
+                </tr>
+                <tr>
+                    <td>USB Devices</td>
+                    <td>Copy data to removable media</td>
+                    <td>USB logging, endpoint DLP, disable autorun</td>
+                </tr>
+                <tr>
+                    <td>DNS Tunneling</td>
+                    <td>Hide data in DNS queries/responses</td>
+                    <td>Monitor unusual DNS patterns, query length</td>
+                </tr>
+            </table>
+
+            <div class="key-concept">
+                <div class="key-concept-header">🔐 DNS Tunneling Explained</div>
+                <div class="key-concept-content">
+                    <p><strong>How it works:</strong> Attackers encode stolen data into DNS subdomain queries.</p>
+                    <p><strong>Example:</strong> Instead of normal DNS queries, you see:</p>
+                    <div class="code-block">
+ZGF0YWJhc2U.exfil.attacker.com
+cGFzc3dvcmRz.exfil.attacker.com
+                    </div>
+                    <p>When decoded (base64), these reveal "database" and "passwords" being exfiltrated!</p>
+                    <p><strong>Detection:</strong> Look for unusually long DNS queries, high volume of queries to single domain, unusual DNS record types from workstations.</p>
+                </div>
+            </div>
+
+            <h3>Vulnerability Assessment Tools</h3>
+            <p><strong>Purpose:</strong> Identify security weaknesses before attackers exploit them.</p>
+
+            <h4>Major Tools</h4>
+            <ul>
+                <li><strong>Nessus (Tenable):</strong> Commercial scanner with 60,000+ plugins</li>
+                <li><strong>OpenVAS:</strong> Open-source alternative to Nessus</li>
+                <li><strong>Nmap:</strong> Network discovery and port scanning</li>
+                <li><strong>Qualys:</strong> Cloud-based continuous scanning</li>
+                <li><strong>Rapid7 Nexpose:</strong> Risk-based prioritization</li>
+            </ul>
+
+            <h4>What They Detect</h4>
+            <ul>
+                <li>Missing security patches</li>
+                <li>Default credentials</li>
+                <li>Weak encryption</li>
+                <li>SQL injection vulnerabilities</li>
+                <li>Cross-site scripting (XSS)</li>
+                <li>Open ports and unnecessary services</li>
+                <li>SSL/TLS misconfigurations</li>
+                <li>Outdated software versions</li>
+            </ul>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">💡 Vulnerability Prioritization</div>
+                <div class="practical-guide-steps">
+                    <strong>How to prioritize 1,000+ vulnerabilities:</strong>
+                    <ol>
+                        <li><strong>CVSS Score:</strong> Critical (9-10) first, then High (7-8.9)</li>
+                        <li><strong>Exploitability:</strong> Is it being actively exploited in the wild?</li>
+                        <li><strong>Asset Criticality:</strong> DMZ web server > internal print server</li>
+                        <li><strong>Data Sensitivity:</strong> Systems with PII/PHI get priority</li>
+                        <li><strong>Compensating Controls:</strong> Is it behind a firewall? Air-gapped?</li>
+                        <li><strong>Patch Availability:</strong> Can we fix it now or waiting on vendor?</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Guide Section -->
+        <div id="practical" class="content-section">
+            <h2>🔧 Practical Analysis Guide</h2>
+
+            <h3>How to Detect Beaconing in Wireshark</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Step-by-Step Instructions</div>
+                <div class="practical-guide-steps">
+                    <ol>
+                        <li>Open Wireshark and load a PCAP file or start capturing</li>
+                        <li>Go to <strong>Statistics → Conversations → IPv4</strong></li>
+                        <li>Sort by "Packets" column (descending) to find high-volume talkers</li>
+                        <li>Identify suspicious external IPs with regular traffic</li>
+                        <li>Apply filter: <code>ip.dst == [suspicious.IP.address]</code></li>
+                        <li>Go to <strong>Statistics → I/O Graph</strong> to visualize the pattern</li>
+                        <li>Calculate time intervals between packets using Frame time</li>
+                        <li><strong>Look for:</strong> Regular intervals (every 60s, 300s, 600s), consistent packet sizes</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Investigating Suspicious Processes (Windows)</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Process Explorer Investigation</div>
+                <div class="practical-guide-steps">
+                    <ol>
+                        <li>Download Sysinternals Suite from Microsoft</li>
+                        <li>Run <strong>Process Explorer</strong> as Administrator</li>
+                        <li>For each suspicious process, check:
+                            <ul>
+                                <li><strong>Image Path:</strong> Right-click → Properties → Image tab. Is it in the correct location?</li>
+                                <li><strong>Parent Process:</strong> Does it make sense? (Chrome shouldn't be child of Word)</li>
+                                <li><strong>Company Name:</strong> Is it signed by a legitimate publisher?</li>
+                                <li><strong>Network Activity:</strong> TCP/IP tab shows connections. Any to unknown IPs?</li>
+                            </ul>
+                        </li>
+                        <li>Use <strong>TCPView</strong> to see network connections in real-time</li>
+                        <li>Use <strong>Autoruns</strong> to check startup persistence mechanisms</li>
+                        <li><strong>Red flags:</strong> Unsigned binaries, Temp directory locations, unexpected network connections</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Detecting Rogue Devices</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Network Scanning Approach</div>
+                <div class="practical-guide-steps">
+                    <ol>
+                        <li><strong>DHCP Log Review:</strong> Check DHCP server for recently assigned IPs</li>
+                        <li><strong>Compare MAC Addresses:</strong> Against authorized device database</li>
+                        <li><strong>Nmap Host Discovery:</strong>
+                            <div class="code-block">nmap -sn 192.168.1.0/24</div>
+                            This finds all active hosts
+                        </li>
+                        <li><strong>OS Detection on Unknowns:</strong>
+                            <div class="code-block">nmap -O [suspicious.IP]</div>
+                            Fingerprint the operating system
+                        </li>
+                        <li><strong>MAC Vendor Lookup:</strong> Check macvendors.com or macvendorlookup.com</li>
+                        <li><strong>Document findings:</strong> IP, MAC, OS, first seen date/time, location</li>
+                        <li><strong>Investigate further:</strong> Physical location, user interview, port tracing</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Vulnerability Scanning with Nmap</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Basic Nmap Commands</div>
+                <div class="practical-guide-steps">
+                    <strong>Host Discovery:</strong>
+                    <div class="code-block">nmap -sn 192.168.1.0/24</div>
+                    <strong>Port Scan with Service Version:</strong>
+                    <div class="code-block">nmap -sV -sS [target.IP]</div>
+                    <strong>OS Detection:</strong>
+                    <div class="code-block">nmap -O [target.IP]</div>
+                    <strong>Vulnerability Scanning (NSE scripts):</strong>
+                    <div class="code-block">nmap --script vuln [target.IP]</div>
+                    <strong>Comprehensive Scan:</strong>
+                    <div class="code-block">nmap -sS -sV -O -A --script vuln [target.IP]</div>
+                </div>
+            </div>
+
+            <div class="key-concept">
+                <div class="key-concept-header">⚖️ Legal and Ethical Reminder</div>
+                <div class="key-concept-content">
+                    <strong>ONLY scan systems you own or have explicit written permission to scan!</strong>
+                    <ul>
+                        <li>Unauthorized scanning is illegal under CFAA and similar laws</li>
+                        <li>Always get written authorization before testing</li>
+                        <li>Coordinate with IT teams in enterprise environments</li>
+                        <li>Practice on intentionally vulnerable VMs (Metasploitable, DVWA, Vulnhub)</li>
+                        <li>Never scan production systems or public networks without permission</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" class="content-section">
+            <h2>✅ Knowledge Check Quiz</h2>
+            <p>Test your understanding of analyzing malicious activity. Select your answer and click "Check Answer" to see if you're correct!</p>
+
+            <!-- Quiz 1 -->
+            <div class="quiz-container">
+                <div class="quiz-question">1. What is the primary characteristic of beaconing behavior?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="1" data-answer="A">A) Random network traffic to multiple destinations</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="B">B) Regular, periodic communications to the same external server</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="C">C) High-volume data transfers during business hours</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="D">D) Encrypted traffic on standard ports</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(1, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-1"></div>
+            </div>
+
+            <!-- Quiz 2 -->
+            <div class="quiz-container">
+                <div class="quiz-question">2. Which protocol provides network access control by requiring authentication before allowing devices to connect?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="2" data-answer="A">A) DHCP</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="B">B) 802.1X</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="C">C) ARP</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="D">D) DNS</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(2, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-2"></div>
+            </div>
+
+            <!-- Quiz 3 -->
+            <div class="quiz-container">
+                <div class="quiz-question">3. In Process Explorer, what key information helps identify malicious processes?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="3" data-answer="A">A) Process name only</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="B">B) CPU usage percentage</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="C">C) Parent-child process relationships and file location</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="D">D) Memory consumption</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(3, 'C')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-3"></div>
+            </div>
+
+            <!-- Quiz 4 -->
+            <div class="quiz-container">
+                <div class="quiz-question">4. What DNS record type can be misused by attackers to hide stolen data?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="4" data-answer="A">A) A records</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="B">B) TXT records</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="C">C) NS records</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="D">D) SOA records</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(4, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-4"></div>
+            </div>
+
+            <!-- Quiz 5 -->
+            <div class="quiz-container">
+                <div class="quiz-question">5. What does CVSS provide for vulnerability assessment?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="5" data-answer="A">A) Automated patching solutions</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="B">B) Standardized severity scoring (0-10)</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="C">C) Network traffic analysis</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="D">D) Malware removal tools</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(5, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-5"></div>
+            </div>
+
+            <!-- Quiz 6 -->
+            <div class="quiz-container">
+                <div class="quiz-question">6. If you see DNS queries on port 80 instead of port 53, what type of indicator is this?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="6" data-answer="A">A) Normal traffic pattern</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="B">B) Load balancing behavior</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="C">C) Protocol/port mismatch (potential IoC)</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="D">D) Encrypted DNS (DoH)</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(6, 'C')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-6"></div>
+            </div>
+
+            <div class="quiz-container" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-color: #28a745;">
+                <div style="text-align: center;">
+                    <h3>🎓 Quiz Complete!</h3>
+                    <p>Review any questions you missed and make sure you understand the concepts before the exam.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Glossary Section continues... -->
+
+
+        <!-- Glossary Section -->
+        <div id="glossary" class="content-section">
+            <h2>📖 Glossary of Key Terms</h2>
+            <p>Quick reference for important terminology used in this lesson.</p>
+
+            <div class="glossary-container">
+                <div class="glossary-term">
+                    <div class="glossary-term-name">802.1X</div>
+                    <div class="glossary-term-definition">
+                        A network access control protocol that provides authentication for devices attempting to connect to a network. Requires valid credentials before granting access.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">ADS (Alternate Data Streams)</div>
+                    <div class="glossary-term-definition">
+                        An NTFS file system feature that allows data to be hidden within files without changing the file size or appearance. Often exploited by attackers to hide malware.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">ARP Poisoning (ARP Spoofing)</div>
+                    <div class="glossary-term-definition">
+                        Attack technique where false ARP messages are sent to associate an attacker's MAC address with a legitimate IP, allowing traffic interception and on-path attacks.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Beaconing</div>
+                    <div class="glossary-term-definition">
+                        Regular, periodic communications from a compromised system to an external command-and-control (C2) server. Characteristic pattern: same destination, consistent interval, predictable packet size.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Botnet</div>
+                    <div class="glossary-term-definition">
+                        Network of infected devices (bots) controlled by an attacker to perform coordinated actions like DDoS attacks, spam distribution, or cryptocurrency mining.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">CASB (Cloud Access Security Broker)</div>
+                    <div class="glossary-term-definition">
+                        Security solution that monitors and controls cloud service usage, helping detect unauthorized data uploads and enforce security policies for cloud applications.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">C2 (Command and Control)</div>
+                    <div class="glossary-term-definition">
+                        Communication channel through which attackers send commands to and receive data from compromised systems.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">CVSS (Common Vulnerability Scoring System)</div>
+                    <div class="glossary-term-definition">
+                        Standardized framework for rating vulnerability severity on a scale of 0-10 (Low, Medium, High, Critical). Helps prioritize remediation efforts.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Data Exfiltration</div>
+                    <div class="glossary-term-definition">
+                        Unauthorized transfer of data from an organization's network to an external location. Can occur via email, cloud storage, FTP, USB, or DNS tunneling.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">DDoS (Distributed Denial of Service)</div>
+                    <div class="glossary-term-definition">
+                        Cyberattack using multiple compromised devices (botnet) to flood a target with traffic, overwhelming resources and making systems unavailable to legitimate users.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">DLP (Data Loss Prevention)</div>
+                    <div class="glossary-term-definition">
+                        Security technology that monitors and blocks unauthorized data transfers, helping prevent sensitive information from leaving the organization.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">DNS Tunneling</div>
+                    <div class="glossary-term-definition">
+                        Data exfiltration technique that encodes stolen data into DNS queries or responses to bypass security controls. Example: hiding data in subdomain names or TXT records.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Honeypot</div>
+                    <div class="glossary-term-definition">
+                        Decoy system designed to lure attackers and study their techniques. Can also refer to malicious servers set up by attackers to trap victims.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">IoC (Indicator of Compromise)</div>
+                    <div class="glossary-term-definition">
+                        Evidence that a system has been breached. Examples: unusual network traffic, suspicious file hashes, known malicious IPs, unexpected registry changes.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">NAC (Network Access Control)</div>
+                    <div class="glossary-term-definition">
+                        Security approach that restricts unauthorized devices from connecting to a network. Enforces compliance policies before granting access.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">NASL (Nessus Attack Scripting Language)</div>
+                    <div class="glossary-term-definition">
+                        Programming language used to write custom vulnerability checks for Nessus scanner. Similar to C programming language.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Nessus</div>
+                    <div class="glossary-term-definition">
+                        Commercial vulnerability scanner developed by Tenable. Uses plugin-based approach to detect security weaknesses in systems, networks, and applications.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Nmap</div>
+                    <div class="glossary-term-definition">
+                        Network Mapper - open-source tool for network discovery, port scanning, OS detection, and vulnerability scanning using NSE (Nmap Scripting Engine) scripts.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">OpenVAS</div>
+                    <div class="glossary-term-definition">
+                        Open Vulnerability Assessment System - free, open-source vulnerability scanner. Alternative to commercial scanners like Nessus.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Process Explorer</div>
+                    <div class="glossary-term-definition">
+                        Microsoft Sysinternals tool providing advanced process monitoring. Shows process trees, DLL analysis, network connections, and handle inspection.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Protocol/Port Mismatch</div>
+                    <div class="glossary-term-definition">
+                        IoC where traffic uses a protocol that doesn't match the expected port. Example: DNS queries on port 80 instead of port 53, indicating potential malware.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Reverse Shell</div>
+                    <div class="glossary-term-definition">
+                        Attack technique where victim system initiates connection to attacker (instead of attacker connecting in), bypassing firewall restrictions and providing command-line access.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Rogue Device</div>
+                    <div class="glossary-term-definition">
+                        Unauthorized hardware or software on a network. Examples: rogue access points, personal laptops, malicious VMs, unsecured IoT devices.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Rogue WAP (Wireless Access Point)</div>
+                    <div class="glossary-term-definition">
+                        Unauthorized wireless access point that mimics legitimate networks. Used for traffic interception, credential theft, and on-path attacks. Example: Wi-Fi Pineapple.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Sinkhole</div>
+                    <div class="glossary-term-definition">
+                        Technique for redirecting malicious traffic to a null destination where it's absorbed and analyzed, preventing it from reaching intended targets.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Sysinternals</div>
+                    <div class="glossary-term-definition">
+                        Suite of advanced Windows utilities from Microsoft. Includes Process Explorer, Process Monitor, TCPView, Autoruns, and other diagnostic tools.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div id="resources" class="content-section">
+            <h2>🌐 Additional Resources</h2>
+            <p>Expand your knowledge with these curated resources for further learning and practice.</p>
+
+            <h3>Official Documentation & Tools</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://learn.microsoft.com/en-us/sysinternals/" target="_blank">Microsoft Sysinternals Suite</a>
+                    <div class="resource-description">Download Process Explorer, Process Monitor, and other essential Windows analysis tools. Official documentation included.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.tenable.com/products/nessus" target="_blank">Tenable Nessus</a>
+                    <div class="resource-description">Commercial vulnerability scanner. Free version (Nessus Essentials) available for home/personal use.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://nmap.org/" target="_blank">Nmap Official Site</a>
+                    <div class="resource-description">Download Nmap, access documentation, and learn about network scanning techniques and NSE scripts.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.openvas.org/" target="_blank">OpenVAS</a>
+                    <div class="resource-description">Free, open-source vulnerability scanner. Good alternative to commercial solutions.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.wireshark.org/" target="_blank">Wireshark</a>
+                    <div class="resource-description">Essential for packet capture and traffic analysis. Free download with extensive documentation.</div>
+                </div>
+            </div>
+
+            <h3>Practice & Lab Environments</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.malware-traffic-analysis.net/" target="_blank">Malware Traffic Analysis</a>
+                    <div class="resource-description">Free PCAP files with real malware traffic for practicing beaconing detection and traffic analysis.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://sourceforge.net/projects/metasploitable/" target="_blank">Metasploitable</a>
+                    <div class="resource-description">Intentionally vulnerable Linux VM for practicing vulnerability scanning and exploitation techniques.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.vulnhub.com/" target="_blank">VulnHub</a>
+                    <div class="resource-description">Collection of vulnerable VMs for hands-on security practice. Perfect for vulnerability scanning labs.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://tryhackme.com/" target="_blank">TryHackMe</a>
+                    <div class="resource-description">Interactive cybersecurity training with rooms on malware analysis, vulnerability assessment, and incident response.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://blueteamlabs.online/" target="_blank">Blue Team Labs Online</a>
+                    <div class="resource-description">Defensive security challenges focused on detection, analysis, and response. Great for SOC analysts.</div>
+                </div>
+            </div>
+
+            <h3>Analysis Tools & Services</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.virustotal.com/" target="_blank">VirusTotal</a>
+                    <div class="resource-description">Scan files and URLs against 70+ antivirus engines. Great for validating suspicious files.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.abuseipdb.com/" target="_blank">AbuseIPDB</a>
+                    <div class="resource-description">Check IP addresses against database of reported malicious activity. Useful for beaconing investigations.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.shodan.io/" target="_blank">Shodan</a>
+                    <div class="resource-description">Search engine for Internet-connected devices. Learn what attackers can find about your systems.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://gchq.github.io/CyberChef/" target="_blank">CyberChef</a>
+                    <div class="resource-description">Web-based tool for encoding/decoding data. Essential for DNS tunneling analysis and base64 decoding.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.hybrid-analysis.com/" target="_blank">Hybrid Analysis</a>
+                    <div class="resource-description">Free malware analysis service with sandbox execution and detailed behavioral reports.</div>
+                </div>
+            </div>
+
+            <h3>Learning Resources & Guides</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.sans.org/blog/" target="_blank">SANS Internet Storm Center</a>
+                    <div class="resource-description">Daily security news, threat intelligence, and handler diaries from SANS Institute.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://attack.mitre.org/" target="_blank">MITRE ATT&CK</a>
+                    <div class="resource-description">Map malicious behaviors to tactics and techniques. Essential reference for threat hunting.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.comptia.org/training/books/cysa-cs0-003-study-guide" target="_blank">CyberEdge Cybersecurity Analyst Study Guide</a>
+                    <div class="resource-description">Official study materials aligned with exam objectives, including malicious activity analysis.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://unit42.paloaltonetworks.com/" target="_blank">Unit 42 (Palo Alto Networks)</a>
+                    <div class="resource-description">Threat intelligence and malware analysis reports from industry-leading researchers.</div>
+                </div>
+            </div>
+
+            <h3>YouTube Channels & Video Content</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.youtube.com/@JohnHammond010" target="_blank">John Hammond</a>
+                    <div class="resource-description">Malware analysis, CTF walkthroughs, and cybersecurity tool tutorials.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.youtube.com/@13Cubed" target="_blank">13Cubed</a>
+                    <div class="resource-description">Digital forensics and incident response tutorials, including Sysinternals tools.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.youtube.com/@NetworkChuck" target="_blank">NetworkChuck</a>
+                    <div class="resource-description">Engaging tutorials on networking, security tools, and certification prep.</div>
+                </div>
+            </div>
+
+            <h3>Books & Publications</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://nostarch.com/practical-malware-analysis" target="_blank">Practical Malware Analysis (No Starch Press)</a>
+                    <div class="resource-description">Comprehensive guide to analyzing malicious software and understanding attacker techniques.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://nostarch.com/packetanalysis3" target="_blank">Practical Packet Analysis (No Starch Press)</a>
+                    <div class="resource-description">Master Wireshark and traffic analysis for detecting network-based attacks.</div>
+                </div>
+            </div>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">💡 Study Strategy</div>
+                <div class="practical-guide-steps">
+                    <strong>To excel at analyzing malicious activity:</strong>
+                    <ol>
+                        <li><strong>Build a home lab:</strong> Set up virtual machines (Kali Linux, Windows, Metasploitable) for practice</li>
+                        <li><strong>Practice daily:</strong> Analyze PCAPs, investigate processes, run vulnerability scans regularly</li>
+                        <li><strong>Join CTFs:</strong> Participate in Capture The Flag competitions for hands-on experience</li>
+                        <li><strong>Read threat reports:</strong> Stay current with Unit 42, SANS ISC, Krebs on Security</li>
+                        <li><strong>Document your findings:</strong> Keep a journal of what you learn and techniques discovered</li>
+                        <li><strong>Network with peers:</strong> Join Discord/Slack communities to learn from others</li>
+                        <li><strong>Simulate incidents:</strong> Practice investigating alerts and creating incident reports</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>CyberEdge Academy</strong></p>
+            <p>CyberEdge Cybersecurity Analyst 003 - Lesson 11: Analyzing Potentially Malicious Activity</p>
+            <p>Learner Portal | © 2024</p>
+        </div>
+    </div>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson10_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson12_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

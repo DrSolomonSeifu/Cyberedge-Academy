@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 6: Performing Vulnerability Analysis - Learner Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c1854 0%, #4a2c6b 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a0f2e 0%, #2c1854 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .sidebar h3 {
+            color: #9b59b6;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #9b59b6;
+            font-size: 1.1em;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .sidebar li:hover {
+            background: #34495e;
+            padding-left: 15px;
+        }
+
+        .sidebar li.active {
+            background: #9b59b6;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #2c3e50;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #9b59b6, #3498db);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #9b59b6;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: #ecf0f1;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .tab-btn.active {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hook-box {
+            background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .hook-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .scenario-box {
+            background: #f3e5f5;
+            border-left: 5px solid #9b59b6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .objective-list {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .objective-list li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .quest-section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #9b59b6;
+        }
+
+        .quest-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .quest-section h4 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #e1f5fe;
+            border-left: 4px solid #0277bd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ef6c00;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .example-box {
+            background: #f3e5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #9b59b6;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #9b59b6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .quiz-options li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-options li:hover {
+            background: #bdc3c7;
+            transform: translateX(5px);
+        }
+
+        .quiz-options li.correct {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .quiz-options li.incorrect {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .quiz-options li.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        .quiz-feedback.correct-feedback {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .quiz-feedback.incorrect-feedback {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reflection-prompt {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+        }
+
+        .reflection-prompt h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .lab-exercise {
+            background: #e8f5e9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .lab-exercise h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .lab-step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #4caf50;
+        }
+
+        .lab-step h5 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #9b59b6;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #9b59b6;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #9b59b6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="background: #1a0f2e; color: white; padding: 15px; text-align: center; border-bottom: 3px solid #9b59b6;">
+        <div style="font-size: 0.95em; font-weight: 600; letter-spacing: 1px; margin-bottom: 5px;">CyberEdge Academy</div>
+        <div style="font-size: 0.9em; font-weight: 500; margin-bottom: 5px;">Cybersecurity Analyst Training</div>
+        <div style="font-size:0.85em;font-weight:500;margin-bottom:8px;">CyberEdge Academy — PERFORMING VULNERABILITY ANALYSIS</div>
+        <div style="font-size: 0.75em; font-style: italic; opacity: 0.8;">Dr. Solomon Seifu | CyberEdge Academy</div>
+    </div>
+    <div class="header">
+        <h1>CyberEdge Lesson 6</h1>
+        <h2>Performing Vulnerability Analysis</h2>
+        <p>Master CVSS scoring, SCAP standards, and vulnerability validation</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>Quest Progress</h3>
+            <ul id="quest-nav">
+                <li data-quest="overview" class="active">📚 Overview</li>
+                <li data-quest="quest1">🎯 Quest 1: SCAP & Standards</li>
+                <li data-quest="quest2">📊 Quest 2: CVSS Scoring</li>
+                <li data-quest="quest3">⚙️ Quest 3: Advanced Metrics</li>
+                <li data-quest="quest4">✅ Quest 4: Validation & Context</li>
+                <li data-quest="quest5">🔬 Quest 5: Hands-On Practice</li>
+                <li data-quest="resources">📥 Resources</li>
+            </ul>
+
+            <div class="progress-container">
+                <h4>Overall Progress</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="sidebar-progress">0%</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #34495e; border-radius: 8px;">
+                <h4 style="color: #9b59b6; margin-bottom: 10px;">🏆 Badges</h4>
+                <div id="badges-container">
+                    <span class="badge">SCAP Explorer</span>
+                    <span class="badge">CVSS Master</span>
+                    <span class="badge">Validator</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="overview">📚 Overview</button>
+                <button class="tab-btn" data-tab="quest1">Quest 1</button>
+                <button class="tab-btn" data-tab="quest2">Quest 2</button>
+                <button class="tab-btn" data-tab="quest3">Quest 3</button>
+                <button class="tab-btn" data-tab="quest4">Quest 4</button>
+                <button class="tab-btn" data-tab="quest5">Quest 5</button>
+                <button class="tab-btn" data-tab="resources">📥 Resources</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div class="hook-box">
+                    <h2>🎯 The Vulnerability Analysis Challenge</h2>
+                    <p><strong>Your organization has 10,000 vulnerabilities identified by scanners.</strong></p>
+                    <p style="margin-top: 10px;">Which ones do you fix first? How do you prioritize? How do you know which are real threats versus false alarms?</p>
+                    <p style="margin-top: 15px;">This lesson teaches you the standardized frameworks and scoring systems that help security teams make these critical decisions every day.</p>
+                </div>
+
+                <div class="scenario-box">
+                    <h3>📖 What is Vulnerability Analysis?</h3>
+                    <p><strong>Vulnerability Analysis</strong> involves evaluating potential weaknesses in a system to identify and address any risks. It's performed regularly to maintain system security.</p>
+                    <p style="margin-top: 10px;">The process includes:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Identifying weaknesses (outdated software, unpatched applications, misconfigurations)</li>
+                        <li>Evaluating the level of risk they pose</li>
+                        <li>Prioritizing remediation based on severity and context</li>
+                    </ul>
+                </div>
+
+                <div class="objective-list">
+                    <h3>🎓 Learning Objectives</h3>
+                    <ul>
+                        <li><strong>SCAP Standards:</strong> Understand how SCAP provides a standardized framework for automating vulnerability management</li>
+                        <li><strong>CVSS Scoring:</strong> Learn how to read and interpret CVSS scores to prioritize remediation</li>
+                        <li><strong>Vulnerability Validation:</strong> Recognize how to validate vulnerabilities and avoid false positives/negatives</li>
+                        <li><strong>Contextual Factors:</strong> Understand how environment, business impact, and asset value affect prioritization</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 Why This Matters</h4>
+                    <p>Vulnerability analysis supports proactive defense by:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Standardizing detection and reporting using SCAP</li>
+                        <li>Prioritizing vulnerabilities with CVSS scoring</li>
+                        <li>Ensuring accuracy through validation</li>
+                        <li>Considering context to determine true risk</li>
+                    </ul>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>🤔 Think About It</h4>
+                    <p>If you had to choose between patching a CVSS 9.0 vulnerability on an isolated test system versus a CVSS 6.0 vulnerability on a public-facing production server, which would you prioritize and why?</p>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <h3>🚀 Lesson Structure</h3>
+                    <p>This lesson consists of 5 quests (approximately 2-2.5 hours):</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><strong>Quest 1:</strong> SCAP & Standards (25-30 min)</li>
+                        <li><strong>Quest 2:</strong> CVSS Scoring (30-35 min)</li>
+                        <li><strong>Quest 3:</strong> Advanced Metrics (25-30 min)</li>
+                        <li><strong>Quest 4:</strong> Validation & Context (25-30 min)</li>
+                        <li><strong>Quest 5:</strong> Hands-On Practice (20-25 min)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quest 1: SCAP & Standards -->
+            <div class="tab-content" id="quest1">
+                <div class="quest-section">
+                    <h3>🎯 Quest 1: SCAP & Vulnerability Standards</h3>
+                    <p><strong>Quest Goal:</strong> Master the foundational standards that enable automated vulnerability management</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>What is SCAP?</h4>
+                    <p>The <strong>Security Content Automation Protocol (SCAP)</strong> is a suite of interoperable specifications designed to:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Standardize the formatting and naming conventions of security data</li>
+                        <li>Enable security tools to work together seamlessly</li>
+                        <li>Help identify and report software flaws and misconfigurations</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4>💡 Why SCAP Matters</h4>
+                        <p><strong>Without SCAP:</strong> Tools use different formats, making it harder to compare or integrate results.</p>
+                        <p><strong>With SCAP:</strong> Tools speak a "common language", improving efficiency and collaboration.</p>
+                    </div>
+
+                    <h4>SCAP Languages</h4>
+                    
+                    <div class="example-box">
+                        <h4>1. OVAL (Open Vulnerability and Assessment Language)</h4>
+                        <p>XML schema maintained by MITRE that describes system security state.</p>
+                        <p><strong>Focuses on:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>System Information (OS, applications, configurations)</li>
+                            <li>Machine State (current condition, vulnerabilities, misconfigurations)</li>
+                            <li>Reporting (generates reports based on system info and state)</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2. ARF (Asset Reporting Format)</h4>
+                        <p>Universal language for sharing information about computer systems.</p>
+                        <p><strong>Purpose:</strong> Correlates reporting formats to assess information. Ensures different tools can communicate consistently.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3. XCCDF (Extensible Configuration Checklist Description Format)</h4>
+                        <p>Standardized way to describe security benchmarks and checks using XML.</p>
+                        <p><strong>Think of it as:</strong> A rulebook that ensures systems meet defined security standards.</p>
+                    </div>
+
+                    <h4>SCAP Identification Schemes</h4>
+                    <table>
+                        <tr>
+                            <th>Scheme</th>
+                            <th>Purpose</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td><strong>CPE</strong><br>(Common Platform Enumeration)</td>
+                            <td>Identifies hardware, OS, and applications</td>
+                            <td><code>cpe:/o:microsoft:windows_10</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CVE</strong><br>(Common Vulnerabilities and Exposures)</td>
+                            <td>Identifies publicly known vulnerabilities</td>
+                            <td><code>CVE-2022-43550</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CCE</strong><br>(Common Configuration Enumeration)</td>
+                            <td>Identifies system misconfigurations</td>
+                            <td><code>CCE-12345-6</code></td>
+                        </tr>
+                    </table>
+
+                    <div class="success-box">
+                        <h4>✅ Key Takeaway</h4>
+                        <p><strong>CPE</strong> = Identifies platforms (hardware/software)<br>
+                        <strong>CVE</strong> = Identifies vulnerabilities<br>
+                        <strong>CCE</strong> = Identifies misconfigurations</p>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Reflection</h4>
+                        <p>Why is standardization through SCAP important when you have multiple security tools from different vendors?</p>
+                    </div>
+
+                    <h4>Quest 1 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 1: What is the primary purpose of SCAP?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">To replace all vulnerability scanning tools</li>
+                            <li data-option="2">To standardize security data formatting and enable tool interoperability</li>
+                            <li data-option="3">To automatically patch all vulnerabilities</li>
+                            <li data-option="4">To eliminate the need for security assessments</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: Which SCAP language describes security benchmarks and configuration checks?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">OVAL</li>
+                            <li data-option="2">ARF</li>
+                            <li data-option="3">XCCDF</li>
+                            <li data-option="4">CPE</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 3: What organization maintains CVE, CWE, and ATT&CK?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">NIST</li>
+                            <li data-option="2">MITRE</li>
+                            <li data-option="3">FIRST</li>
+                            <li data-option="4">OWASP</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 2: CVSS Scoring -->
+            <div class="tab-content" id="quest2">
+                <div class="quest-section">
+                    <h3>📊 Quest 2: Understanding CVSS Scoring</h3>
+                    <p><strong>Quest Goal:</strong> Learn to read and interpret CVSS scores for prioritization</p>
+                    <p><strong>Time:</strong> 30-35 minutes</p>
+
+                    <h4>What is CVSS?</h4>
+                    <p><strong>Common Vulnerability Scoring System (CVSS)</strong> assigns a numerical score (0-10) to vulnerabilities based on:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Impact:</strong> Damage the vulnerability could cause</li>
+                        <li><strong>Exploitability:</strong> How easy it is to exploit</li>
+                        <li><strong>Mitigating Factors:</strong> Existing protections that reduce risk</li>
+                    </ul>
+
+                    <h4>CVSS Score Ranges</h4>
+                    <table>
+                        <tr>
+                            <th>Score Range</th>
+                            <th>Severity</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>0.0</td>
+                            <td>None</td>
+                            <td>No risk</td>
+                        </tr>
+                        <tr>
+                            <td>0.1 – 3.9</td>
+                            <td>Low</td>
+                            <td>Minor risk, easy to mitigate</td>
+                        </tr>
+                        <tr>
+                            <td>4.0 – 6.9</td>
+                            <td>Medium</td>
+                            <td>Moderate risk, needs attention</td>
+                        </tr>
+                        <tr>
+                            <td>7.0 – 8.9</td>
+                            <td>High</td>
+                            <td>Serious risk, quick remediation needed</td>
+                        </tr>
+                        <tr>
+                            <td>9.0 – 10.0</td>
+                            <td>Critical</td>
+                            <td>Severe risk, immediate action required</td>
+                        </tr>
+                    </table>
+
+                    <h4>CVSS Base Metrics</h4>
+
+                    <div class="example-box">
+                        <h4>Exploitability Metrics</h4>
+                        <p><strong>1. Attack Vector (AV):</strong> How the vulnerability can be exploited</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Physical (P) - Must be physically present</li>
+                            <li>Local (L) - Needs local access</li>
+                            <li>Adjacent (A) - Same network required</li>
+                            <li>Network (N) - Remotely exploitable</li>
+                        </ul>
+
+                        <p style="margin-top: 15px;"><strong>2. Attack Complexity (AC):</strong> Conditions needed</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Low (L) - Simple, reliable exploit</li>
+                            <li>High (H) - Requires special conditions</li>
+                        </ul>
+
+                        <p style="margin-top: 15px;"><strong>3. Privileges Required (PR):</strong> Access needed</p>
+                        <ul style="margin-left: 20px;">
+                            <li>None (N) - No login needed</li>
+                            <li>Low (L) - Basic user privileges</li>
+                            <li>High (H) - Admin/root access required</li>
+                        </ul>
+
+                        <p style="margin-top: 15px;"><strong>4. User Interaction (UI):</strong> User action needed?</p>
+                        <ul style="margin-left: 20px;">
+                            <li>None (N) - No user help needed</li>
+                            <li>Required (R) - User must perform action</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Impact Metrics (CIA Triad)</h4>
+                        <p><strong>Confidentiality (C):</strong> Data disclosure risk<br>
+                        <strong>Integrity (I):</strong> Data modification risk<br>
+                        <strong>Availability (A):</strong> Service disruption risk</p>
+                        <p style="margin-top: 10px;">Each rated as: <strong>None (N), Low (L), or High (H)</strong></p>
+                    </div>
+
+                    <h4>CVSS Vector String Example</h4>
+                    <pre>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</pre>
+                    <div class="info-box">
+                        <p>This means:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Attack Vector: Network (remotely exploitable)</li>
+                            <li>Attack Complexity: Low (easy to exploit)</li>
+                            <li>Privileges Required: None (no authentication)</li>
+                            <li>User Interaction: None (automatic)</li>
+                            <li>Scope: Unchanged</li>
+                            <li>High impact on Confidentiality, Integrity, Availability</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Think About It</h4>
+                        <p>Which vulnerability would you prioritize: <strong>AV:N/AC:L/PR:N</strong> (network, low complexity, no privileges) or <strong>AV:L/AC:H/PR:H</strong> (local, high complexity, high privileges)? Why?</p>
+                    </div>
+
+                    <h4>Quest 2 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 1: What CVSS score range represents CRITICAL severity?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">7.0 – 8.9</li>
+                            <li data-option="2">8.0 – 9.9</li>
+                            <li data-option="3">9.0 – 10.0</li>
+                            <li data-option="4">6.0 – 8.9</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 2: Physical (P), Local (L), Adjacent (A), or Network (N) are values for which metric?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Attack Vector</li>
+                            <li data-option="2">Attack Complexity</li>
+                            <li data-option="3">Privileges Required</li>
+                            <li data-option="4">User Interaction</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 3: What do C, I, and A represent in CVSS?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Control, Integration, Authorization</li>
+                            <li data-option="2">Complexity, Interaction, Access</li>
+                            <li data-option="3">Confidentiality, Integrity, Availability</li>
+                            <li data-option="4">Configuration, Implementation, Assessment</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 3: Advanced Metrics -->
+            <div class="tab-content" id="quest3">
+                <div class="quest-section">
+                    <h3>⚙️ Quest 3: Advanced CVSS Metrics</h3>
+                    <p><strong>Quest Goal:</strong> Understand temporal and environmental factors</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>The Three Metric Groups</h4>
+
+                    <div class="example-box">
+                        <h4>1. Base Metrics (Intrinsic Characteristics)</h4>
+                        <p>Fundamental properties that don't change:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Severity of the vulnerability</li>
+                            <li>Ease of exploitation</li>
+                            <li>Potential impact</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2. Temporal Metrics (Changing Over Time)</h4>
+                        <p>Dynamic factors:</p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Exploit Code Maturity:</strong> Availability of working exploits</li>
+                            <li><strong>Remediation Level:</strong> Patch availability</li>
+                            <li><strong>Report Confidence:</strong> Accuracy of vulnerability report</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3. Environmental Metrics (Your Specific Context)</h4>
+                        <p>Organization-specific factors:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>System architecture (critical vs. test system)</li>
+                            <li>Network configuration (internal vs. internet-facing)</li>
+                            <li>Security controls in place</li>
+                            <li>Business importance (CIA requirements)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Key Takeaway</h4>
+                        <p><strong>Base Metrics</strong> = How bad it is technically<br>
+                        <strong>Temporal Metrics</strong> = Current exploitability and patch status<br>
+                        <strong>Environmental Metrics</strong> = How much it matters in YOUR environment</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Example: CVE-2021-44228 (Log4Shell)</h4>
+                        <p><strong>Base Score:</strong> 10.0 (Critical)</p>
+                        <p><strong>Why Critical?</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>AV:N - Network exploitable</li>
+                            <li>AC:L - Easy to exploit</li>
+                            <li>PR:N - No authentication needed</li>
+                            <li>UI:N - No user interaction</li>
+                            <li>High CIA impact</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Temporal Factors:</strong> Exploit code immediately available, widely used library (log4j), massive real-world exploitation</p>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Reflection</h4>
+                        <p>If a vulnerability has a base score of 9.0 but an official patch is available (Remediation Level: Official Fix) and no exploit code exists (Exploit Maturity: Unproven), how would the temporal score compare to the base score?</p>
+                    </div>
+
+                    <h4>Quest 3 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 1: Which CVSS metric group changes over time?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Base Metrics</li>
+                            <li data-option="2">Temporal Metrics</li>
+                            <li data-option="3">Environmental Metrics</li>
+                            <li data-option="4">Impact Metrics</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: What does "Exploit Code Maturity" measure?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">How old the vulnerability is</li>
+                            <li data-option="2">Whether a patch is available</li>
+                            <li data-option="3">Availability and effectiveness of exploit code</li>
+                            <li data-option="4">The confidence in the vulnerability report</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: Environmental metrics adjust scores based on what?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Your organization's specific environment and controls</li>
+                            <li data-option="2">The age of the vulnerability</li>
+                            <li data-option="3">The vendor's reputation</li>
+                            <li data-option="4">The time of year</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 4: Validation & Context -->
+            <div class="tab-content" id="quest4">
+                <div class="quest-section">
+                    <h3>✅ Quest 4: Vulnerability Validation & Context</h3>
+                    <p><strong>Quest Goal:</strong> Learn to validate scan results and understand context</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>Vulnerability Validation</h4>
+                    <table>
+                        <tr>
+                            <th>Result Type</th>
+                            <th>Definition</th>
+                            <th>Impact</th>
+                        </tr>
+                        <tr>
+                            <td><strong>True Positive</strong> ✅</td>
+                            <td>Correctly identifies real vulnerability</td>
+                            <td>Actionable intelligence</td>
+                        </tr>
+                        <tr>
+                            <td><strong>False Positive</strong> ⚠️</td>
+                            <td>Reports vulnerability that doesn't exist</td>
+                            <td>Wastes analyst time</td>
+                        </tr>
+                        <tr>
+                            <td><strong>True Negative</strong> ✅</td>
+                            <td>Correctly identifies no vulnerability</td>
+                            <td>Confirms security</td>
+                        </tr>
+                        <tr>
+                            <td><strong>False Negative</strong> ❌</td>
+                            <td>Fails to detect real vulnerability</td>
+                            <td><strong>DANGEROUS - False sense of security</strong></td>
+                        </tr>
+                    </table>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Why False Negatives Are Most Dangerous</h4>
+                        <p>False negatives create a false sense of security. Organizations believe systems are safe when they're actually vulnerable.</p>
+                        <p><strong>Mitigation strategies:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Use multiple scanning tools</li>
+                            <li>Keep scanners updated</li>
+                            <li>Manual validation of critical systems</li>
+                        </ul>
+                    </div>
+
+                    <h4>Contextual Factors</h4>
+
+                    <div class="example-box">
+                        <h4>1. Patch Availability</h4>
+                        <p>If a vendor has released a patch, risk is lower (mitigation exists). If no patch exists, risk remains high.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2. Impact Assessment</h4>
+                        <p>Vulnerabilities allowing access to low-value systems rated lower. Vulnerabilities enabling data modification in critical databases rated higher.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3. Threat Actor Sophistication</h4>
+                        <p>If only advanced attackers could exploit it, risk is lower. If any hacker can exploit it, risk is much higher.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>4. Asset Value</h4>
+                        <p>CVSS 7.0 vulnerability on critical payment processing server is more urgent than same score on isolated test machine.</p>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>✅ Context Transforms Numbers into Intelligence</h4>
+                        <p>CVSS scores are valuable starting points, but must be adjusted based on patches, impact, threat actors, asset value, and environmental protections.</p>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Critical Thinking</h4>
+                        <p>Two vulnerabilities:</p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Vuln A:</strong> CVSS 8.5, no patch, public exploit code, public-facing web server</li>
+                            <li><strong>Vuln B:</strong> CVSS 9.2, official patch available, no known exploits, internal file server</li>
+                        </ul>
+                        <p>Which should you prioritize? Why?</p>
+                    </div>
+
+                    <h4>Quest 4 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 1: Which scan result type is most dangerous?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">False Negative</li>
+                            <li data-option="2">False Positive</li>
+                            <li data-option="3">True Positive</li>
+                            <li data-option="4">True Negative</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: What type of vulnerability cannot be detected by scanning tools?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Configuration weaknesses</li>
+                            <li data-option="2">Missing patches</li>
+                            <li data-option="3">Zero-day vulnerabilities (not yet known)</li>
+                            <li data-option="4">Default credentials</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: Which factor would DECREASE effective risk of a high CVSS vulnerability?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">System is air-gapped with no network connectivity</li>
+                            <li data-option="2">Public exploit code is available</li>
+                            <li data-option="3">No patch is available</li>
+                            <li data-option="4">System is internet-facing</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 5: Hands-On Practice -->
+            <div class="tab-content" id="quest5">
+                <div class="quest-section">
+                    <h3>🔬 Quest 5: Hands-On Practice</h3>
+                    <p><strong>Quest Goal:</strong> Apply your knowledge through practical exercises</p>
+                    <p><strong>Time:</strong> 20-25 minutes</p>
+
+                    <div class="lab-exercise">
+                        <h4>🧪 Lab Exercise: CVSS Calculator Practice</h4>
+                        <p><strong>Duration:</strong> 15 minutes</p>
+
+                        <div class="lab-step">
+                            <h5>Step 1: Access CVSS Calculator</h5>
+                            <p>Open: <strong>https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator</strong></p>
+                        </div>
+
+                        <div class="lab-step">
+                            <h5>Step 2: Practice Scenario</h5>
+                            <p><strong>Scenario:</strong> SQL injection in public-facing web app</p>
+                            <p><strong>Calculate score using:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>Attack Vector: Network</li>
+                                <li>Attack Complexity: Low</li>
+                                <li>Privileges Required: None</li>
+                                <li>User Interaction: None</li>
+                                <li>Scope: Unchanged</li>
+                                <li>Confidentiality: High</li>
+                                <li>Integrity: High</li>
+                                <li>Availability: None</li>
+                            </ul>
+                            <p><strong>Expected Vector:</strong> <code>CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N</code></p>
+                            <p><strong>Question:</strong> What base score did you get? Is it Low, Medium, High, or Critical?</p>
+                        </div>
+
+                        <div class="lab-step">
+                            <h5>Step 3: Analyze Real CVE</h5>
+                            <p>Visit <strong>https://nvd.nist.gov/</strong></p>
+                            <p>Search for <code>CVE-2021-44228</code> (Log4Shell)</p>
+                            <ul style="margin-left: 20px;">
+                                <li>Review its CVSS score</li>
+                                <li>Examine the vector string</li>
+                                <li>Read why it received that score</li>
+                            </ul>
+                        </div>
+
+                        <div class="lab-step">
+                            <h5>Step 4: Reflection</h5>
+                            <ul style="margin-left: 20px;">
+                                <li>How does Attack Vector affect the score?</li>
+                                <li>Why does "Scope: Changed" increase severity?</li>
+                                <li>Should you prioritize high impact with high complexity vulnerabilities?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="success-box" style="margin-top: 30px;">
+                        <h4>🎉 Congratulations!</h4>
+                        <p>You've completed Lesson 6: Performing Vulnerability Analysis!</p>
+                        <p><strong>You've learned:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>✅ SCAP standards and vulnerability management</li>
+                            <li>✅ CVSS scores and vector strings</li>
+                            <li>✅ Base, temporal, and environmental metrics</li>
+                            <li>✅ Vulnerability validation and context</li>
+                            <li>✅ Hands-on CVSS calculator practice</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Final Reflection</h4>
+                        <p>You've received a scan showing 500 vulnerabilities (CVSS 3.0 to 9.8). You have 2 weeks and limited resources.</p>
+                        <p><strong>How would you prioritize remediation?</strong> Consider CVSS scores, contextual factors, patch availability, and business impact.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div class="tab-content" id="resources">
+                <div class="quest-section">
+                    <h3>📥 Lesson Resources</h3>
+                    
+                    <h4>📚 Study Materials</h4>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📄 Lesson 6 Study Guide</a>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📊 CVSS Scoring Reference Card</a>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📋 SCAP Languages Cheat Sheet</a>
+
+                    <h4 style="margin-top: 30px;">🌐 External Resources</h4>
+                    <div class="info-box">
+                        <h4>Official CVSS Resources</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>FIRST CVSS Specification:</strong> <a href="https://www.first.org/cvss/specification-document" target="_blank">https://www.first.org/cvss/specification-document</a></li>
+                            <li><strong>NIST CVSS Calculator:</strong> <a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator" target="_blank">https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator</a></li>
+                            <li><strong>National Vulnerability Database:</strong> <a href="https://nvd.nist.gov/" target="_blank">https://nvd.nist.gov/</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>SCAP Resources</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>NIST SCAP Overview:</strong> <a href="https://csrc.nist.gov/projects/security-content-automation-protocol" target="_blank">https://csrc.nist.gov/projects/security-content-automation-protocol</a></li>
+                            <li><strong>MITRE CVE List:</strong> <a href="https://cve.mitre.org/" target="_blank">https://cve.mitre.org/</a></li>
+                            <li><strong>MITRE ATT&CK:</strong> <a href="https://attack.mitre.org/" target="_blank">https://attack.mitre.org/</a></li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">🎓 Key Takeaways</h4>
+                    <div class="success-box">
+                        <ul style="margin-left: 20px;">
+                            <li><strong>SCAP</strong> provides the "common language" for security tools</li>
+                            <li><strong>CVSS scores</strong> must be adjusted based on context</li>
+                            <li><strong>Validation</strong> is critical - false negatives are dangerous</li>
+                            <li><strong>Context matters</strong> - patches, impact, threats, asset value</li>
+                            <li><strong>Standardization</strong> through CPE, CVE, CCE ensures consistent tracking</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">💡 Pro Tips</h4>
+                    <div class="example-box">
+                        <ul style="margin-left: 20px;">
+                            <li>Always verify high-severity findings manually</li>
+                            <li>Use multiple scanning tools to reduce false negatives</li>
+                            <li>Document contextual analysis for audits</li>
+                            <li>Prioritize internet-facing and high-value assets first</li>
+                            <li>Remember: CVSS 5.0 on critical system may be more urgent than CVSS 8.0 on isolated test machine</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz answers with explanations
+        const quizAnswers = {
+            "What is the primary purpose of SCAP?": {
+                correct: 2,
+                explanation: "Correct! SCAP standardizes security data formatting and enables different security tools to communicate and work together seamlessly.",
+                incorrectExplanation: "Not quite. SCAP doesn't replace tools or automatically patch vulnerabilities. Instead, it provides a standardized framework that allows different security tools to communicate and share data consistently. 🔄 Reflect: Why is having a common language important when multiple vendors create security tools?"
+            },
+            "Which SCAP language describes security benchmarks and configuration checks?": {
+                correct: 3,
+                explanation: "Correct! XCCDF (Extensible Configuration Checklist Description Format) standardizes how security benchmarks and configuration checks are described.",
+                incorrectExplanation: "Not correct. OVAL describes system state, ARF is for asset reporting, and CPE is for platform identification. XCCDF is specifically for security benchmarks and configuration checks. 🔄 Reflect: Think of XCCDF as a 'rulebook' - what kinds of rules would it contain for system security?"
+            },
+            "What organization maintains CVE, CWE, and ATT&CK?": {
+                correct: 2,
+                explanation: "Correct! MITRE is a non-profit that plays a central role in cybersecurity standardization, maintaining CVE, CWE, OVAL, and the ATT&CK framework.",
+                incorrectExplanation: "Not correct. While NIST, FIRST, and OWASP all contribute to cybersecurity standards, MITRE specifically maintains CVE, CWE, OVAL, and the ATT&CK framework. 🔄 Reflect: Why is it valuable to have one organization maintain these interconnected standards?"
+            },
+            "What CVSS score range represents CRITICAL severity?": {
+                correct: 3,
+                explanation: "Correct! CVSS scores of 9.0 to 10.0 are classified as CRITICAL severity, requiring immediate attention and remediation.",
+                incorrectExplanation: "Not quite. 7.0-8.9 is High severity. Critical vulnerabilities are scored 9.0-10.0, representing the most severe risks requiring immediate remediation. 🔄 Reflect: What makes a 9.0 vulnerability 'critical' versus an 8.9 'high' severity vulnerability?"
+            },
+            "Physical (P), Local (L), Adjacent (A), or Network (N) are values for which metric?": {
+                correct: 1,
+                explanation: "Correct! Attack Vector (AV) describes how the vulnerability can be exploited - from physical access to remote network exploitation.",
+                incorrectExplanation: "Not correct. These values (P, L, A, N) describe the Attack Vector (AV) - the path an attacker uses to exploit the vulnerability, ranging from physical to network access. 🔄 Reflect: Why is a network-exploitable vulnerability generally more severe than one requiring physical access?"
+            },
+            "What do C, I, and A represent in CVSS?": {
+                correct: 3,
+                explanation: "Correct! C, I, and A represent the CIA Triad: Confidentiality, Integrity, and Availability - the three fundamental aspects of information security.",
+                incorrectExplanation: "Not correct. C, I, and A represent Confidentiality, Integrity, and Availability - the CIA Triad, which are the core pillars of information security. 🔄 Reflect: Can you think of real-world examples where each of these (C, I, A) would be most critical?"
+            },
+            "Which CVSS metric group changes over time?": {
+                correct: 2,
+                explanation: "Correct! Temporal Metrics change over time as exploit code becomes available, patches are released, and the vulnerability report confidence changes.",
+                incorrectExplanation: "Not correct. Base Metrics are constant, and Environmental Metrics are organization-specific. Temporal Metrics specifically account for factors that change over time like exploit availability and patches. 🔄 Reflect: How might a vulnerability's temporal score change from Day 1 to Day 30 after disclosure?"
+            },
+            "What does \"Exploit Code Maturity\" measure?": {
+                correct: 3,
+                explanation: "Correct! Exploit Code Maturity (part of Temporal Metrics) measures the availability and effectiveness of exploit code, ranging from unproven to fully functional.",
+                incorrectExplanation: "Not correct. Exploit Code Maturity doesn't measure age or patches. It specifically measures the availability and sophistication of exploit code for the vulnerability. 🔄 Reflect: Why does the existence of public exploit code significantly increase a vulnerability's real-world risk?"
+            },
+            "Environmental metrics adjust scores based on what?": {
+                correct: 1,
+                explanation: "Correct! Environmental Metrics customize the score based on your organization's specific context - network architecture, security controls, asset criticality, etc.",
+                incorrectExplanation: "Not correct. Environmental Metrics don't consider age, vendor reputation, or time of year. They adjust scores based on your organization's specific environment, controls, and requirements. 🔄 Reflect: How might the same vulnerability be scored differently in a hospital versus a game development company?"
+            },
+            "Which scan result type is most dangerous?": {
+                correct: 1,
+                explanation: "Correct! False Negatives are most dangerous because they create a false sense of security - real vulnerabilities exist but aren't detected, leaving systems exposed.",
+                incorrectExplanation: "Not correct. While False Positives waste time, False Negatives are most dangerous because they miss real vulnerabilities, leaving your systems exposed while you believe they're secure. 🔄 Reflect: What strategies can you use to minimize false negatives in vulnerability scanning?"
+            },
+            "What type of vulnerability cannot be detected by scanning tools?": {
+                correct: 3,
+                explanation: "Correct! Zero-day vulnerabilities (not yet known or documented) cannot be detected by scanning tools because they rely on signatures and known vulnerability databases.",
+                incorrectExplanation: "Not correct. Scanners can detect configuration weaknesses, missing patches, and default credentials. Zero-day vulnerabilities are unknown/undocumented, so they can't be in scanner databases yet. 🔄 Reflect: If scanners can't detect zero-days, what other security measures help protect against them?"
+            },
+            "Which factor would DECREASE effective risk of a high CVSS vulnerability?": {
+                correct: 1,
+                explanation: "Correct! Air-gapped systems with no network connectivity are isolated, making exploitation nearly impossible and significantly reducing real-world risk despite a high base CVSS score.",
+                incorrectExplanation: "Not correct. Public exploits, lack of patches, and internet exposure all increase risk. Air-gapping (complete network isolation) is the only option that decreases effective risk. 🔄 Reflect: Can you think of other compensating controls that might reduce the effective risk of a high CVSS vulnerability?"
+            }
+        };
+
+        // Tab Navigation
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+                
+                document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+                document.querySelector(`.sidebar li[data-quest="${tabName}"]`).classList.add('active');
+                
+                document.querySelector('.main-content').scrollTop = 0;
+            });
+        });
+
+        // Sidebar Navigation
+        document.querySelectorAll('.sidebar li').forEach(item => {
+            item.addEventListener('click', function() {
+                const questName = this.getAttribute('data-quest');
+                
+                document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.tab-btn[data-tab="${questName}"]`).classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(questName).classList.add('active');
+                
+                document.querySelector('.main-content').scrollTop = 0;
+            });
+        });
+
+        // Quiz interaction with immediate feedback and reflection
+        document.querySelectorAll('.quiz-question').forEach(question => {
+            const correctAnswer = question.getAttribute('data-answer');
+            const questionText = question.querySelector('h4').textContent;
+            const options = question.querySelectorAll('.quiz-options li');
+            const feedbackDiv = question.querySelector('.quiz-feedback');
+            const feedbackText = feedbackDiv.querySelector('.feedback-text');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (this.classList.contains('disabled')) return;
+                    
+                    const selectedOption = this.getAttribute('data-option');
+                    const quizData = quizAnswers[questionText];
+                    
+                    options.forEach(opt => opt.classList.add('disabled'));
+                    
+                    if (selectedOption == correctAnswer) {
+                        this.classList.add('correct');
+                        feedbackDiv.classList.add('show', 'correct-feedback');
+                        feedbackText.innerHTML = `<strong>✅ Correct!</strong><br>${quizData.explanation}`;
+                    } else {
+                        this.classList.add('incorrect');
+                        options.forEach(opt => {
+                            if (opt.getAttribute('data-option') == correctAnswer) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                        feedbackDiv.classList.add('show', 'incorrect-feedback');
+                        feedbackText.innerHTML = `<strong>❌ Incorrect</strong><br>${quizData.incorrectExplanation}<br><br><em>The correct answer is highlighted in green.</em>`;
+                    }
+                    
+                    updateProgress();
+                });
+            });
+        });
+
+        // Progress tracking
+        function updateProgress() {
+            const totalQuestions = document.querySelectorAll('.quiz-question').length;
+            const answeredQuestions = document.querySelectorAll('.quiz-options li.correct, .quiz-options li.incorrect').length / document.querySelectorAll('.quiz-question').length;
+            const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+            
+            const progressBar = document.getElementById('sidebar-progress');
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson5_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson7_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+
+</html>

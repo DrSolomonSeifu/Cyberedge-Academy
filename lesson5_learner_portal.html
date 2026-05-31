@@ -1,0 +1,2202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 5: Vulnerability Scanning Methods - Learner Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f2847 0%, #1e3c72 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .sidebar h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            font-size: 1.1em;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .sidebar li:hover {
+            background: #34495e;
+            padding-left: 15px;
+        }
+
+        .sidebar li.active {
+            background: #3498db;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #2c3e50;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: #ecf0f1;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hook-box {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .hook-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .scenario-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .objective-list {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .objective-list li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .quest-section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+
+        .quest-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .quest-section h4 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #856404;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #155724;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .quiz-options li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-options li:hover {
+            background: #3498db;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #3498db;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+
+        .badge.earned {
+            background: #2ecc71;
+        }
+
+        .badge.locked {
+            background: #95a5a6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 15px;
+            font-size: 1.2em;
+            color: #3498db;
+        }
+
+        .glossary-term {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+
+        .glossary-term strong {
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .reflection-prompt {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+        }
+
+        .reflection-prompt h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CyberEdge Academy</h1>
+        <h2>Cybersecurity Analyst - Lesson 5: Implementing Vulnerability Scanning Methods</h2>
+        <p>Dr. Solomon Seifu | CyberEdge Academy</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>📚 LESSON OBJECTIVES</h3>
+            <ul id="objectives-nav">
+                <li onclick="scrollToSection('obj1')">🎯 Understand Industry Regulations</li>
+                <li onclick="scrollToSection('obj2')">🔍 Explore Vulnerability Scanning Concepts</li>
+                <li onclick="scrollToSection('obj3')">📊 Review Security Baselines</li>
+                <li onclick="scrollToSection('obj4')">⚙️ Understand Special Scanning Considerations</li>
+                <li onclick="scrollToSection('obj5')">🏭 Review Operational Technology (OT)</li>
+            </ul>
+
+            <h3>🗺️ QUEST MAP</h3>
+            <ul id="quest-nav">
+                <li onclick="showTab('overview')">🏠 Mission Overview</li>
+                <li onclick="showTab('content')">📖 Learning Quest</li>
+                <li onclick="showTab('labs')">🧪 Labs & Quizzes</li>
+                <li onclick="showTab('resources')">📦 Resources</li>
+                <li onclick="showTab('progress')">🏆 Progress</li>
+            </ul>
+
+            <div class="progress-container">
+                <h3>📈 Your Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar">0%</div>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.9em;">Complete quests to earn badges!</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="showTab('overview')">Mission Overview</button>
+                <button class="tab-btn" onclick="showTab('content')">Learning Quest</button>
+                <button class="tab-btn" onclick="showTab('labs')">Labs & Quizzes</button>
+                <button class="tab-btn" onclick="showTab('resources')">Resources</button>
+                <button class="tab-btn" onclick="showTab('progress')">Progress & Badges</button>
+            </div>
+
+            <!-- OVERVIEW TAB -->
+            <div id="overview" class="tab-content active">
+                <div class="hook-box">
+                    <h2>🚨 Opening Scenario: The TechGuard Crisis</h2>
+                    <p><strong>September 12, 2023 - 3:47 AM</strong></p>
+                    <p>TechGuard Financial's Security Operations Center receives an urgent alert. Their vulnerability scanner just lit up red—a critical vulnerability has been exposed on their payment processing servers for three weeks. The CVSS score: 9.8. Exploitability: ACTIVE IN THE WILD.</p>
+                    <p style="margin-top: 15px;">The security team knew this vulnerability existed. The patch was available. But there was no governance framework to mandate timely patching. No vulnerability management policy. No accountability.</p>
+                    <p style="margin-top: 15px; font-weight: bold; font-size: 1.1em;">Sound familiar? This is exactly what happened to Equifax in 2017, leading to 147 million people's data being stolen.</p>
+                    <p style="margin-top: 15px;">Today, you'll learn how vulnerability scanning—combined with proper governance and response—can prevent these disasters.</p>
+                </div>
+
+                <div class="scenario-box">
+                    <h3>🎯 Your Mission</h3>
+                    <p>As a CyberEdge analyst, you'll master vulnerability scanning methods to protect organizations from the failures that destroyed companies like Equifax. You'll learn to scan networks, prioritize risks, and integrate scanning into a governance framework that ensures action is taken.</p>
+                </div>
+
+                <div class="objective-list">
+                    <h3>What You'll Learn in This Quest</h3>
+                    <ul>
+                        <li id="obj1"><strong>Quest 1: Compliance & Regulations</strong> - Learn how frameworks like PCI DSS, HIPAA, and GDPR drive vulnerability scanning requirements</li>
+                        <li id="obj2"><strong>Quest 2: Vulnerability Scanning Concepts</strong> - Master active vs passive scans, credentialed vs non-credentialed, and agent-based approaches</li>
+                        <li id="obj3"><strong>Quest 3: Security Baselines</strong> - Discover how CIS Benchmarks and STIGs define secure configurations</li>
+                        <li id="obj4"><strong>Quest 4: Special Considerations</strong> - Navigate performance impacts, false positives, and scan timing strategies</li>
+                        <li id="obj5"><strong>Quest 5: Operational Technology</strong> - Apply scanning safely to SCADA/ICS systems without disrupting critical infrastructure</li>
+                    </ul>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>🤔 Reflection Question</h4>
+                    <p>Before we begin: Why do you think companies like Equifax fail to patch known vulnerabilities even when they have the technical capability to do so? What's missing?</p>
+                </div>
+            </div>
+
+            <!-- CONTENT TAB -->
+            <div id="content" class="tab-content">
+                <h2>🗺️ Learning Quest: Mastering Vulnerability Scanning</h2>
+
+                <!-- QUEST 1: COMPLIANCE REQUIREMENTS -->
+                <div class="quest-section">
+                    <h3>Quest 1: Understanding Compliance & Regulations 📋</h3>
+                    
+                    <p>Compliance in cybersecurity ensures that organizations follow established laws, standards, and frameworks to protect data, systems, and users. It's not just about avoiding fines—it's about creating a culture of security.</p>
+
+                    <h4>Why Compliance Matters</h4>
+                    <p>Compliance frameworks provide structured standards that:</p>
+                    <ul>
+                        <li>Prevent legal penalties and fines</li>
+                        <li>Strengthen overall security posture</li>
+                        <li>Build trust with customers and stakeholders</li>
+                        <li>Define clear response procedures for incidents</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <strong>Key Insight:</strong> Compliance is ongoing, not a one-time checkbox. It requires regular assessments, testing, monitoring, and employee education.
+                    </div>
+
+                    <h4>Major Compliance Frameworks</h4>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Framework</th>
+                                <th>Who It Applies To</th>
+                                <th>Key Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>HIPAA</strong></td>
+                                <td>Healthcare organizations</td>
+                                <td>Patient data encryption and auditing</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PCI DSS</strong></td>
+                                <td>Organizations handling payment cards</td>
+                                <td>Secure credit/debit card transactions</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GDPR</strong></td>
+                                <td>Organizations serving EU residents</td>
+                                <td>Personal data protection and user consent</td>
+                            </tr>
+                            <tr>
+                                <td><strong>COPPA</strong></td>
+                                <td>Websites/services for children under 13</td>
+                                <td>Parental consent for data collection</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ISO 27001</strong></td>
+                                <td>Global organizations</td>
+                                <td>Information Security Management System</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NIST</strong></td>
+                                <td>U.S. organizations (voluntary)</td>
+                                <td>Cybersecurity Framework and Risk Management</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Best Practice Guidance Organizations</h4>
+                    
+                    <div class="example-box">
+                        <strong>NIST (National Institute of Standards and Technology)</strong>
+                        <ul>
+                            <li>U.S.-focused, non-regulatory agency</li>
+                            <li>Publishes free cybersecurity guidance (SP 800 series, CSF, RMF)</li>
+                            <li>Widely adopted by government and industry</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>ISO (International Organization for Standardization)</strong>
+                        <ul>
+                            <li>Global reach—adopted worldwide</li>
+                            <li>ISO 27k series for information security (27001, 27002, 27017, 27018, 27701)</li>
+                            <li>Standards require purchase (not free like NIST)</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>CIS (Center for Internet Security)</strong>
+                        <ul>
+                            <li>Provides free CIS Benchmarks for secure configurations</li>
+                            <li>Community-driven, consensus-based best practices</li>
+                            <li>Covers OS, applications, cloud services, and network devices</li>
+                        </ul>
+                    </div>
+
+                    <h4>OWASP Top 10 Web Application Risks</h4>
+                    <p>OWASP (Open Web Application Security Project) is a nonprofit that publishes the most critical security risks for web applications:</p>
+                    
+                    <ol>
+                        <li><strong>Broken Access Control</strong> - Unauthorized users gain access to data or functions</li>
+                        <li><strong>Cryptographic Failures</strong> - Weak encryption compromises data security</li>
+                        <li><strong>Injection</strong> - Malicious code (SQL, OS commands) inserted into applications</li>
+                        <li><strong>Insecure Design</strong> - Poor architecture creates vulnerabilities</li>
+                        <li><strong>Security Misconfiguration</strong> - Incorrect settings leave apps exposed</li>
+                        <li><strong>Vulnerable and Outdated Components</strong> - Using unpatched libraries</li>
+                        <li><strong>Identification and Authentication Failures</strong> - Weak login controls</li>
+                        <li><strong>Software and Data Integrity Failures</strong> - Tampering with code/data</li>
+                        <li><strong>Security Logging and Monitoring Failures</strong> - Ineffective detection</li>
+                        <li><strong>Server-Side Request Forgery (SSRF)</strong> - Exploiting server to access unauthorized resources</li>
+                    </ol>
+
+                    <h4>PCI DSS - 12 Requirements for Payment Card Security</h4>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1. Install and maintain firewall</td><td>Separate payment systems from public internet</td></tr>
+                            <tr><td>2. Avoid default settings</td><td>Change default passwords/credentials</td></tr>
+                            <tr><td>3. Protect against malware</td><td>Install anti-malware software</td></tr>
+                            <tr><td>4. Use and update antivirus</td><td>Schedule daily scans and updates</td></tr>
+                            <tr><td>5. Secure web applications</td><td>Use HTTPS encryption</td></tr>
+                            <tr><td>6. Prevent unauthorized access</td><td>Enforce MFA and strong authentication</td></tr>
+                            <tr><td>7. Restrict access to cardholder data</td><td>Give access only to those who need it</td></tr>
+                            <tr><td>8. Assign unique ID to each user</td><td>Ensure accountability with individual logins</td></tr>
+                            <tr><td>9. Restrict physical access</td><td>Lock servers in secured data centers</td></tr>
+                            <tr><td>10. Track and monitor access</td><td>Log all access to cardholder data</td></tr>
+                            <tr><td>11. Regularly test security</td><td>Run penetration tests and vulnerability scans</td></tr>
+                            <tr><td>12. Maintain security policy</td><td>Annual training and comprehensive policies</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning-box">
+                        <strong>PCI DSS Audits:</strong>
+                        <ul>
+                            <li>Lower-risk organizations: Audited once per year</li>
+                            <li>High-risk organizations: Audited once per quarter</li>
+                            <li>Must be performed by a Qualified Security Assessor (QSA)</li>
+                            <li>Organizations pay for their own audits</li>
+                            <li>Failed audits require remediation before re-audit</li>
+                        </ul>
+                    </div>
+
+                    <h4>GDPR - Seven Principles</h4>
+                    <ol>
+                        <li><strong>Lawfulness, Fairness, and Transparency</strong> - Collect data openly and legally</li>
+                        <li><strong>Purpose Limitation</strong> - Use data only for specified purposes</li>
+                        <li><strong>Data Minimization</strong> - Collect only necessary data</li>
+                        <li><strong>Accuracy</strong> - Keep personal data correct and up-to-date</li>
+                        <li><strong>Storage Limitation</strong> - Don't keep data longer than required</li>
+                        <li><strong>Integrity and Confidentiality</strong> - Protect data with encryption and controls</li>
+                        <li><strong>Accountability</strong> - Prove compliance through documentation and audits</li>
+                    </ol>
+
+                    <div class="reflection-prompt">
+                        <h4>💭 Think About It</h4>
+                        <p>If TechGuard Financial had followed PCI DSS requirement #11 (regularly test security), would the breach have been prevented? What specific actions would they have taken?</p>
+                    </div>
+                </div>
+
+                <!-- QUEST 2: VULNERABILITY SCANNING CONCEPTS -->
+                <div class="quest-section">
+                    <h3>Quest 2: Vulnerability Scanning Concepts 🔍</h3>
+                    
+                    <p>Vulnerability scanning is the cornerstone of proactive security. It helps identify weaknesses before attackers exploit them.</p>
+
+                    <h4>Four Main Types of Vulnerability Scanning</h4>
+
+                    <div class="info-box">
+                        <strong>1. Network Scanning</strong>
+                        <p>Identifies exposed services like open ports and misconfigured devices.</p>
+                        <p><strong>Tool Example:</strong> Nmap - Discovers hosts and services by sending packets and analyzing responses.</p>
+                        <p><strong>Detects:</strong> Open ports, running services, potential vulnerabilities</p>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>2. Application Scanning</strong>
+                        <p>Focuses on finding flaws in web applications.</p>
+                        <p><strong>Tool Example:</strong> OWASP ZAP - Open-source tool for web app vulnerabilities.</p>
+                        <p><strong>Detects:</strong> SQL Injection, XSS, insecure configurations</p>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>3. Operating System (OS) Scanning</strong>
+                        <p>Checks for vulnerabilities in operating systems.</p>
+                        <p><strong>Tool Example:</strong> Nessus - Leading vulnerability scanner.</p>
+                        <p><strong>Detects:</strong> Missing patches, misconfigurations, known OS flaws</p>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>4. Comprehensive Assessment</strong>
+                        <p>Uses all scanning methods together for complete visibility.</p>
+                        <p><strong>Benefit:</strong> Correlates vulnerabilities across network, application, and OS layers.</p>
+                    </div>
+
+                    <h4>Active vs Passive Scanning</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Active Scanning</th>
+                                <th>Passive Scanning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Method</strong></td>
+                                <td>Sends probes/requests to systems</td>
+                                <td>Observes network traffic</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Detection</strong></td>
+                                <td>Can be detected by IDS/IPS</td>
+                                <td>Stealthy, hard to detect</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Impact</strong></td>
+                                <td>May disrupt fragile systems</td>
+                                <td>Non-intrusive, safe</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Coverage</strong></td>
+                                <td>Comprehensive, immediate results</td>
+                                <td>Limited to visible traffic</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Techniques</strong></td>
+                                <td>Port scanning, banner grabbing, service enumeration</td>
+                                <td>Packet capture, flow analysis</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Use Case</strong></td>
+                                <td>Regular security assessments</td>
+                                <td>Continuous monitoring, sensitive systems</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="example-box">
+                        <strong>Active Scanning Example:</strong>
+                        <p>A scanner sends HTTP requests to a web server, testing for outdated SSL/TLS versions. It discovers the server accepts SSLv3, which has known vulnerabilities.</p>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Passive Scanning Example:</strong>
+                        <p>A packet capture tool observes employees logging into the company email server using unencrypted POP3. Credentials are visible in cleartext—a critical vulnerability.</p>
+                    </div>
+
+                    <h4>Credentialed vs Non-Credentialed Scans</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Non-Credentialed</th>
+                                <th>Credentialed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Access Level</strong></td>
+                                <td>No login required</td>
+                                <td>Logs in with credentials</td>
+                            </tr>
+                            <tr>
+                                <td><strong>View</strong></td>
+                                <td>Outsider perspective</td>
+                                <td>Insider perspective</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scope</strong></td>
+                                <td>Surface-level vulnerabilities</td>
+                                <td>Deep inspection (software, configs, accounts)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Setup</strong></td>
+                                <td>Easy, fast</td>
+                                <td>Requires secure credential management</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Risk</strong></td>
+                                <td>Low risk</td>
+                                <td>Higher risk if credentials compromised</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Accuracy</strong></td>
+                                <td>More false positives</td>
+                                <td>Highest fidelity, fewer false positives</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning-box">
+                        <strong>Protecting Credentialed Scan Accounts:</strong>
+                        <ul>
+                            <li>Store credentials in password vault/manager</li>
+                            <li>Use least privilege (avoid Domain Admin or root)</li>
+                            <li>Rotate passwords regularly</li>
+                            <li>Limit scope (specific hosts, time windows)</li>
+                            <li>Audit and monitor all credential use</li>
+                            <li>Use dedicated service accounts</li>
+                        </ul>
+                    </div>
+
+                    <h4>Agent-Based vs Agentless Scans</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Agentless</th>
+                                <th>Agent-Based</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Installation</strong></td>
+                                <td>No software on endpoints</td>
+                                <td>Requires agent installation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Collection</strong></td>
+                                <td>Remote (SSH, WMI, SNMP)</td>
+                                <td>Local agent collects and sends data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ease of Use</strong></td>
+                                <td>Very simple setup</td>
+                                <td>Requires testing, deployment, updates</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Detail Level</strong></td>
+                                <td>Limited</td>
+                                <td>Enhanced, granular data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Firewall Navigation</strong></td>
+                                <td>Can be blocked</td>
+                                <td>Works seamlessly across firewalls</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scanner Overhead</strong></td>
+                                <td>Higher on central scanner</td>
+                                <td>Reduced (agent does heavy lifting)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Static vs Dynamic Analysis</h4>
+
+                    <div class="info-box">
+                        <strong>Static Analysis:</strong>
+                        <ul>
+                            <li>Reviews uncompiled source code</li>
+                            <li>Can be manual or automated</li>
+                            <li>Tool Example: SonarQube - Detects bugs, code smells, security issues</li>
+                            <li>Catches vulnerabilities before code runs</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Dynamic Analysis:</strong>
+                        <ul>
+                            <li>Evaluates code while executing</li>
+                            <li>Tests runtime behavior</li>
+                            <li>Tool Examples: OWASP ZAP, Burp Suite</li>
+                            <li>Detects issues that only appear during execution</li>
+                        </ul>
+                    </div>
+
+                    <h4>Advanced Techniques</h4>
+
+                    <div class="example-box">
+                        <strong>Fuzzing:</strong>
+                        <p>A dynamic analysis technique that feeds applications random, unexpected, or malformed data to uncover hidden issues.</p>
+                        <ul>
+                            <li>Black-box testing (no internal knowledge needed)</li>
+                            <li>Tools: Peach Fuzzer, Sulley, OWASP fuzzing projects</li>
+                            <li>Example: Sending SQL injection strings to see if app crashes or reveals data</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Reverse Engineering:</strong>
+                        <p>Deconstructing software/hardware to understand how it works.</p>
+                        <ul>
+                            <li>Extract source code or binaries</li>
+                            <li>Identify programming methods and vulnerabilities</li>
+                            <li>Analyze malware behavior</li>
+                            <li>Discover what patches fix (attackers use this to weaponize vulnerabilities)</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>💭 Critical Thinking</h4>
+                        <p>You're securing a hospital's patient records system. Would you use active or passive scanning? Credentialed or non-credentialed? Agent-based or agentless? Explain your reasoning.</p>
+                    </div>
+                </div>
+
+                <!-- QUEST 3: SECURITY BASELINES -->
+                <div class="quest-section">
+                    <h3>Quest 3: Security Baselines & Configuration Management 📊</h3>
+                    
+                    <p>A configuration baseline sets the minimum required security standards for devices, operating systems, and applications. It's your "measuring stick" for secure configurations.</p>
+
+                    <h4>What is a Configuration Baseline?</h4>
+
+                    <ul>
+                        <li>Defines what is considered "secure by default"</li>
+                        <li>Specifies recommended services, policies, and security settings</li>
+                        <li>Varies based on system role and risk environment</li>
+                        <li>Helps verify that endpoints are configured correctly</li>
+                        <li>Identifies subtle configuration issues</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <strong>Sources of Baselines:</strong>
+                        <ul>
+                            <li>Device manufacturers and software vendors</li>
+                            <li>CIS (Center for Internet Security) Benchmarks</li>
+                            <li>DoD Security Technical Implementation Guides (STIGs)</li>
+                            <li>NIST Special Publications</li>
+                        </ul>
+                    </div>
+
+                    <h4>CIS Benchmarks Overview</h4>
+
+                    <p>CIS Benchmarks are community-driven, consensus-based security configuration guidelines created to safeguard IT systems.</p>
+
+                    <div class="success-box">
+                        <strong>Key Features:</strong>
+                        <ul>
+                            <li>Initiated in 2003 with input from public and private sector experts</li>
+                            <li>100+ guidelines covering various IT security aspects</li>
+                            <li>Technology-specific advice (Windows, UNIX, Linux, cloud platforms)</li>
+                            <li>Regularly updated with community feedback</li>
+                            <li>Free and downloadable online</li>
+                            <li>Adaptable to different organizational needs</li>
+                        </ul>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CIS Benchmark Area</th>
+                                <th>What It Covers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Operating Systems</td><td>Windows, Linux, macOS hardening</td></tr>
+                            <tr><td>Network Devices</td><td>Routers, switches, firewalls</td></tr>
+                            <tr><td>Cloud Services</td><td>AWS, Azure, Google Cloud configurations</td></tr>
+                            <tr><td>Applications</td><td>Web servers, databases, email systems</td></tr>
+                            <tr><td>Mobile Devices</td><td>iOS, Android security settings</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Device Hardening Options</h4>
+
+                    <p>Hardening is the process of configuring systems to reduce vulnerabilities and strengthen security.</p>
+
+                    <div class="example-box">
+                        <strong>Key Hardening Steps:</strong>
+                        <ul>
+                            <li><strong>Configuration Management:</strong> Use templates for consistent settings</li>
+                            <li><strong>Minimize Attack Surface:</strong> Disable unnecessary protocols and services</li>
+                            <li><strong>Interface Management:</strong> Turn off unused network interfaces</li>
+                            <li><strong>Service Management:</strong> Disable non-essential services</li>
+                            <li><strong>Port Management:</strong> Close unused ports</li>
+                            <li><strong>Persistent Storage Security:</strong> Apply disk encryption</li>
+                            <li><strong>Account Management:</strong> Enforce least privilege</li>
+                            <li><strong>Maintenance Cycle:</strong> Keep systems updated regularly</li>
+                            <li><strong>Software Updates:</strong> Apply patches promptly</li>
+                            <li><strong>End-of-Life (EoL) Removal:</strong> Retire unsupported hardware/software</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Real-World Example:</strong>
+                        <p>On a web server, disable FTP and Telnet if not needed. Only run the web service (Apache/Nginx). This reduces the attack surface by eliminating unnecessary entry points.</p>
+                    </div>
+
+                    <h4>STIGs vs CIS Benchmarks</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>STIGs</th>
+                                <th>CIS Benchmarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Publisher</strong></td>
+                                <td>U.S. Department of Defense</td>
+                                <td>Center for Internet Security</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Audience</strong></td>
+                                <td>Military/Government</td>
+                                <td>All industries globally</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Development</strong></td>
+                                <td>Government-driven</td>
+                                <td>Community-driven consensus</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cost</strong></td>
+                                <td>Free</td>
+                                <td>Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Detail Level</strong></td>
+                                <td>Very detailed and strict</td>
+                                <td>Flexible, adaptable</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Configuration Baseline Use Cases</h4>
+
+                    <div class="scenario-box">
+                        <strong>Scenario 1: High-Risk Financial System</strong>
+                        <p>A bank's payment processing server requires a strict baseline:</p>
+                        <ul>
+                            <li>CIS Benchmark Level 2 (stricter than Level 1)</li>
+                            <li>Disable all non-essential services</li>
+                            <li>Enforce MFA for all administrative access</li>
+                            <li>Enable full audit logging</li>
+                            <li>Weekly vulnerability scans against baseline</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario-box">
+                        <strong>Scenario 2: Low-Risk Development Server</strong>
+                        <p>An internal testing server may use a simpler baseline:</p>
+                        <ul>
+                            <li>CIS Benchmark Level 1 (basic security)</li>
+                            <li>Standard firewall rules</li>
+                            <li>Monthly vulnerability scans</li>
+                            <li>Less restrictive but still secure</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>💭 Real-World Connection</h4>
+                        <p>Equifax had security baselines in place, but no governance to enforce them. How can vulnerability scanning be integrated with baseline compliance to ensure configurations don't drift over time?</p>
+                    </div>
+                </div>
+
+                <!-- QUEST 4: SPECIAL CONSIDERATIONS -->
+                <div class="quest-section">
+                    <h3>Quest 4: Special Scanning Considerations ⚙️</h3>
+                    
+                    <p>Vulnerability scans can cause disruptions if not managed properly. Understanding performance impacts, false positives, and timing strategies is critical.</p>
+
+                    <h4>Potential Disruptions from Scanning</h4>
+
+                    <div class="warning-box">
+                        <strong>1. System Overload</strong>
+                        <ul>
+                            <li>Scans consume CPU, memory, and I/O resources</li>
+                            <li>Can slow down or crash production servers</li>
+                            <li>Example: Running authenticated scan on database during business hours degrades query performance</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>2. Network Traffic Impact</strong>
+                        <ul>
+                            <li>Large-scale scans generate thousands of probe packets</li>
+                            <li>Creates bandwidth congestion</li>
+                            <li>May disrupt video calls, VoIP, or cloud services</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>3. Service Interruption</strong>
+                        <ul>
+                            <li>Some vulnerability tests actively interact with services</li>
+                            <li>May unintentionally cause service crashes or reboots</li>
+                            <li>Example: Scanning legacy web services may lock them up due to poorly handled requests</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>4. False Positives / Scan Errors</strong>
+                        <ul>
+                            <li>Incorrect scanner configurations report nonexistent vulnerabilities</li>
+                            <li>Wastes time and leads to unnecessary fixes</li>
+                            <li>Example: Reporting outdated SSL protocols on a system that's already patched</li>
+                        </ul>
+                    </div>
+
+                    <h4>Best Practices to Minimize Disruption</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Strategy</th>
+                                <th>Implementation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Timing</strong></td>
+                                <td>Schedule scans during off-peak hours (weekends, late nights)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scope Control</strong></td>
+                                <td>Limit scans to target assets or critical areas first</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Impact Testing</strong></td>
+                                <td>Perform test scans in staging before production</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Communication</strong></td>
+                                <td>Inform IT teams of planned scans to prevent panic</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Incremental Scans</strong></td>
+                                <td>Run smaller, continuous scans instead of infrequent large ones</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scan Speed Adjustment</strong></td>
+                                <td>Balance speed to capture issues without degrading performance</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Performance Considerations</h4>
+
+                    <div class="info-box">
+                        <strong>Operating System Identification</strong>
+                        <p>Ensure scans match the specific OS version. Using the wrong profile causes inaccurate results.</p>
+                        <p><strong>Example:</strong> Scanning Windows Server 2019 with a Windows 2012 template will miss or misinterpret vulnerabilities.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Scanning Interval</strong>
+                        <p>Regular scans detect new vulnerabilities as they emerge.</p>
+                        <ul>
+                            <li>Weekly: High-risk systems</li>
+                            <li>Monthly: Medium-risk systems</li>
+                            <li>Quarterly: Compliance requirements (e.g., PCI DSS)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Automated Scans</strong>
+                        <p>Automation ensures consistency and reduces human oversight errors.</p>
+                        <p><strong>Best Practice:</strong> Schedule automated scans during maintenance windows.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Vulnerability Database Maintenance</strong>
+                        <p>Quality of results depends on up-to-date vulnerability databases.</p>
+                        <p><strong>Outdated databases = Missed vulnerabilities</strong></p>
+                    </div>
+
+                    <h4>Internal vs External Scans</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Internal Scans</th>
+                                <th>External Scans</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Perspective</strong></td>
+                                <td>Inside the network</td>
+                                <td>From the internet</td>
+                            </tr>
+                            <tr>
+                                <td><strong>What They Find</strong></td>
+                                <td>Insider threats, internal misconfigurations</td>
+                                <td>Externally visible vulnerabilities</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Example</strong></td>
+                                <td>Workstation missing security patches</td>
+                                <td>Open port on public web server</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Importance</strong></td>
+                                <td>Prevents internal exploitation</td>
+                                <td>Prevents external attacks (critical!)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Assessment Scope & Depth</h4>
+
+                    <div class="example-box">
+                        <strong>Scope:</strong> Defines which systems are included
+                        <ul>
+                            <li>Can be a single IP or entire subnets</li>
+                            <li>Large networks: Schedule scans in portions</li>
+                            <li>Use authenticated access for internal systems</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Depth:</strong> Determines detail level
+                        <ul>
+                            <li>Deep scans: Assess configurations, missing patches, hidden vulnerabilities</li>
+                            <li>Shallow scans: Quick port scans and service enumeration</li>
+                        </ul>
+                    </div>
+
+                    <h4>Prioritization & Criticality Ranking</h4>
+
+                    <p>Vulnerability scans return huge volumes of data. Ranking helps identify what to fix first.</p>
+
+                    <div class="success-box">
+                        <strong>CVSS (Common Vulnerability Scoring System)</strong>
+                        <ul>
+                            <li>0.0 - None</li>
+                            <li>0.1-3.9 - Low</li>
+                            <li>4.0-6.9 - Medium</li>
+                            <li>7.0-8.9 - High</li>
+                            <li>9.0-10.0 - Critical</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>Context Matters!</strong>
+                        <p>Not all "Low" vulnerabilities are truly low risk. Consider:</p>
+                        <ul>
+                            <li>Is the vulnerability actively exploited in the wild?</li>
+                            <li>What is the asset value?</li>
+                            <li>Is the system internet-facing?</li>
+                            <li>Is exploit code publicly available?</li>
+                        </ul>
+                    </div>
+
+                    <h4>Remediation & Patch Management</h4>
+
+                    <div class="info-box">
+                        <strong>Structured Remediation Process:</strong>
+                        <ol>
+                            <li>Identify vulnerability through scan</li>
+                            <li>Prioritize based on CVSS + context</li>
+                            <li>Test patch in lab/staging environment</li>
+                            <li>Schedule deployment during maintenance window</li>
+                            <li>Apply patch to production</li>
+                            <li>Re-scan to verify remediation</li>
+                        </ol>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>💭 Decision-Making Exercise</h4>
+                        <p>You discover a vulnerability scored CVSS 4.5 (Medium) on a database storing customer credit cards. It's actively being exploited in the wild. Do you treat it as Medium or escalate it to Critical? Why?</p>
+                    </div>
+                </div>
+
+                <!-- QUEST 5: OPERATIONAL TECHNOLOGY -->
+                <div class="quest-section">
+                    <h3>Quest 5: Operational Technology (OT) Security 🏭</h3>
+                    
+                    <p>Operational Technology (OT) refers to hardware and software that monitor and control physical devices, processes, and infrastructure.</p>
+
+                    <h4>What is Operational Technology?</h4>
+
+                    <div class="info-box">
+                        <strong>Definition:</strong> Hardware and software technologies used to manage physical devices, processes, and events within an organization.
+                        <p><strong>Examples:</strong> Industrial control systems, robotics, sensors, PLCs, SCADA systems</p>
+                    </div>
+
+                    <h4>Key OT Components</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Definition</th>
+                                <th>Examples</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ICS (Industrial Control Systems)</strong></td>
+                                <td>Systems that automate workflows and processes, controlling machinery in critical infrastructure</td>
+                                <td>Power plants, water treatment, telecommunications, national security</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SCADA</strong></td>
+                                <td>Software that manages and gathers data from field devices in large-scale ICSs</td>
+                                <td>Centralized control of water systems, power grids, manufacturing plants</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PLC (Programmable Logic Controller)</strong></td>
+                                <td>Digital computer used in industrial environments to automate repetitive tasks</td>
+                                <td>Assembly lines, robotics, field operations, factory automation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>OT vs IT: Key Differences</h4>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>IT (Information Technology)</th>
+                                <th>OT (Operational Technology)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Priority</strong></td>
+                                <td>Confidentiality, Integrity, Availability</td>
+                                <td>Availability, Safety, Integrity</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Downtime Tolerance</strong></td>
+                                <td>Can tolerate brief outages</td>
+                                <td>Downtime can be catastrophic</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Patching</strong></td>
+                                <td>Regular updates expected</td>
+                                <td>Patching requires careful planning</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lifespan</strong></td>
+                                <td>3-5 years</td>
+                                <td>15-20+ years</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Examples</strong></td>
+                                <td>Email servers, file shares, databases</td>
+                                <td>Power grids, manufacturing lines, water treatment</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Why OT Security is Critical</h4>
+
+                    <div class="warning-box">
+                        <strong>Real-World OT Attack: Ukraine Power Grid (2015)</strong>
+                        <p>Attackers compromised Ukraine's power grid SCADA systems, causing blackouts for 225,000 people. The attack demonstrated how vulnerable critical infrastructure is to cyber threats.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>Colonial Pipeline Ransomware (2021)</strong>
+                        <p>Ransomware attack on IT systems led to precautionary shutdown of OT pipeline operations, causing fuel shortages across the U.S. East Coast.</p>
+                    </div>
+
+                    <h4>Special Considerations for OT Vulnerability Scanning</h4>
+
+                    <div class="info-box">
+                        <strong>1. Scannability Issues</strong>
+                        <ul>
+                            <li>Traditional scanning tools may not work due to system design</li>
+                            <li>Systems may be air-gapped (disconnected from networks)</li>
+                            <li>Tight security rules prevent standard scanning</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>2. Cannot Disrupt Operations</strong>
+                        <ul>
+                            <li>Aggressive scans can crash critical systems</li>
+                            <li>Example: Scanning hospital patient-monitoring system could endanger lives</li>
+                            <li>Must use passive or carefully scheduled scans</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>3. Key Safeguards for OT</strong>
+                        <ul>
+                            <li><strong>Special Care:</strong> Scans and updates must be performed cautiously</li>
+                            <li><strong>Strict Segmentation/Isolation:</strong> Separate OT from IT networks</li>
+                            <li><strong>Physical Security:</strong> Hardware physically protected from tampering</li>
+                            <li><strong>Configuration Management:</strong> Systematically manage settings</li>
+                            <li><strong>Integrity/Change Monitoring:</strong> Continuous monitoring for unauthorized changes</li>
+                        </ul>
+                    </div>
+
+                    <h4>OT Security Best Practices</h4>
+
+                    <div class="success-box">
+                        <strong>Network Segmentation:</strong>
+                        <ul>
+                            <li>Isolate OT networks from corporate IT networks</li>
+                            <li>Use firewalls and DMZs between zones</li>
+                            <li>Limit communication to necessary protocols only</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <strong>Passive Monitoring:</strong>
+                        <ul>
+                            <li>Use passive network monitoring instead of active scanning</li>
+                            <li>Deploy industrial firewalls and IDS/IPS</li>
+                            <li>Monitor for anomalous behavior</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <strong>Maintenance Windows:</strong>
+                        <ul>
+                            <li>Schedule scans during planned downtime</li>
+                            <li>Coordinate with operational teams</li>
+                            <li>Test in isolated environments first</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Real-World Example: Water Treatment Facility</strong>
+                        <p>A water treatment plant uses SCADA systems to control chemical levels. Instead of aggressive vulnerability scans that could disrupt operations:</p>
+                        <ul>
+                            <li>Deploy passive network monitoring to observe traffic</li>
+                            <li>Perform vulnerability assessments during scheduled maintenance</li>
+                            <li>Use network segmentation to isolate SCADA from business networks</li>
+                            <li>Implement change monitoring to detect unauthorized modifications</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>💭 Critical Scenario</h4>
+                        <p>You're a security analyst at a nuclear power plant. You discover a critical vulnerability in the SCADA system controlling cooling pumps. The patch is available, but applying it requires a system reboot. What factors do you consider before recommending remediation? How do you balance security with safety?</p>
+                    </div>
+                </div>
+
+                <div class="success-box" style="margin-top: 40px;">
+                    <h3>🎉 Quest Complete!</h3>
+                    <p>You've mastered the five core areas of vulnerability scanning methods. You understand compliance requirements, scanning techniques, security baselines, performance considerations, and how to safely scan operational technology.</p>
+                    <p><strong>Next Step:</strong> Test your knowledge in the Labs & Quizzes section!</p>
+                </div>
+            </div>
+
+            <!-- LABS & QUIZZES TAB -->
+            <div id="labs" class="tab-content">
+                <h2>🧪 Labs & Quizzes</h2>
+
+                <div class="info-box">
+                    <strong>Note:</strong> These are knowledge checks to reinforce what you've learned. Try to answer based on the content you've studied in the Learning Quest.
+                </div>
+
+                <!-- Quiz Section 1 -->
+                <div class="quest-section">
+                    <h3>Quiz 1: Compliance & Regulations</h3>
+
+                    <div class="quiz-question">
+                        <h4>Question 1</h4>
+                        <p>This nonprofit organization focuses on improving web application security and publishes a popular top 10 web application security risks list.</p>
+                        <ul class="quiz-options">
+                            <li>A) NIST</li>
+                            <li>B) OWASP</li>
+                            <li>C) CIS</li>
+                            <li>D) ISO</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2</h4>
+                        <p>Which compliance framework requires quarterly vulnerability scans by an Approved Scanning Vendor (ASV)?</p>
+                        <ul class="quiz-options">
+                            <li>A) HIPAA</li>
+                            <li>B) GDPR</li>
+                            <li>C) PCI DSS</li>
+                            <li>D) SOX</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3</h4>
+                        <p>What is the name of the document designed to demonstrate an organization's compliance with PCI DSS requirements?</p>
+                        <ul class="quiz-options">
+                            <li>A) Security Assessment Report (SAR)</li>
+                            <li>B) Attestation of Compliance (AoC)</li>
+                            <li>C) Compliance Validation Form (CVF)</li>
+                            <li>D) Security Audit Certificate (SAC)</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 4</h4>
+                        <p>Which GDPR principle states that personal data should not be kept longer than required?</p>
+                        <ul class="quiz-options">
+                            <li>A) Data Minimization</li>
+                            <li>B) Purpose Limitation</li>
+                            <li>C) Storage Limitation</li>
+                            <li>D) Accuracy</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 5</h4>
+                        <p>Which organization provides free, community-driven security configuration benchmarks?</p>
+                        <ul class="quiz-options">
+                            <li>A) NIST</li>
+                            <li>B) ISO</li>
+                            <li>C) CIS</li>
+                            <li>D) DoD</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Quiz Section 2 -->
+                <div class="quest-section">
+                    <h3>Quiz 2: Vulnerability Scanning Concepts</h3>
+
+                    <div class="quiz-question">
+                        <h4>Question 1</h4>
+                        <p>What type of scanning describes indirect methods of assessment, such as inspecting traffic flows and protocols?</p>
+                        <ul class="quiz-options">
+                            <li>A) Active Scanning</li>
+                            <li>B) Passive Scanning</li>
+                            <li>C) Credentialed Scanning</li>
+                            <li>D) Agent-Based Scanning</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2</h4>
+                        <p>Which type of scan provides the most detailed vulnerability information by logging into systems?</p>
+                        <ul class="quiz-options">
+                            <li>A) Non-Credentialed Scan</li>
+                            <li>B) Passive Scan</li>
+                            <li>C) Credentialed Scan</li>
+                            <li>D) External Scan</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3</h4>
+                        <p>What is a key advantage of agent-based vulnerability scanning?</p>
+                        <ul class="quiz-options">
+                            <li>A) No software installation required</li>
+                            <li>B) Works seamlessly across firewalls</li>
+                            <li>C) Lower administrative overhead</li>
+                            <li>D) Faster deployment</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 4</h4>
+                        <p>Which analysis method reviews uncompiled source code to find vulnerabilities?</p>
+                        <ul class="quiz-options">
+                            <li>A) Dynamic Analysis</li>
+                            <li>B) Static Analysis</li>
+                            <li>C) Fuzzing</li>
+                            <li>D) Reverse Engineering</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 5</h4>
+                        <p>Which tool is an open-source web application scanner designed to find vulnerabilities like XSS and SQL injection?</p>
+                        <ul class="quiz-options">
+                            <li>A) Nmap</li>
+                            <li>B) Nessus</li>
+                            <li>C) OWASP ZAP</li>
+                            <li>D) Wireshark</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Quiz Section 3 -->
+                <div class="quest-section">
+                    <h3>Quiz 3: Security Baselines & Configuration</h3>
+
+                    <div class="quiz-question">
+                        <h4>Question 1</h4>
+                        <p>A configuration baseline details the recommended settings for services and policy configuration for a device or software operating in a specific role. True or False?</p>
+                        <ul class="quiz-options">
+                            <li>A) True</li>
+                            <li>B) False</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2</h4>
+                        <p>Which organization publishes Security Technical Implementation Guides (STIGs)?</p>
+                        <ul class="quiz-options">
+                            <li>A) NIST</li>
+                            <li>B) CIS</li>
+                            <li>C) Department of Defense (DoD)</li>
+                            <li>D) ISO</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3</h4>
+                        <p>What is the primary purpose of device hardening?</p>
+                        <ul class="quiz-options">
+                            <li>A) Increase system performance</li>
+                            <li>B) Reduce vulnerabilities and strengthen security</li>
+                            <li>C) Add more features to systems</li>
+                            <li>D) Simplify user access</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 4</h4>
+                        <p>Which CIS Benchmark level is stricter and provides more security controls?</p>
+                        <ul class="quiz-options">
+                            <li>A) Level 1</li>
+                            <li>B) Level 2</li>
+                            <li>C) Level 3</li>
+                            <li>D) All levels are equally strict</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Quiz Section 4 -->
+                <div class="quest-section">
+                    <h3>Quiz 4: Special Considerations</h3>
+
+                    <div class="quiz-question">
+                        <h4>Question 1</h4>
+                        <p>True or False: Vulnerability scanning can be performed at any time because it is a tool used to locate and resolve security issues.</p>
+                        <ul class="quiz-options">
+                            <li>A) True</li>
+                            <li>B) False</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2</h4>
+                        <p>What is the primary risk of running aggressive vulnerability scans on production systems during business hours?</p>
+                        <ul class="quiz-options">
+                            <li>A) Increased accuracy</li>
+                            <li>B) System overload and service disruption</li>
+                            <li>C) Better false positive detection</li>
+                            <li>D) Improved scan speed</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3</h4>
+                        <p>Which CVSS score range indicates a CRITICAL vulnerability?</p>
+                        <ul class="quiz-options">
+                            <li>A) 4.0-6.9</li>
+                            <li>B) 7.0-8.9</li>
+                            <li>C) 9.0-10.0</li>
+                            <li>D) 0.1-3.9</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 4</h4>
+                        <p>What should organizations do BEFORE deploying patches to production systems?</p>
+                        <ul class="quiz-options">
+                            <li>A) Deploy immediately</li>
+                            <li>B) Test in lab/staging environment</li>
+                            <li>C) Wait for others to test first</li>
+                            <li>D) Skip testing to save time</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Quiz Section 5 -->
+                <div class="quest-section">
+                    <h3>Quiz 5: Operational Technology</h3>
+
+                    <div class="quiz-question">
+                        <h4>Question 1</h4>
+                        <p>Programmable Logic Controllers (PLCs) are used in industrial settings and are a form of digital computer designed to enable automation in assembly lines. True or False?</p>
+                        <ul class="quiz-options">
+                            <li>A) True</li>
+                            <li>B) False</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2</h4>
+                        <p>What does OT stand for, and what is it?</p>
+                        <ul class="quiz-options">
+                            <li>A) Online Technology - internet-based systems</li>
+                            <li>B) Operational Technology - hardware/software managing physical devices</li>
+                            <li>C) Organizational Technology - business management systems</li>
+                            <li>D) Offshore Technology - remote data centers</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3</h4>
+                        <p>Which of the following is the PRIMARY priority for OT environments?</p>
+                        <ul class="quiz-options">
+                            <li>A) Confidentiality</li>
+                            <li>B) Integrity</li>
+                            <li>C) Availability and Safety</li>
+                            <li>D) Performance</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 4</h4>
+                        <p>Why are traditional vulnerability scanning tools often unsuitable for OT environments?</p>
+                        <ul class="quiz-options">
+                            <li>A) OT systems are too new</li>
+                            <li>B) Scans may disrupt critical operations</li>
+                            <li>C) OT doesn't have vulnerabilities</li>
+                            <li>D) OT uses different operating systems</li>
+                        </ul>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 5</h4>
+                        <p>What is the recommended approach for vulnerability assessment in SCADA systems?</p>
+                        <ul class="quiz-options">
+                            <li>A) Aggressive active scanning</li>
+                            <li>B) Passive monitoring and scheduled assessments during maintenance</li>
+                            <li>C) Daily credentialed scans</li>
+                            <li>D) No scanning needed</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Lab Checklists -->
+                <div class="quest-section">
+                    <h3>🔬 Hands-On Lab Checklist</h3>
+                    
+                    <h4>Lab 1: Conducting a Vulnerability Scan</h4>
+                    <ul class="checklist">
+                        <li>Install and configure Nessus or OpenVAS</li>
+                        <li>Identify target systems for scanning</li>
+                        <li>Configure scan policies (credentialed vs non-credentialed)</li>
+                        <li>Execute the vulnerability scan</li>
+                        <li>Review and analyze scan results</li>
+                        <li>Identify false positives</li>
+                        <li>Prioritize vulnerabilities using CVSS scores</li>
+                        <li>Generate a remediation report</li>
+                    </ul>
+
+                    <h4>Lab 2: Comparing Active vs Passive Scanning</h4>
+                    <ul class="checklist">
+                        <li>Set up a test environment with vulnerable systems</li>
+                        <li>Perform an active scan using Nmap</li>
+                        <li>Document findings from active scan</li>
+                        <li>Set up packet capture with Wireshark</li>
+                        <li>Perform passive observation of network traffic</li>
+                        <li>Compare results: What did each method find?</li>
+                        <li>Analyze which method is appropriate for different scenarios</li>
+                    </ul>
+
+                    <h4>Lab 3: Configuration Baseline Verification</h4>
+                    <ul class="checklist">
+                        <li>Download CIS Benchmark for your OS (Windows/Linux)</li>
+                        <li>Review baseline recommendations</li>
+                        <li>Use a scanner to compare system against baseline</li>
+                        <li>Document configuration gaps</li>
+                        <li>Apply hardening recommendations</li>
+                        <li>Re-scan to verify compliance</li>
+                    </ul>
+
+                    <h4>Lab 4: PCI DSS Compliance Scanning</h4>
+                    <ul class="checklist">
+                        <li>Configure scanner with PCI DSS template</li>
+                        <li>Scan a payment processing test environment</li>
+                        <li>Identify non-compliant configurations</li>
+                        <li>Review the 12 PCI DSS requirements against findings</li>
+                        <li>Create a compliance remediation plan</li>
+                        <li>Document evidence for audit purposes</li>
+                    </ul>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>📝 Lab Reflection</h4>
+                    <p>After completing the labs, reflect on these questions:</p>
+                    <ul>
+                        <li>Which scanning method gave you the most detailed results? Why?</li>
+                        <li>Did you encounter any false positives? How did you verify them?</li>
+                        <li>How would you prioritize the vulnerabilities you found?</li>
+                        <li>What challenges would you face implementing vulnerability scanning in a production environment?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- RESOURCES TAB -->
+            <div id="resources" class="tab-content">
+                <h2>📦 Resources & Downloads</h2>
+
+                <div class="quest-section">
+                    <h3>📥 Quick Reference Materials</h3>
+                    <p>Download these resources to support your learning and exam preparation:</p>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📄 Lesson 5 Study Guide</a>
+                        <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📋 Vulnerability Scanning Cheat Sheet</a>
+                        <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">🔐 PCI DSS Requirements Checklist</a>
+                        <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📊 CVSS Scoring Quick Reference</a>
+                        <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">🛠️ CIS Benchmarks Overview</a>
+                        <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">🏭 OT Security Best Practices</a>
+                    </div>
+                </div>
+
+                <div class="quest-section">
+                    <h3>📚 External Resources</h3>
+                    
+                    <h4>Official Documentation</h4>
+                    <ul>
+                        <li><strong>NIST Cybersecurity Framework:</strong> <a href="https://www.nist.gov/cyberframework" target="_blank">https://www.nist.gov/cyberframework</a></li>
+                        <li><strong>CIS Benchmarks:</strong> <a href="https://www.cisecurity.org/cis-benchmarks" target="_blank">https://www.cisecurity.org/cis-benchmarks</a></li>
+                        <li><strong>PCI DSS Standard:</strong> <a href="https://www.pcisecuritystandards.org" target="_blank">https://www.pcisecuritystandards.org</a></li>
+                        <li><strong>OWASP Top 10:</strong> <a href="https://owasp.org/www-project-top-ten" target="_blank">https://owasp.org/www-project-top-ten</a></li>
+                        <li><strong>GDPR Official Site:</strong> <a href="https://gdpr.eu" target="_blank">https://gdpr.eu</a></li>
+                    </ul>
+
+                    <h4>Scanning Tools</h4>
+                    <ul>
+                        <li><strong>Nessus:</strong> <a href="https://www.tenable.com/products/nessus" target="_blank">https://www.tenable.com/products/nessus</a></li>
+                        <li><strong>OpenVAS:</strong> <a href="https://www.openvas.org" target="_blank">https://www.openvas.org</a></li>
+                        <li><strong>OWASP ZAP:</strong> <a href="https://www.zaproxy.org" target="_blank">https://www.zaproxy.org</a></li>
+                        <li><strong>Nmap:</strong> <a href="https://nmap.org" target="_blank">https://nmap.org</a></li>
+                        <li><strong>Wireshark:</strong> <a href="https://www.wireshark.org" target="_blank">https://www.wireshark.org</a></li>
+                    </ul>
+
+                    <h4>Additional Learning</h4>
+                    <ul>
+                        <li><strong>CyberEdge Cybersecurity Analyst Official Study Guide:</strong> CompTIA </li>
+                        <li><strong>SANS Reading Room:</strong> <a href="https://www.sans.org/reading-room" target="_blank">https://www.sans.org/reading-room</a></li>
+                        <li><strong>CISA Vulnerability Management:</strong> <a href="https://www.cisa.gov/vulnerability-management" target="_blank">https://www.cisa.gov/vulnerability-management</a></li>
+                    </ul>
+                </div>
+
+                <div class="quest-section">
+                    <h3>📖 Glossary of Key Terms</h3>
+
+                    <div class="glossary-term">
+                        <strong>Active Scanning:</strong> Vulnerability assessment method that directly interacts with systems by sending probes and analyzing responses.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Agent-Based Scanning:</strong> Scanning approach that requires installing software agents on endpoints for detailed data collection.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Agentless Scanning:</strong> Scanning approach that collects information remotely without installing software on target systems.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Attestation of Compliance (AoC):</strong> Formal document proving an organization's compliance with PCI DSS requirements.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>CIS Benchmarks:</strong> Community-driven, consensus-based security configuration best practices for IT systems and applications.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>CMMI:</strong> Capability Maturity Model Integration - framework for measuring organizational process maturity.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Configuration Baseline:</strong> Minimum required security configuration standards for devices, OS, or software.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>COPPA:</strong> Children's Online Privacy Protection Act - U.S. law protecting privacy of children under 13.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Credentialed Scan:</strong> Vulnerability scan that uses authentication to perform deep inspection of systems.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>CVE:</strong> Common Vulnerabilities and Exposures - standardized identifier for known vulnerabilities.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>CVSS:</strong> Common Vulnerability Scoring System - standardized method for rating vulnerability severity (0-10 scale).
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Dynamic Analysis:</strong> Evaluating software behavior while it is executing to uncover vulnerabilities.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Fuzzing:</strong> Testing technique that feeds applications random or malformed data to discover vulnerabilities.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>GDPR:</strong> General Data Protection Regulation - EU law governing personal data protection and privacy.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>HIPAA:</strong> Health Insurance Portability and Accountability Act - U.S. law protecting patient health information.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>ICS:</strong> Industrial Control Systems - systems that automate workflows in critical infrastructure.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>ISO 27001:</strong> International standard for Information Security Management Systems (ISMS).
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>NIST:</strong> National Institute of Standards and Technology - U.S. agency publishing cybersecurity guidance.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Non-Credentialed Scan:</strong> Vulnerability scan performed without authentication, showing surface-level vulnerabilities.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>OT:</strong> Operational Technology - hardware/software managing physical devices and industrial processes.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>OWASP:</strong> Open Web Application Security Project - nonprofit focused on web application security.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Passive Scanning:</strong> Vulnerability assessment by observing network traffic without actively probing systems.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>PCI DSS:</strong> Payment Card Industry Data Security Standard - security requirements for organizations handling payment cards.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>PLC:</strong> Programmable Logic Controller - digital computer used for industrial automation.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Reverse Engineering:</strong> Deconstructing software/hardware to understand its design and functionality.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>SCADA:</strong> Supervisory Control and Data Acquisition - software managing large-scale industrial control systems.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>Static Analysis:</strong> Reviewing source code without executing it to find vulnerabilities.
+                    </div>
+
+                    <div class="glossary-term">
+                        <strong>STIGs:</strong> Security Technical Implementation Guides - DoD security configuration guidelines.
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Pro Tip:</strong> Bookmark the external resources and keep the quick reference materials handy during your labs and exam preparation!
+                </div>
+            </div>
+
+            <!-- PROGRESS TAB -->
+            <div id="progress" class="tab-content">
+                <h2>🏆 Your Progress & Achievements</h2>
+
+                <div class="quest-section">
+                    <h3>📊 Learning Progress</h3>
+                    <div class="progress-container" style="background: white; padding: 30px;">
+                        <div class="progress-bar" style="height: 40px;">
+                            <div class="progress-fill" id="mainProgressBar">0%</div>
+                        </div>
+                        <p style="margin-top: 20px; text-align: center; color: #2c3e50; font-size: 1.1em;">Complete all quests and quizzes to earn badges!</p>
+                    </div>
+                </div>
+
+                <div class="quest-section">
+                    <h3>🎖️ Earned Badges</h3>
+                    <p>Earn badges by completing quests and demonstrating mastery:</p>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+                        <div class="badge locked">🔒 Compliance Master</div>
+                        <div class="badge locked">🔒 Scanning Expert</div>
+                        <div class="badge locked">🔒 Baseline Guardian</div>
+                        <div class="badge locked">🔒 Performance Optimizer</div>
+                        <div class="badge locked">🔒 OT Security Specialist</div>
+                        <div class="badge locked">🔒 Quiz Champion</div>
+                        <div class="badge locked">🔒 Lab Completionist</div>
+                        <div class="badge locked">🔒 Vulnerability Hunter</div>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 30px;">
+                        <strong>How to Earn Badges:</strong>
+                        <ul>
+                            <li><strong>Compliance Master:</strong> Complete Quest 1 and pass Quiz 1</li>
+                            <li><strong>Scanning Expert:</strong> Complete Quest 2 and pass Quiz 2</li>
+                            <li><strong>Baseline Guardian:</strong> Complete Quest 3 and pass Quiz 3</li>
+                            <li><strong>Performance Optimizer:</strong> Complete Quest 4 and pass Quiz 4</li>
+                            <li><strong>OT Security Specialist:</strong> Complete Quest 5 and pass Quiz 5</li>
+                            <li><strong>Quiz Champion:</strong> Pass all 5 quizzes with 80% or higher</li>
+                            <li><strong>Lab Completionist:</strong> Complete all hands-on labs</li>
+                            <li><strong>Vulnerability Hunter:</strong> Successfully conduct a full vulnerability assessment in lab</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quest-section">
+                    <h3>📈 Quest Completion Status</h3>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quest</th>
+                                <th>Status</th>
+                                <th>Quiz Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Quest 1: Compliance & Regulations</td>
+                                <td><span style="color: #e74c3c;">⭕ Not Started</span></td>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <td>Quest 2: Vulnerability Scanning Concepts</td>
+                                <td><span style="color: #e74c3c;">⭕ Not Started</span></td>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <td>Quest 3: Security Baselines</td>
+                                <td><span style="color: #e74c3c;">⭕ Not Started</span></td>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <td>Quest 4: Special Considerations</td>
+                                <td><span style="color: #e74c3c;">⭕ Not Started</span></td>
+                                <td>--</td>
+                            </tr>
+                            <tr>
+                                <td>Quest 5: Operational Technology</td>
+                                <td><span style="color: #e74c3c;">⭕ Not Started</span></td>
+                                <td>--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="quest-section">
+                    <h3>🎯 Next Steps</h3>
+                    
+                    <div class="success-box">
+                        <h4>Recommended Learning Path:</h4>
+                        <ol>
+                            <li>Review Mission Overview to understand the big picture</li>
+                            <li>Complete Learning Quest sections in order</li>
+                            <li>Take quizzes to test knowledge retention</li>
+                            <li>Complete hands-on labs for practical experience</li>
+                            <li>Review resources and glossary as needed</li>
+                            <li>Connect concepts to real-world scenarios</li>
+                        </ol>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Exam Preparation Tips:</strong>
+                        <ul>
+                            <li>Focus on understanding WHY, not just memorizing facts</li>
+                            <li>Practice prioritizing vulnerabilities using CVSS scores</li>
+                            <li>Understand the differences between scanning methods and when to use each</li>
+                            <li>Know compliance requirements (PCI DSS, GDPR, HIPAA)</li>
+                            <li>Be able to explain OT security considerations</li>
+                            <li>Practice hands-on labs to build real-world skills</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>📝 Final Reflection</h4>
+                    <p>As you complete this lesson, think about:</p>
+                    <ul>
+                        <li>How would you implement a vulnerability management program at your organization?</li>
+                        <li>What lessons from the Equifax breach apply to vulnerability scanning?</li>
+                        <li>How do compliance requirements drive technical security decisions?</li>
+                        <li>What challenges would you face scanning OT environments in critical infrastructure?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Management
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Update progress
+            updateProgress();
+        }
+
+        // Smooth scrolling to sections
+        function scrollToSection(sectionId) {
+            // First switch to content tab
+            showTab('content');
+            
+            // Wait for tab switch animation
+            setTimeout(() => {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            // Simple progress calculation based on tab views
+            // In a real implementation, this would track actual completion
+            let progress = 0;
+            const progressBar = document.getElementById('progressBar');
+            const mainProgressBar = document.getElementById('mainProgressBar');
+            
+            // This is a simplified version - you would track actual quiz completion, etc.
+            if (progressBar && mainProgressBar) {
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+                mainProgressBar.style.width = progress + '%';
+                mainProgressBar.textContent = progress + '%';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+
+        // Simulate quiz interaction
+        document.querySelectorAll('.quiz-options li').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove previous selections
+                this.parentElement.querySelectorAll('li').forEach(li => {
+                    li.style.background = '#ecf0f1';
+                    li.style.color = '#333';
+                });
+                
+                // Highlight selected
+                this.style.background = '#3498db';
+                this.style.color = 'white';
+            });
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson4_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson6_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

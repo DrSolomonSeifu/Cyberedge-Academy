@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 3: System and Network Architecture - Student Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --perscholas-blue: #0066CC;
+            --perscholas-dark: #003366;
+            --accent-orange: #FF6B35;
+            --success-green: #2ECC71;
+            --warning-yellow: #F39C12;
+            --error-red: #E74C3C;
+            --bg-light: #F8F9FA;
+            --bg-white: #FFFFFF;
+            --text-primary: #2C3E50;
+            --text-secondary: #7F8C8D;
+            --border-color: #E1E8ED;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-light);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--perscholas-dark) 0%, var(--perscholas-blue) 100%);
+            color: white;
+            padding: 2rem 2rem 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .org-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+
+        .program-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .creator-credit {
+            font-size: 0.875rem;
+            opacity: 0.85;
+            font-style: italic;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9375rem;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--perscholas-blue);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--perscholas-blue);
+        }
+
+        .card h2 {
+            color: var(--perscholas-dark);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 {
+            color: var(--perscholas-blue);
+            font-size: 1.375rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .card h4 {
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            margin: 0.75rem 0;
+        }
+
+        .card ul, .card ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .card li {
+            margin: 0.5rem 0;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .objective-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .objective-card h4 {
+            margin-top: 0;
+            color: var(--perscholas-dark);
+        }
+
+        .key-points {
+            background: #F0F7FF;
+            border-left: 4px solid var(--perscholas-blue);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .key-points h4 {
+            color: var(--perscholas-blue);
+            margin-top: 0;
+        }
+
+        .key-points ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .key-points li {
+            margin: 0.5rem 0;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .definition-box h4 {
+            color: white;
+            margin-top: 0;
+            font-size: 1.125rem;
+        }
+
+        .example-box {
+            background: #FFF4E6;
+            border-left: 4px solid var(--accent-orange);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .example-box h4 {
+            color: var(--accent-orange);
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: #FFF3CD;
+            border-left: 4px solid var(--warning-yellow);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: var(--warning-yellow);
+            margin-top: 0;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quiz-question {
+            margin-bottom: 2rem;
+        }
+
+        .quiz-question h4 {
+            color: var(--perscholas-dark);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: white;
+            border-color: var(--perscholas-blue);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #D4EDDA;
+            border-color: var(--success-green);
+        }
+
+        .quiz-option.incorrect {
+            background: #F8D7DA;
+            border-color: var(--error-red);
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        th {
+            background: var(--perscholas-blue);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        code {
+            background: #F4F4F4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            color: #E83E8C;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge-primary {
+            background: var(--perscholas-blue);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning-yellow);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-light);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-orange);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem 1rem 2rem;
+            }
+
+            .lesson-title {
+                font-size: 1.75rem;
+            }
+
+            .container {
+                padding: 0 1rem 2rem;
+            }
+
+            .objectives-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="org-name">CyberEdge Academy</div>
+            <h1 class="lesson-title">Lesson 3: System and Network Architecture</h1>
+            <p class="lesson-subtitle">Explaining Important System and Network Architecture Concepts</p>
+            <div class="creator-credit">Dr. Solomon Seifu &nbsp;|&nbsp; CyberEdge Academy</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="showSection('overview')">Overview</button>
+            <button class="tab-btn" onclick="showSection('topic3a')">Topic 3A: System & Network Architecture</button>
+            <button class="tab-btn" onclick="showSection('topic3b')">Topic 3B: Identity & Access Management</button>
+            <button class="tab-btn" onclick="showSection('topic3c')">Topic 3C: Data Protection & Visibility</button>
+            <button class="tab-btn" onclick="showSection('quiz')">Self-Check Quiz</button>
+        </nav>
+
+        <!-- OVERVIEW SECTION -->
+        <section id="overview" class="content-section active">
+            <div class="card">
+                <h2>🎯 Lesson Overview</h2>
+                <p>This lesson introduces how organizations design, secure, and manage <strong>system and network architecture</strong>. You'll understand OS concepts, cloud deployment models, IAM practices, and data protection techniques that form the backbone of secure IT infrastructure.</p>
+
+                <div class="key-points">
+                    <h4>🔑 Why This Lesson Matters</h4>
+                    <ul>
+                        <li><strong>System Architecture</strong> ensures components interact efficiently for performance and security</li>
+                        <li><strong>Network Architecture</strong> provides resilience and protection using firewalls, DMZs, and segmentation</li>
+                        <li><strong>Operating Systems</strong> are foundational, requiring strong configuration and monitoring</li>
+                        <li><strong>Cloud Models</strong> introduce flexibility but require specific security considerations</li>
+                        <li><strong>IAM</strong> controls access to resources and enforces accountability</li>
+                        <li><strong>Data Protection</strong> ensures confidentiality, integrity, and availability of sensitive information</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Learning Objectives</h2>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <h4>1. Review System and Network Architecture Concepts</h4>
+                        <p>Learn how system components (CPU, memory, storage) work together for performance and how network designs (LAN/WAN) use firewalls, DMZs, and segmentation for security and scalability.</p>
+                    </div>
+
+                    <div class="objective-card">
+                        <h4>2. Explore Important Operating System Concepts</h4>
+                        <p>Understand critical OS features such as the Windows Registry, file systems, kernels, processes, and memory management.</p>
+                    </div>
+
+                    <div class="objective-card">
+                        <h4>3. Review Cloud Deployment Models</h4>
+                        <p>Compare Public, Private, Hybrid, and Community clouds, their use cases, and security concerns.</p>
+                    </div>
+
+                    <div class="objective-card">
+                        <h4>4. Review Identity and Access Management Concepts</h4>
+                        <p>Explore authentication, authorization, and accountability principles, including tools like MFA and IAM platforms.</p>
+                    </div>
+
+                    <div class="objective-card">
+                        <h4>5. Review Data Protection Tools and Techniques</h4>
+                        <p>Learn about encryption methods (AES, RSA), Data Loss Prevention (DLP) tools, and secure backup strategies.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🧭 How to Use This Portal</h2>
+                <ul>
+                    <li>Navigate through each topic using the tabs above</li>
+                    <li>Read the <span class="badge badge-primary">Key Points</span> boxes carefully - these are exam-focused</li>
+                    <li>Review <span class="badge badge-warning">Definition</span> boxes for core concepts</li>
+                    <li>Study <span class="badge badge-success">Examples</span> to understand real-world applications</li>
+                    <li>Test your understanding with the Self-Check Quiz at the end</li>
+                    <li>Use this portal as a reference during the afternoon labs</li>
+                    <li>Bookmark this page for easy access during your studies</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>⚠️ Pre-Class Preparation</h4>
+                    <p>This guide is designed for pre-class preparation. Before class:</p>
+                    <ul>
+                        <li>Read through the objectives to understand the scope</li>
+                        <li>Focus on connections between system, network, cloud, and IAM practices</li>
+                        <li>Be ready to discuss: Why is segmentation critical? How do cloud models differ in security responsibility? What role does encryption play in compliance?</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 3A SECTION -->
+        <section id="topic3a" class="content-section">
+            <div class="card">
+                <h2>🔧 Topic 3A: System and Network Architecture</h2>
+                
+                <div class="definition-box">
+                    <h4>📖 What is System and Network Architecture?</h4>
+                    <p><strong>System and network architecture</strong> refers to the design of system components and network structures that together provide a secure and reliable environment for businesses and organizations.</p>
+                    <p>It protects against both <strong>malicious attacks</strong> (hackers, malware) and <strong>accidental threats</strong> (misconfigurations, human error) through layered security.</p>
+                </div>
+
+                <h3>System Hardening</h3>
+                <div class="definition-box">
+                    <h4>📖 What is System Hardening?</h4>
+                    <p>System hardening is the process of securing an operating system, application, device, or service by <strong>reducing its attack surface</strong> — meaning fewer opportunities for attackers to exploit.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>System Hardening Best Practices</h4>
+                    <ul>
+                        <li><strong>Reduce Attack Surface:</strong> Run only necessary services, disable unnecessary features</li>
+                        <li><strong>Restrict Access:</strong> Protect system files, Windows registry, configuration files, and logs</li>
+                        <li><strong>Limit User Privileges:</strong> Apply the principle of least privilege</li>
+                        <li><strong>Apply Updates:</strong> Regular patching protects against known vulnerabilities</li>
+                        <li><strong>Add Monitoring:</strong> Use malware protection, intrusion detection, system monitoring</li>
+                        <li><strong>Maintenance Schedule:</strong> Continuous hardening through regular reviews</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Hardening Standards</h4>
+                    <p><strong>DoD STIGs (Security Technical Implementation Guides):</strong> U.S. Department of Defense guidelines providing detailed configurations and best practices for securing systems, networks, and software.</p>
+                    <p><strong>CIS Benchmarks™:</strong> Widely recognized best-practice guides with detailed recommendations (e.g., over 1,200 pages for Windows 11 Enterprise).</p>
+                </div>
+
+                <h3>Windows Registry and File System</h3>
+                
+                <div class="definition-box">
+                    <h4>📖 What is the Windows Registry?</h4>
+                    <p>The Windows registry is a <strong>database</strong> that stores operating system, device, and software application configuration settings. It organizes system-wide and user-specific information into root keys and subkeys.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Registry Root Key</th>
+                            <th>Abbreviation</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HKEY_CLASSES_ROOT</strong></td>
+                            <td>HKCR</td>
+                            <td>Stores file association details and OLE information. Determines which application opens a specific file type.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HKEY_LOCAL_MACHINE</strong></td>
+                            <td>HKLM</td>
+                            <td>Governs system-wide settings (hardware, software, system configurations) that apply to <strong>all users</strong>.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HKEY_USERS</strong></td>
+                            <td>HKU</td>
+                            <td>Stores settings for all user profiles on the computer. Each user's profile is a subkey under this root.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HKEY_CURRENT_USER</strong></td>
+                            <td>HKCU</td>
+                            <td>A subset of HKEY_USERS with settings for the <strong>currently logged-in user</strong> (desktop, network, applications).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HKEY_CURRENT_CONFIG</strong></td>
+                            <td>HKCC</td>
+                            <td>Contains current hardware configuration at startup. This key is <strong>temporary</strong> and disappears after shutdown.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Important Registry Files (Hives)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SAM</strong></td>
+                            <td>Security Accounts Manager - stores user account information including hashed passwords</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SECURITY</strong></td>
+                            <td>Contains local security policy settings, user rights, audit policies</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SOFTWARE</strong></td>
+                            <td>Configuration data for installed software and applications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SYSTEM</strong></td>
+                            <td>Settings for system startup, drivers, hardware profiles - critical for boot process</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DEFAULT</strong></td>
+                            <td>Default user profile settings for new user accounts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NTUSER.DAT</strong></td>
+                            <td>Stored in each user's profile folder - contains all user configuration settings. <strong>Never delete!</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ Registry Storage</h4>
+                    <p><strong>Location:</strong> Most registry files are in <code>C:\Windows\System32\Config</code></p>
+                    <p><strong>Hive Components:</strong> A hive typically includes:</p>
+                    <ul>
+                        <li>A file with no extension (main storage)</li>
+                        <li>A .LOG file (transaction log)</li>
+                        <li>A .SAV file (backup copy at setup)</li>
+                        <li>An .ALT backup file for recovery</li>
+                    </ul>
+                </div>
+
+                <h3>Configuration File Formats</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Format</th>
+                            <th>Description</th>
+                            <th>Syntax</th>
+                            <th>Common Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>INI</strong></td>
+                            <td>Initialization file</td>
+                            <td>Key-value pairs with "="</td>
+                            <td>Older Windows applications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>XML</strong></td>
+                            <td>eXtensible Markup Language</td>
+                            <td>Tag formatting like HTML</td>
+                            <td>APIs, structured data exchange</td>
+                        </tr>
+                        <tr>
+                            <td><strong>YAML</strong></td>
+                            <td>Yet Another Markup Language</td>
+                            <td>Indentation and ":"</td>
+                            <td>Docker, Kubernetes, modern configs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JSON</strong></td>
+                            <td>JavaScript Object Notation</td>
+                            <td>{} and [] for grouping</td>
+                            <td>Web services, JavaScript apps</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="key-points">
+                    <h4>Linux Configuration Files</h4>
+                    <ul>
+                        <li>Linux <strong>does not use a registry</strong> database like Windows</li>
+                        <li>All configuration settings are stored in <strong>text files</strong></li>
+                        <li>Most config files are in <code>/etc</code> directory</li>
+                        <li>May also appear in <code>/usr</code>, <code>/opt</code>, <code>/var</code></li>
+                        <li>Software applications rely on these config files for customization</li>
+                    </ul>
+                </div>
+
+                <h3>System Processes</h3>
+                
+                <div class="definition-box">
+                    <h4>📖 What are System Processes?</h4>
+                    <p><strong>System processes</strong> are background tasks that run on a computer automatically, often without user interaction or awareness. They are essential for the operating system to manage resources like memory, network connections, and hardware devices.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Role of System Processes</h4>
+                    <ul>
+                        <li>Run essential OS services in the background</li>
+                        <li>Launch applications and handle user-level tasks</li>
+                        <li>Maintain security and performance through monitoring</li>
+                        <li>Manage system resources (memory, CPU, network)</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Examples of System Processes</h4>
+                    <ul>
+                        <li>Antivirus scans (background malware detection)</li>
+                        <li>Disk defragmentation (optimizing file storage)</li>
+                        <li>User authentication (verifying login credentials)</li>
+                        <li>Printing services (managing print jobs)</li>
+                        <li>System updates (downloading and installing patches)</li>
+                    </ul>
+                </div>
+
+                <h3>Hardware Architecture</h3>
+                
+                <div class="definition-box">
+                    <h4>📖 What is Hardware Architecture?</h4>
+                    <p><strong>Hardware architecture</strong> describes the underlying technology and design that a device uses to perform computational tasks.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Key Concepts</h4>
+                    <ul>
+                        <li><strong>OS & Application Compatibility:</strong> Operating systems and applications are designed for specific hardware architectures</li>
+                        <li><strong>Architecture Characteristics:</strong> Different architectures emphasize scalability, processing power, efficiency, or power management</li>
+                        <li><strong>Common Architectures:</strong>
+                            <ul>
+                                <li><strong>x86:</strong> Dominates desktops, laptops, and server computers</li>
+                                <li><strong>ARM:</strong> Popular in smartphones, tablets, and embedded devices like Raspberry Pi</li>
+                            </ul>
+                        </li>
+                        <li><strong>Cross-Platform Limitation:</strong> Software built for one architecture cannot run on another without an emulator</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Architecture Examples</h4>
+                    <p><strong>x86 Use Case:</strong> A Windows OS for x86 cannot run directly on an ARM device without translation/emulation. x86 systems are optimized for high performance (servers, gaming PCs).</p>
+                    <p><strong>ARM Use Case:</strong> ARM devices are optimized for low power consumption, making them dominant in mobile computing and IoT devices.</p>
+                </div>
+
+                <h3>Virtualization</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Virtualization?</h4>
+                    <p>Virtualization is the process of creating <strong>virtual versions</strong> of computing resources (servers, storage, networks) that allow multiple systems to run on the same physical hardware.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Impact of Virtualization</h4>
+                    <ul>
+                        <li><strong>Revolutionary Technology:</strong> Transformed IT infrastructure in ways unimaginable a decade ago</li>
+                        <li><strong>Cloud Adoption:</strong> Widespread use in public clouds has fueled innovations like containers, serverless computing, and microservices</li>
+                        <li><strong>Essential Capabilities:</strong> Understanding virtualization is critical to grasping modern IT infrastructure</li>
+                    </ul>
+                </div>
+
+                <h4>How Virtualization Works</h4>
+                <p>Virtual servers resemble physical servers with components like processors, storage adapters, memory, and other hardware. These components are managed similarly to physical servers. The key distinction is how hardware is presented to the operating system, facilitated by a <strong>hypervisor</strong>.</p>
+
+                <div class="key-points">
+                    <h4>Benefits of Virtualization</h4>
+                    <ul>
+                        <li><strong>Resource Sharing:</strong> One physical server can host multiple VMs, maximizing hardware utilization</li>
+                        <li><strong>High Availability:</strong> VMs can move between physical systems (live migration) with minimal downtime</li>
+                        <li><strong>Software-Defined Flexibility:</strong> Hardware components (CPU, memory, storage) managed via software</li>
+                        <li><strong>Scalability:</strong> Add or adjust resources on the fly, often automatically based on demand</li>
+                        <li><strong>Business Continuity:</strong> Supports disaster recovery and business continuity planning</li>
+                    </ul>
+                </div>
+
+                <h4>Types of Hypervisors</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                            <th>Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Type 1 (Bare-Metal)</strong></td>
+                            <td>Runs directly on hardware without a host OS. Purpose-built, lean, and efficient.</td>
+                            <td>Enterprise data centers, production environments</td>
+                            <td>VMware ESXi, Microsoft Hyper-V, Citrix XenServer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Type 2 (Hosted)</strong></td>
+                            <td>Installed on top of a full-featured host OS. Easier to use with GUI support.</td>
+                            <td>Testing, development labs, desktop virtualization</td>
+                            <td>Oracle VirtualBox, VMware Workstation, Parallels Desktop</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Application Virtualization</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Application Virtualization?</h4>
+                    <p>A software delivery model where the application runs on a server but is <strong>streamed to the client device</strong>. To the end user, the application looks and behaves as if it's installed locally.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Key Characteristics</h4>
+                    <ul>
+                        <li>Clients access applications hosted on servers</li>
+                        <li>Application is streamed in real-time</li>
+                        <li>Enables delivery without complex installation on each device</li>
+                        <li>Often paired with HTML5 remote desktop apps (clientless solutions)</li>
+                        <li>Users can access through standard web browsers</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Application Virtualization Solutions</h4>
+                    <ul>
+                        <li>Citrix XenApp</li>
+                        <li>Microsoft App-V</li>
+                        <li>VMware ThinApp</li>
+                    </ul>
+                </div>
+
+                <h3>Containerization</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Containerization?</h4>
+                    <p><strong>Application cell/container virtualization</strong> operates without a hypervisor and instead relies on resource separation at the operating system level. Each container runs within isolated "cells" with allocated CPU and memory resources.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Container Characteristics</h4>
+                    <ul>
+                        <li><strong>OS-Level Virtualization:</strong> Processes use the native OS kernel</li>
+                        <li><strong>Application Isolation:</strong> Containers host separate application processes with required variables and libraries packaged inside</li>
+                        <li><strong>Efficiency:</strong> Lightweight compared to full virtual machines</li>
+                        <li><strong>Portability:</strong> Easily portable across development, testing, and production</li>
+                        <li><strong>Cloud Usage:</strong> Fundamental to cloud services, supports microservices and serverless architectures</li>
+                    </ul>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Virtual Machines (VMs)</th>
+                            <th>Containers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Guest OS</strong></td>
+                            <td>Each VM has its own full OS</td>
+                            <td>Share host OS kernel</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Size</strong></td>
+                            <td>Heavyweight (GB)</td>
+                            <td>Lightweight (MB)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Startup Time</strong></td>
+                            <td>Minutes</td>
+                            <td>Seconds</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Isolation</strong></td>
+                            <td>Strong (complete OS separation)</td>
+                            <td>Good (process-level)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Portability</strong></td>
+                            <td>Less portable</td>
+                            <td>Highly portable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Use Case</strong></td>
+                            <td>Different OS types, legacy apps</td>
+                            <td>Cloud-native apps, microservices</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📌 Container Technologies</h4>
+                    <ul>
+                        <li><strong>Docker:</strong> One of the most well-known container platforms</li>
+                        <li><strong>Kubernetes:</strong> Orchestrates and manages containers at scale</li>
+                    </ul>
+                </div>
+
+                <h3>Cloud Deployment Models</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Description</th>
+                            <th>Advantages</th>
+                            <th>Disadvantages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Public Cloud</strong></td>
+                            <td>Accessible to general public, hosted by third-party providers over the Internet</td>
+                            <td>
+                                • Cost-effective (pay-as-you-go)<br>
+                                • High scalability and elasticity<br>
+                                • Quick setup and deployment
+                            </td>
+                            <td>
+                                • Limited control over infrastructure<br>
+                                • Security concerns in shared environment<br>
+                                • Compliance challenges
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Private Cloud</strong></td>
+                            <td>Built, owned, and managed by an organization internally or by third-party exclusively</td>
+                            <td>
+                                • Stronger security and privacy<br>
+                                • Customizable for business needs<br>
+                                • Better compliance with regulations
+                            </td>
+                            <td>
+                                • High initial cost and maintenance<br>
+                                • Requires skilled staff to manage<br>
+                                • Less scalability than public
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hybrid Cloud</strong></td>
+                            <td>Combines public and private cloud resources</td>
+                            <td>
+                                • Flexibility (cost + security)<br>
+                                • Supports data movement between environments<br>
+                                • Enhanced disaster recovery
+                            </td>
+                            <td>
+                                • More complex to manage and secure<br>
+                                • Requires strong integration<br>
+                                • Can be expensive
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📌 Cloud Examples</h4>
+                    <p><strong>Public Cloud:</strong> AWS, Microsoft Azure, Google Cloud, IBM Cloud, Oracle Cloud</p>
+                    <p><strong>Private Cloud:</strong> Government agencies, financial institutions with strict compliance</p>
+                    <p><strong>Hybrid Cloud:</strong> Retail companies keeping payment data in private cloud while using public cloud for web hosting</p>
+                </div>
+
+                <h3>Serverless Computing</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Serverless Computing?</h4>
+                    <p>A modern design pattern where the <strong>cloud provider manages the infrastructure</strong> required to run applications. Applications run within virtualized runtime containers in the cloud rather than on dedicated server instances.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Serverless Characteristics</h4>
+                    <ul>
+                        <li><strong>Reduced Management:</strong> No need to manage physical/virtual servers, patching, or admin privileges</li>
+                        <li><strong>Cloud-Driven Redundancy:</strong> All redundancy handled within the cloud (no need for multiple servers)</li>
+                        <li><strong>Pay-per-use Billing:</strong> Based on execution time, not hourly charges like VMs</li>
+                        <li><strong>DevOps Support:</strong> Enables rapid development and deployment</li>
+                        <li><strong>Event-Driven Orchestration:</strong> Services triggered by client connections</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Serverless Considerations</h4>
+                    <ul>
+                        <li><strong>Security Concerns:</strong> Must ensure legitimate users aren't impersonated; strong authentication critical</li>
+                        <li><strong>Developer Accounts:</strong> Must be locked down with minimal tools</li>
+                        <li><strong>Evolving Best Practices:</strong> Constantly changing security landscape</li>
+                        <li><strong>Provider Dependency:</strong> Limited control over failures and disaster recovery</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Serverless Platforms</h4>
+                    <ul>
+                        <li>AWS Lambda</li>
+                        <li>Google Cloud Functions</li>
+                        <li>Microsoft Azure Functions</li>
+                    </ul>
+                </div>
+
+                <h3>Software-Defined Networking (SDN)</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is SDN?</h4>
+                    <p><strong>Software-Defined Networking (SDN)</strong> replaces traditional network hardware functions with a virtual control plane that manages traffic. It separates the control plane (decision-making) from the data plane (traffic forwarding).</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>SDN Benefits</h4>
+                    <ul>
+                        <li><strong>Segmentation:</strong> Divides networks into smaller, isolated subnetworks to enhance security</li>
+                        <li><strong>Flexibility:</strong> Quickly reprogram data flows and apply policies across entire network</li>
+                        <li><strong>Automation:</strong> Reduces manual configuration by automating deployment</li>
+                        <li><strong>Centralized Control:</strong> Monitor and adjust traffic through one virtual controller</li>
+                        <li><strong>Critical for Orchestration:</strong> Essential component of automation technologies</li>
+                    </ul>
+                </div>
+
+                <h4>The Three Planes of SDN</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plane</th>
+                            <th>Function</th>
+                            <th>Responsibilities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Management Plane</strong></td>
+                            <td>Administrators and monitoring</td>
+                            <td>
+                                • Monitors traffic conditions and network status<br>
+                                • Provides visibility, logging, and reporting<br>
+                                • Enables policy configuration
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Control Plane</strong></td>
+                            <td>Decision-making</td>
+                            <td>
+                                • Makes decisions on traffic prioritization and security<br>
+                                • Defines forwarding rules for data plane<br>
+                                • Provides centralized intelligence
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Plane</strong></td>
+                            <td>Traffic forwarding</td>
+                            <td>
+                                • Handles actual switching and routing of packets<br>
+                                • Enforces ACLs and security rules<br>
+                                • Executes instructions from control plane
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📌 SDN Use Cases</h4>
+                    <ul>
+                        <li>Cloud data centers with thousands of servers needing automated traffic management</li>
+                        <li>Incident response where malicious traffic must be contained within specific network sections</li>
+                        <li>Dynamic scaling of resources for business continuity</li>
+                    </ul>
+                </div>
+
+                <h3>Deperimeterization</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Deperimeterization?</h4>
+                    <p>The shift in security strategy where the traditional boundary between "inside" (trusted) and "outside" (untrusted) networks becomes less relevant. The perimeter has blurred, making perimeter-only defenses insufficient.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Trends Driving Deperimeterization</h4>
+                    <ul>
+                        <li><strong>Cloud:</strong> Data and applications hosted outside traditional corporate perimeter</li>
+                        <li><strong>Remote Work:</strong> Employees connect from home networks or public Wi-Fi, bypassing corporate perimeter</li>
+                        <li><strong>Mobile Devices:</strong> Smartphones and tablets access corporate resources from anywhere</li>
+                        <li><strong>Outsourcing:</strong> Third-party vendors need access to internal resources</li>
+                        <li><strong>Wireless Networks:</strong> Wi-Fi is more open and harder to secure than wired networks</li>
+                    </ul>
+                </div>
+
+                <h3>Zero Trust Architecture</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Zero Trust?</h4>
+                    <p>A security framework that <strong>eliminates the idea of a trusted internal network</strong> and an untrusted external network. Core principle: <strong>"Never trust, always verify."</strong></p>
+                    <p>Reference: NIST SP 800-207 "Zero Trust Architecture"</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Zero Trust Principles</h4>
+                    <ul>
+                        <li>Everything is considered "outside" - no automatic trust</li>
+                        <li><strong>Trust Nothing, Validate Everything:</strong> All users, devices, and applications must prove identity</li>
+                        <li><strong>Continuous Verification:</strong> Re-check identity at every step, not just at login</li>
+                        <li><strong>Least Privilege:</strong> Only grant minimal required access</li>
+                        <li><strong>Micro-Segmentation:</strong> Break networks into small zones to limit lateral movement</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>Key Benefits of Zero Trust</h4>
+                    <ul>
+                        <li><strong>Greater Security:</strong> All users, devices, and applications authenticated before network access</li>
+                        <li><strong>Better Access Controls:</strong> More stringent limits on who/what can access resources and from what locations</li>
+                        <li><strong>Improved Governance:</strong> Limits on data access and greater operational visibility</li>
+                        <li><strong>Increased Granularity:</strong> Users granted access to what they need when they need it</li>
+                    </ul>
+                </div>
+
+                <h4>Essential Components of Zero Trust</h4>
+                <ul>
+                    <li>Network and endpoint security</li>
+                    <li>Identity and access management (IAM)</li>
+                    <li>Policy-based enforcement</li>
+                    <li>Cloud security</li>
+                    <li>Network visibility</li>
+                    <li>Network segmentation</li>
+                    <li>Data protection</li>
+                    <li>Threat detection and prevention</li>
+                </ul>
+
+                <h3>Secure Access Service Edge (SASE)</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is SASE?</h4>
+                    <p><strong>SASE (pronounced "sassy")</strong> is a cloud-delivered security and networking framework that merges wide area networking (WAN) with security services into one unified model.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>SASE Characteristics</h4>
+                    <ul>
+                        <li><strong>Simplification:</strong> Combines networking and security into single cloud-hosted service</li>
+                        <li><strong>Hardware Elimination:</strong> No need for dedicated hardware appliances</li>
+                        <li><strong>Advanced Features:</strong> IAM, secure web gateways, Zero Trust network access</li>
+                        <li><strong>Remote Management:</strong> Centralized control and policy enforcement</li>
+                        <li><strong>Integration:</strong> Unifies NAC, VPN, firewalls, and threat protection</li>
+                    </ul>
+                </div>
+
+                <h4>Core SASE Security Features</h4>
+                <ol>
+                    <li><strong>Identity and Access Management (IAM):</strong> Defines user rights, enables SSO, supports multiple IAM solutions</li>
+                    <li><strong>Secure Web Gateways (SWG):</strong> URL filtering, content scanning, malware protection. Examples: Cisco Umbrella, Palo Alto Networks, AWS WAF</li>
+                    <li><strong>Zero Trust Network Access (ZTNA):</strong> Monitors network activities, blocks unauthorized traffic. Example: Cisco AMP</li>
+                </ol>
+
+                <div class="example-box">
+                    <h4>📌 SASE vs Traditional Security</h4>
+                    <p><strong>Traditional:</strong> Multiple point solutions (separate firewalls, VPNs, web gateways) requiring complex management</p>
+                    <p><strong>SASE:</strong> Unified cloud service combining all security and networking functions with centralized management</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 3B SECTION -->
+        <section id="topic3b" class="content-section">
+            <div class="card">
+                <h2>🔐 Topic 3B: Identity and Access Management (IAM)</h2>
+
+                <div class="definition-box">
+                    <h4>📖 What is IAM?</h4>
+                    <p><strong>Identity and Access Management (IAM)</strong> is a framework of policies, technologies, and processes designed to ensure that only authorized users can access specific resources at the right times and for the right reasons.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Key IAM Capabilities</h4>
+                    <ul>
+                        <li><strong>User Identity Management:</strong> Establishes and manages digital identities for individuals</li>
+                        <li><strong>Authentication:</strong> Confirms user identity through credentials (passwords, biometrics, 2FA)</li>
+                        <li><strong>Authorization:</strong> Grants access based on roles and permissions</li>
+                        <li><strong>Single Sign-On (SSO):</strong> Log in once, access multiple applications securely</li>
+                        <li><strong>Auditing and Logging:</strong> Tracks user activity for compliance and security monitoring</li>
+                        <li><strong>Integration:</strong> Connects IAM with third-party apps and cloud services</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>IAM Benefits</h4>
+                    <ul>
+                        <li>Reduces risk of unauthorized access to sensitive resources</li>
+                        <li>Enhances compliance with regulations (GDPR, HIPAA)</li>
+                        <li>Simplifies user experience with centralized access (SSO)</li>
+                        <li>Supports Zero Trust by enforcing strict authentication and least-privilege principles</li>
+                    </ul>
+                </div>
+
+                <h3>Authentication Factors</h3>
+
+                <div class="key-points">
+                    <h4>The Three Authentication Factors</h4>
+                    <ol>
+                        <li><strong>Something You Know</strong> - Knowledge-based credentials
+                            <ul><li>Examples: Passwords, PINs, security questions</li></ul>
+                        </li>
+                        <li><strong>Something You Have</strong> - Physical items that prove identity
+                            <ul><li>Examples: Smart cards, security tokens, mobile authenticator apps</li></ul>
+                        </li>
+                        <li><strong>Something You Are</strong> - Biometric traits unique to the user
+                            <ul><li>Examples: Fingerprint, facial recognition, iris scans, voice patterns</li></ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Why Use Multiple Factors?</h4>
+                    <p><strong>Improves Identity Assurance:</strong> Adds extra layers of security beyond just a password</p>
+                    <p><strong>Harder to Compromise:</strong> Even if one factor is stolen (e.g., password), attackers still need the second factor (e.g., token or fingerprint)</p>
+                    <p><strong>Example:</strong> Bank login requiring:
+                        <ul>
+                            <li>Password (something you know) +</li>
+                            <li>Security token from mobile app (something you have) +</li>
+                            <li>Fingerprint scan (something you are)</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <h3>Authentication Methods</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Description</th>
+                            <th>Security Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Multi-Factor Authentication (MFA)</strong></td>
+                            <td>Uses two or more of the three authentication factors. May include additional attributes like location or behavioral traits.</td>
+                            <td>✅✅ Very Strong</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Two-Factor Authentication (2FA)</strong></td>
+                            <td>Uses two of the three authentication categories (e.g., password + smart card)</td>
+                            <td>✅ Strong</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2-Step Verification</strong></td>
+                            <td>Uses an out-of-band mechanism to deliver a one-time code through a separate channel (SMS, phone call, push notification, email)</td>
+                            <td>✅ Good (but vulnerable to interception)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Passwordless Authentication</strong></td>
+                            <td>Eliminates passwords by using biometric factors or one-time codes. Cannot be easily shared, removes burden of remembering complex passwords.</td>
+                            <td>✅✅ Very Strong</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Single Sign-On (SSO)</strong></td>
+                            <td>Allows users to authenticate once and access multiple systems or applications. Improves usability but poses risk if credentials are compromised.</td>
+                            <td>⚠️ Convenient but risky alone</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ SSO Security Consideration</h4>
+                    <p><strong>Risk:</strong> If SSO credentials are compromised, multiple systems are exposed.</p>
+                    <p><strong>Best Practice:</strong> Combine SSO with MFA for stronger protection.</p>
+                </div>
+
+                <h3>Privileged Access Management (PAM)</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is PAM?</h4>
+                    <p><strong>Privileged Access Management (PAM)</strong> is a framework of policies, processes, and technologies designed to protect privileged accounts (system administrators, root accounts, service accounts) from credential theft, misuse, or unauthorized access.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>PAM Key Functions</h4>
+                    <ul>
+                        <li><strong>Control:</strong> Restricts who can use privileged credentials</li>
+                        <li><strong>Secure:</strong> Stores privileged credentials in a secure repository or vault</li>
+                        <li><strong>Monitor:</strong> Tracks privileged account activity in real-time</li>
+                        <li><strong>Audit:</strong> Provides logs and reports for compliance and security investigations</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 PAM Providers</h4>
+                    <ul>
+                        <li>BeyondTrust</li>
+                        <li>CyberArk</li>
+                        <li>Centrify</li>
+                    </ul>
+                </div>
+
+                <h3>Federated Trust and Identity Systems</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Federation?</h4>
+                    <p><strong>Federation</strong> allows different organizations or networks to trust each other's accounts, eliminating the need for multiple usernames and passwords across systems.</p>
+                </div>
+
+                <h4>Key Federation Technologies</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Technology</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>OpenID</strong></td>
+                            <td>Authentication standard letting users log into multiple sites with one set of credentials (e.g., "Sign in with Google"). Users register once with an OpenID provider.</td>
+                            <td>Consumer web authentication</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SAML</strong><br>(Security Assertion Markup Language)</td>
+                            <td>XML-based protocol for exchanging authentication and authorization data. Uses HTTP/HTTPS and SOAP. Digital signatures applied for trust.</td>
+                            <td>Enterprise SSO, AWS integration</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Shibboleth</strong></td>
+                            <td>Federated identity system built on SAML, widely used in universities and public organizations. Redirects users to their identity provider for authentication.</td>
+                            <td>Academic/research institutions</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📌 Shibboleth Process Example</h4>
+                    <p>A student accessing an external library database:</p>
+                    <ol>
+                        <li>Student requests access to Shibboleth-enabled site</li>
+                        <li>Site sends a SAML request</li>
+                        <li>Student is redirected to university identity provider</li>
+                        <li>Identity provider authenticates and sends SAML response</li>
+                        <li>Site grants access based on SAML data</li>
+                    </ol>
+                </div>
+
+                <h3>Transitive Trust</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Transitive Trust?</h4>
+                    <p>A trust model that allows authentication services to accept each other's identity assertions and permissions. If Resource A trusts Resource B, and Resource B trusts Resource C, then <strong>Resource A also trusts Resource C</strong>.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Transitive Trust Characteristics</h4>
+                    <ul>
+                        <li>Defines relationships between authentication services</li>
+                        <li>Commonly used in Active Directory between domains</li>
+                        <li><strong>Benefits:</strong> Simplifies user access across multiple systems</li>
+                        <li><strong>Limitations:</strong> Can create security risks since trust extends automatically</li>
+                    </ul>
+                </div>
+
+                <h3>Cloud Access Security Broker (CASB)</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is CASB?</h4>
+                    <p>A <strong>Cloud Access Security Broker (CASB)</strong> is enterprise security software that acts as a gatekeeper between users and cloud service providers. It enforces security policies, ensures compliance, and protects sensitive data across all types of devices.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>CASB Functions</h4>
+                    <ul>
+                        <li>Enables Single Sign-On (SSO) and enforces access controls</li>
+                        <li>Scans for malware and prevents rogue or noncompliant device access</li>
+                        <li>Monitors and audits user and resource activity in cloud services</li>
+                        <li>Prevents data exfiltration by blocking access to unauthorized cloud services from managed devices</li>
+                    </ul>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Deployment Model</th>
+                            <th>Description</th>
+                            <th>Pros & Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Forward Proxy</strong></td>
+                            <td>Positioned at the client network edge. Forwards traffic to the cloud if it complies with policy.</td>
+                            <td>
+                                ✅ Real-time inspection of traffic<br>
+                                ❌ Users may bypass proxy; can cause performance bottlenecks
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reverse Proxy</strong></td>
+                            <td>Positioned at the cloud network edge. Routes user traffic to cloud services with policy enforcement.</td>
+                            <td>
+                                ✅ No device configuration needed<br>
+                                ❌ Only works if the cloud app supports proxy integration
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>API-based CASB</strong></td>
+                            <td>Uses APIs to connect cloud services with enterprise systems. Example: If a user account is disabled locally, CASB enforces it in the cloud via API.</td>
+                            <td>
+                                ✅ Direct integration with cloud providers; effective for access and authorization<br>
+                                ⚠️ Often combined with proxy models for comprehensive coverage
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📌 CASB Vendors</h4>
+                    <ul>
+                        <li>Cisco</li>
+                        <li>Microsoft</li>
+                        <li>Forcepoint</li>
+                        <li>Trellix</li>
+                        <li>CloudSOC CASB</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 3C SECTION -->
+        <section id="topic3c" class="content-section">
+            <div class="card">
+                <h2>🛡️ Topic 3C: Data Protection & Operational Visibility</h2>
+
+                <h3>Maintaining Operational Visibility</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is Operational Visibility?</h4>
+                    <p>The foundation of effective security operations is <strong>visibility</strong> — being able to identify, contain, and protect all data within the organization. This allows security teams to quickly detect and respond to unauthorized access attempts, breaches, or potential threats.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Why Visibility Matters</h4>
+                    <ul>
+                        <li><strong>Regulatory Compliance:</strong> Ensures compliance with security standards (GDPR, HIPAA, PCI DSS)</li>
+                        <li><strong>Correct Data Handling:</strong> Ensures data is properly classified and protected across the organization</li>
+                        <li><strong>Greater Control:</strong> Know <em>who</em>, <em>when</em>, <em>where</em>, and <em>how</em> resources are accessed</li>
+                        <li><strong>Rapid Detection:</strong> Quickly detect and respond to threats before they cause damage</li>
+                    </ul>
+                </div>
+
+                <h3>Data Loss Prevention (DLP)</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is DLP?</h4>
+                    <p><strong>Data Loss Prevention (DLP)</strong> refers to technologies and processes designed to detect, monitor, and prevent unauthorized access, sharing, or movement of sensitive data.</p>
+                    <p><strong>Goal:</strong> Ensure sensitive information (personal data, credit card details, intellectual property) does not leave the organization without approval.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>DLP Components</h4>
+                    <ul>
+                        <li><strong>Policy Server:</strong> Defines and enforces rules for data classification (confidential, public, private). Logs incidents and generates reports.</li>
+                        <li><strong>Endpoint Agents:</strong> Installed on client devices (laptops, desktops). Enforce policies even when users are offline or outside the corporate network.</li>
+                        <li><strong>Network Agents:</strong> Deployed at network borders (firewalls, mail gateways). Inspect communications (emails, instant messages, file transfers).</li>
+                    </ul>
+                </div>
+
+                <h4>How DLP Works</h4>
+                <ol>
+                    <li><strong>Content Inspection:</strong> Scans data in motion (network traffic), at rest (databases, servers), and in use (endpoint devices)</li>
+                    <li><strong>File-Cracking Process:</strong> Converts unstructured data (Word, PDF, emails) into a scannable format for classification</li>
+                    <li><strong>Pattern Matching:</strong> Identifies sensitive data like SSN, credit card numbers, PII</li>
+                    <li><strong>Blocking Unauthorized Transfers:</strong> Stops sensitive data from leaving via USB drives, email, or cloud uploads</li>
+                    <li><strong>Cloud Integration:</strong> Works with APIs or proxies to monitor and enforce policies in cloud services (Office 365, Google Drive, AWS)</li>
+                </ol>
+
+                <h4>DLP Remediation Actions</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Description</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Alert Only</strong></td>
+                            <td>Copying is allowed, but the system logs the incident and may alert an administrator</td>
+                            <td>Monitoring phase, low-risk data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Block</strong></td>
+                            <td>User is prevented from copying/transmitting the file but retains access to it. Violation is logged.</td>
+                            <td>Sensitive data, prevent data leakage</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quarantine</strong></td>
+                            <td>Original file access is denied. File may be encrypted in place or moved to quarantine area.</td>
+                            <td>High-risk data, potential malware</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tombstone</strong></td>
+                            <td>Original file is replaced with a message explaining the violation and how the user can request release</td>
+                            <td>User education, policy enforcement</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h4>📌 DLP Use Cases</h4>
+                    <ul>
+                        <li><strong>Email Systems:</strong> Block unauthorized sharing of sensitive attachments</li>
+                        <li><strong>USB & Removable Media:</strong> Prevent copying of confidential files to external drives</li>
+                        <li><strong>Cloud Storage:</strong> Enforce data handling policies in OneDrive, Dropbox, AWS, Google Cloud</li>
+                        <li><strong>Social Media & Messaging:</strong> Stop leakage of sensitive info via chat or posts</li>
+                        <li><strong>Print Blocking:</strong> Prevent printing of classified documents</li>
+                        <li><strong>RDP Blocking:</strong> Prevent copying sensitive data over Remote Desktop Protocol sessions</li>
+                        <li><strong>Clipboard Privacy Controls:</strong> Restrict what can be copied to clipboard</li>
+                        <li><strong>Restricted VDI:</strong> Embed DLP controls inside virtual desktops</li>
+                        <li><strong>Data Classification Blocking:</strong> Prevent access based on sensitivity labels</li>
+                    </ul>
+                </div>
+
+                <h3>Data Classification</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data Type</th>
+                            <th>Description</th>
+                            <th>Examples</th>
+                            <th>Risk if Leaked</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PII</strong><br>(Personally Identifiable Information)</td>
+                            <td>Data that can directly or indirectly identify an individual</td>
+                            <td>Name, address, phone number, SSN, biometrics, immigration identifiers</td>
+                            <td>Identity theft, fraud, privacy violations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PHI</strong><br>(Protected Health Information)</td>
+                            <td>Data about an individual's past, present, or future health, including related payments</td>
+                            <td>Patient records, doctor notes, healthcare insurance details, prescriptions</td>
+                            <td>HIPAA violations, patient privacy breaches</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PIFI</strong><br>(Personally Identifiable Financial Info)</td>
+                            <td>Financial information linked to an individual that a financial institution collects</td>
+                            <td>Bank account numbers, credit/debit card numbers, SSN, credit history</td>
+                            <td>Financial fraud, identity theft</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CHD</strong><br>(Cardholder Data)</td>
+                            <td>Information related to payment cards (credit or debit)</td>
+                            <td>Cardholder name, card number, expiration date, billing address, CVV</td>
+                            <td>Payment fraud, PCI DSS penalties</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IP</strong><br>(Intellectual Property)</td>
+                            <td>Intangible products of human creativity and innovation</td>
+                            <td>Patents, copyrights, trade secrets, research data, source code</td>
+                            <td>Competitive loss, military or strategic disadvantage</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <h4>⚠️ Data Protection Standards</h4>
+                    <p><strong>CHD Protection:</strong> PCI DSS, GDPR, GLBA</p>
+                    <p><strong>PHI Protection:</strong> HIPAA</p>
+                    <p><strong>PII Protection:</strong> GDPR, CCPA, various state and federal regulations</p>
+                </div>
+
+                <h3>Public Key Infrastructure (PKI)</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is PKI?</h4>
+                    <p><strong>Public Key Infrastructure (PKI)</strong> is a framework of tools, policies, and technologies used to manage public/private keys, digital certificates, and encryption.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>PKI Functions</h4>
+                    <ul>
+                        <li><strong>Manages Public/Private Key Pairs:</strong> Enables asymmetric encryption</li>
+                        <li><strong>Digital Signatures:</strong> Supports integrity checks and authentication</li>
+                        <li><strong>Certificate Management:</strong> Issues, renews, and revokes digital certificates</li>
+                        <li><strong>Non-Repudiation:</strong> Provides proof of origin that cannot be denied</li>
+                        <li><strong>Centralization:</strong> Makes it easier for organizations to meet compliance requirements</li>
+                        <li><strong>Identification:</strong> Uses digital certificates issued by Certificate Authority (CA) to verify identity</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 PKI in Action: HTTPS</h4>
+                    <p>Digital certificates form the backbone of HTTPS, ensuring secure communication across the internet:</p>
+                    <ol>
+                        <li>You visit a secure website (e.g., your bank)</li>
+                        <li>Browser receives a digital certificate from the website</li>
+                        <li>Browser verifies the certificate was issued by a trusted Certificate Authority</li>
+                        <li>If valid, browser displays a padlock icon and establishes encrypted connection</li>
+                        <li>All traffic is encrypted using the public key from the certificate</li>
+                    </ol>
+                </div>
+
+                <h3>SSL/TLS Inspection</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is SSL/TLS Inspection?</h4>
+                    <p>The process of inspecting encrypted HTTPS traffic. <strong>SSL</strong> is the older protocol, replaced by <strong>TLS</strong>.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Why Inspect HTTPS Traffic?</h4>
+                    <ul>
+                        <li><strong>Hidden Threats:</strong> Without inspection, attackers can hide malicious activity inside encrypted traffic</li>
+                        <li><strong>Certificate Validation:</strong> Prevents man-in-the-middle (on-path) attacks</li>
+                        <li><strong>Detect Malicious Certificates:</strong> Identifies traffic encrypted with untrusted or fake certificates</li>
+                        <li><strong>Policy Enforcement:</strong> Ensures employees comply with acceptable use policies (blocking restricted sites or file uploads)</li>
+                        <li><strong>Visibility:</strong> Provides visibility into restricted content access or data sharing</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ SSL/TLS Inspection Process</h4>
+                    <ol>
+                        <li>A digital certificate is installed on end-user devices</li>
+                        <li>Encrypted traffic is intercepted by a proxy, load balancer, or firewall</li>
+                        <li>Traffic is decrypted and inspected by security tools</li>
+                        <li>If clean, traffic is re-encrypted and forwarded to destination</li>
+                    </ol>
+                    <p><strong>Tools that support SSL/TLS inspection:</strong> Web proxies, load balancers, next-gen firewalls</p>
+                </div>
+
+                <h3>Logging Concepts</h3>
+
+                <h4>Log Ingestion</h4>
+
+                <div class="definition-box">
+                    <h4>📖 What is Log Ingestion?</h4>
+                    <p>Collecting log data from multiple sources (authentication servers, application servers, web servers, databases) and storing them in a <strong>central location</strong> for simplified analysis.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Log Ingestion Benefits</h4>
+                    <ul>
+                        <li>Provides comprehensive view of infrastructure activities</li>
+                        <li>Helps in monitoring, auditing, and detecting threats</li>
+                        <li>Common platforms: Splunk, Logstash, ELK Stack collect, normalize, and process logs</li>
+                    </ul>
+                </div>
+
+                <h4>Time Synchronization</h4>
+
+                <div class="definition-box">
+                    <h4>📖 What is Time Synchronization?</h4>
+                    <p>Ensures all systems have <strong>accurate and consistent time</strong> for logs. If system clocks are not in sync, event correlation becomes difficult.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>Time Synchronization Methods</h4>
+                    <ul>
+                        <li><strong>NTP (Network Time Protocol):</strong> Common method for syncing system clocks</li>
+                        <li><strong>Atomic clocks or GPS-based time sources:</strong> For highly accurate environments</li>
+                        <li><strong>Benefit:</strong> Establishes clear event timeline, essential in incident response and forensics</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Why Time Synchronization Matters</h4>
+                    <p><strong>Scenario:</strong> Investigating a security breach</p>
+                    <p><strong>Without time sync:</strong> If the server clock is 10 minutes fast, the timeline is wrong - you can't determine the attack sequence</p>
+                    <p><strong>With time sync (NTP):</strong> All logs show accurate timestamps, you can trace the attacker's steps chronologically</p>
+                </div>
+
+                <h4>Logging Levels</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Name</th>
+                            <th>Meaning / Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DEBUG</strong></td>
+                            <td>Debug</td>
+                            <td>Used for troubleshooting and development testing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>INFO</strong></td>
+                            <td>Informational</td>
+                            <td>Normal operational messages (e.g., system started, user logged in)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WARNING</strong></td>
+                            <td>Warning</td>
+                            <td>Indicates a possible issue that might need attention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ERROR</strong></td>
+                            <td>Error</td>
+                            <td>Signals a failure or serious problem requiring action</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CRITICAL</strong></td>
+                            <td>Critical</td>
+                            <td>Indicates system failure or severe issue that must be fixed immediately</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Syslog Logging Levels (RFC 5424)</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Name</th>
+                            <th>Meaning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td><strong>Emergency (emerg)</strong></td>
+                            <td>System is unusable (e.g., kernel panic)</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>Alert (alert)</strong></td>
+                            <td>Immediate action required (e.g., database corruption)</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>Critical (crit)</strong></td>
+                            <td>Critical condition (e.g., hardware failure)</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>Error (error)</strong></td>
+                            <td>Error condition (e.g., failed service)</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><strong>Warning (warn)</strong></td>
+                            <td>Warning condition (e.g., disk space low)</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><strong>Notice (notice)</strong></td>
+                            <td>Normal but significant (e.g., config change)</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><strong>Informational (info)</strong></td>
+                            <td>General information (e.g., service started)</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><strong>Debug (debug)</strong></td>
+                            <td>Debugging messages for troubleshooting</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="key-points">
+                    <h4>Why Logging Levels Matter</h4>
+                    <ul>
+                        <li>Helps filter logs (analysts may only want to see WARNING and above)</li>
+                        <li>Prioritizes incident response (critical events get handled first)</li>
+                        <li>Reduces noise by categorizing messages based on importance</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 SIEM Platforms</h4>
+                    <p><strong>SIEM (Security Information and Event Management)</strong> platforms are used for log management, analysis, and real-time threat detection:</p>
+                    <ul>
+                        <li>Elastic SIEM</li>
+                        <li>Splunk</li>
+                        <li>IBM QRadar</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ SECTION -->
+        <section id="quiz" class="content-section">
+            <div class="card">
+                <h2>✅ Self-Check Quiz</h2>
+                <p>Test your understanding of Lesson 3 concepts. Click an answer to see if you're correct.</p>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>Question 1: In which Linux directory are configuration files typically located?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q1')">A) /usr</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q1')">B) /var</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q1')">C) /etc</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q1')">D) /opt</div>
+                        </div>
+                        <div id="q1-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 2: Which type of cloud deployment model is the most common?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q2')">A) Public Cloud</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q2')">B) Private Cloud</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q2')">C) Hybrid Cloud</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q2')">D) Community Cloud</div>
+                        </div>
+                        <div id="q2-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 3: This term describes how many organizations' networks no longer have a clearly defined "inside" and "outside" boundary.</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q3')">A) Microsegmentation</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q3')">B) Deperimeterization</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q3')">C) Zero Trust</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q3')">D) Cloud Migration</div>
+                        </div>
+                        <div id="q3-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 4: True or False - DLP can be used to restrict printing of sensitive data.</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q4')">True</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q4')">False</div>
+                        </div>
+                        <div id="q4-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 5: This term describes the use of a PIN sent via SMS to a smartphone.</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q5')">A) Multi-factor authentication</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q5')">B) 2-step verification</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q5')">C) Single sign-on</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q5')">D) Passwordless authentication</div>
+                        </div>
+                        <div id="q5-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 6: If A trusts B and B trusts C, then A trusts C. What term describes this trust relationship?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q6')">A) Federation</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q6')">B) Transitive Trust</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q6')">C) SAML</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q6')">D) Zero Trust</div>
+                        </div>
+                        <div id="q6-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 7: What is the enterprise management software designed to mediate user/employee access to cloud services?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q7')">A) CASB</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q7')">B) IAM</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q7')">C) PAM</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q7')">D) SIEM</div>
+                        </div>
+                        <div id="q7-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 8: What is the acronym for the three-digit security code typically located on the signature strip of a credit card?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q8')">A) PIN</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q8')">B) CVV</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q8')">C) PCI</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q8')">D) CHD</div>
+                        </div>
+                        <div id="q8-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 9: True or False - HTTPS traffic does not pose any threat because it is encrypted and therefore safe.</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q9')">True</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q9')">False</div>
+                        </div>
+                        <div id="q9-feedback" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <h4>Question 10: Which Windows Registry key stores system-wide settings that apply to all users?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q10')">A) HKEY_CURRENT_USER</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, true, 'q10')">B) HKEY_LOCAL_MACHINE</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q10')">C) HKEY_USERS</div>
+                            <div class="quiz-option" onclick="checkAnswer(this, false, 'q10')">D) HKEY_CLASSES_ROOT</div>
+                        </div>
+                        <div id="q10-feedback" class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            const tabs = document.querySelectorAll('.tab-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateProgress();
+        }
+
+        function checkAnswer(element, isCorrect, questionId) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById(questionId + '-feedback');
+            
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.className = 'quiz-feedback show correct';
+                feedback.textContent = '✓ Correct! Great job.';
+            } else {
+                element.classList.add('incorrect');
+                feedback.className = 'quiz-feedback show incorrect';
+                feedback.textContent = '✗ Incorrect. Review the material and try again.';
+            }
+        }
+
+        function updateProgress() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const activeIndex = Array.from(tabs).findIndex(tab => tab.classList.contains('active'));
+            const progress = ((activeIndex + 1) / tabs.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight') {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    const nextTab = activeTab.nextElementSibling;
+                    if (nextTab && nextTab.classList.contains('tab-btn')) {
+                        nextTab.click();
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    const prevTab = activeTab.previousElementSibling;
+                    if (prevTab && prevTab.classList.contains('tab-btn')) {
+                        prevTab.click();
+                    }
+                }
+            });
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson2_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson4_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

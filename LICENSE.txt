@@ -1,0 +1,37 @@
+CYBEREDGE ACADEMY — PROPRIETARY SOFTWARE LICENSE
+==================================================
+
+Copyright (c) 2026 Solomon Seifu, PhD
+All Rights Reserved.
+
+OWNERSHIP
+This software, including all HTML files, JavaScript, CSS, content, 
+questions, and associated materials ("the Platform"), is the sole 
+intellectual property of Solomon Seifu, PhD ("the Author").
+
+PERMITTED USE
+You are permitted to:
+- Use this Platform for personal study and educational purposes
+- Share access to this Platform with students under your direct supervision
+- Run this Platform on local machines or private networks
+
+PROHIBITED USE
+You are strictly prohibited from:
+- Redistributing, reselling, or republishing this Platform under any name
+- Claiming authorship or ownership of any part of this Platform
+- Modifying and redistributing the Platform without written permission
+- Uploading this Platform to public repositories without written permission
+- Removing or altering copyright notices or author attribution
+
+ATTRIBUTION REQUIREMENT
+Any permitted distribution must retain full author attribution:
+"Created by Solomon Seifu, PhD — CyberEdge Academy"
+
+CONTACT
+For licensing inquiries, permissions, or institutional use:
+Solomon Seifu, PhD
+CyberEdge Academy
+
+DISCLAIMER
+This Platform is provided "as is" without warranty of any kind. The Author
+shall not be liable for any damages arising from the use of this Platform.

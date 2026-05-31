@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 4 - Student Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --perscholas-blue: #0066CC;
+            --perscholas-dark: #003366;
+            --accent-purple: #667eea;
+            --accent-green: #2ECC71;
+            --accent-orange: #FF6B35;
+            --bg-light: #F8F9FA;
+            --bg-white: #FFFFFF;
+            --text-primary: #2C3E50;
+            --text-secondary: #7F8C8D;
+            --border-color: #E1E8ED;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-light);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--perscholas-dark) 0%, var(--perscholas-blue) 100%);
+            color: white;
+            padding: 2rem 2rem 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .org-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+
+        .program-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .creator-credit {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.875rem;
+            font-style: italic;
+            opacity: 0.85;
+        }
+
+        nav {
+            background: white;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid var(--perscholas-blue);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-light);
+            color: var(--perscholas-blue);
+        }
+
+        .tab-btn.active {
+            background: var(--perscholas-blue);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            color: var(--perscholas-blue);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--perscholas-blue);
+        }
+
+        .card h3 {
+            color: var(--perscholas-dark);
+            font-size: 1.35rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #E8EAF6 0%, #C5CAE9 100%);
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .definition-box h4 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .key-points {
+            background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
+            border-left: 4px solid #0277BD;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .key-points h4 {
+            color: #0277BD;
+            margin-top: 0;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-left: 4px solid #F57C00;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .example-box h4 {
+            color: #F57C00;
+            margin-top: 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border-left: 4px solid #D32F2F;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #D32F2F;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        thead {
+            background: var(--perscholas-blue);
+            color: white;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        code {
+            background: #F5F7FA;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9em;
+            color: #D32F2F;
+        }
+
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        .quiz-section {
+            background: #F8F9FA;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--perscholas-blue);
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #F8F9FA;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #E3F2FD;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #C8E6C9;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .quiz-option.incorrect {
+            background: #FFCDD2;
+            border-left: 4px solid #F44336;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem 1rem 2rem;
+            }
+
+            .lesson-title {
+                font-size: 1.75rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .nav-content {
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="org-name">CyberEdge Academy</div>
+            <div class="program-name">Cybersecurity Analyst Training</div>
+            <h1 class="lesson-title">Lesson 4: Understanding Process Improvement in Security Operations</h1>
+            <p class="lesson-subtitle">Understanding Process Improvement in Security Operations</p>
+            <div class="creator-credit">Dr. Solomon Seifu &nbsp;|&nbsp; CyberEdge Academy</div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-content">
+            <button class="tab-btn active" onclick="showSection('overview')">Overview</button>
+            <button class="tab-btn" onclick="showSection('topic4a')">Topic 4A: Leadership & Automation</button>
+            <button class="tab-btn" onclick="showSection('topic4b')">Topic 4B: Technology for Operations</button>
+            <button class="tab-btn" onclick="showSection('quiz')">Quiz</button>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- OVERVIEW SECTION -->
+        <section id="overview" class="content-section active">
+            <div class="card">
+                <h2>📋 Lesson Overview</h2>
+                
+                <div class="definition-box">
+                    <h4>📖 Lesson Introduction</h4>
+                    <p>The importance of leadership in security operations cannot be overstated (exaggerated). Leaders are responsible for:</p>
+                    <ul>
+                        <li>Setting the strategy</li>
+                        <li>Providing guidance and direction</li>
+                        <li>Ensuring the safety of personnel and assets</li>
+                    </ul>
+                    <p>They must be able to take decisive action and lead from the front in times of crisis. Good leaders will also be able to motivate and inspire their team, helping to ensure that everyone is working toward the same goal.</p>
+                    <p>Furthermore, leaders must understand the latest technology and trends to ensure that their team is equipped with the right skills and equipment.</p>
+                    <p>Finally, leaders must manage resources effectively, so operations are efficient, cost-effective, and secure. To accomplish this, security operations team leaders must depend on well-established processes. <strong>Processes define a standardized, preestablished method of completing various tasks.</strong></p>
+                    <p><strong>Leadership is a critical factor in the success of any security operation</strong>, and good leaders are essential for the safety and protection of all personnel and assets.</p>
+                </div>
+
+                <h3>Learning Objectives</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Objective</th>
+                            <th>What You'll Learn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Understand the Role of Leadership in Security Operations</strong></td>
+                            <td>Learn why leadership is critical in setting strategy, providing direction, ensuring safety of personnel and assets, and taking decisive action in times of crisis.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Explore Security Operations Automation Concepts</strong></td>
+                            <td>Understand how automation reduces human error, speeds up incident response, and ensures consistent task execution by using tools, scripts, and platforms.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Review Automation Technologies</strong></td>
+                            <td>Examine SOAR (Security Orchestration, Automation, and Response), SIEM (Security Information and Event Management), and EDR (Endpoint Detection and Response) to see how they integrate for effective security operations.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Connect Leadership with Technology Adoption</strong></td>
+                            <td>Learn how leaders must understand and adopt emerging security technologies and trends to ensure teams are equipped with the right skills and resources.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Emphasize Process and Consistency</strong></td>
+                            <td>Discover how well-established processes and standardized methods enhance efficiency, cost-effectiveness, and security across operations.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="key-points">
+                    <h4>🎯 Lesson Focus</h4>
+                    <p>This lesson emphasizes how <strong>leadership, automation, and process consistency</strong> combine to improve the efficiency, cost-effectiveness, and security of operations. Leaders must integrate technology, automation, and standardized practices to ensure that teams can respond quickly and effectively to threats.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📚 How to Use This Portal</h4>
+                    <p>This guide is for pre-class preparation:</p>
+                    <ul>
+                        <li>Read the objectives to understand the scope</li>
+                        <li>Focus on the connections between leadership, automation, and security processes</li>
+                        <li>Be ready to discuss:
+                            <ul>
+                                <li>Why is leadership critical in the success of security operations?</li>
+                                <li>How does automation reduce errors and improve efficiency in incident response?</li>
+                                <li>What role do SOAR, SIEM, and EDR play in process improvement?</li>
+                                <li>Why must leaders balance resource management with adoption of new technology?</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 4A SECTION -->
+        <section id="topic4a" class="content-section">
+            <div class="card">
+                <h2>🔐 Topic 4A: Exploring Leadership in Security Operations</h2>
+
+                <h3>Maximizing Security Operations Through Automation</h3>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p><strong>Automation in Security Operations:</strong> Refers to the use of tools, scripts, or platforms to perform repetitive, routine, or complex security tasks without requiring constant human intervention.</p>
+                    <p>It helps streamline processes such as threat detection, log analysis, vulnerability scanning, and incident response.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p><strong>Automation improves security operations by:</strong></p>
+                    <ul>
+                        <li><strong>Efficiency:</strong> Automating repetitive tasks accelerates processes like patch management, vulnerability scans, and incident handling</li>
+                        <li><strong>Consistency:</strong> Ensures security tasks are standardized and applied across the IT environment</li>
+                        <li><strong>Reliability:</strong> Reduces the likelihood of errors by executing tasks predictably and accurately</li>
+                        <li><strong>Cost-effectiveness:</strong> Lowers manual labor needs, optimizes resource use, and allows organizations to achieve more with fewer resources</li>
+                    </ul>
+                    <p>Automation provides leadership with insights and data on security operations, enabling informed decision-making. It helps security teams become <strong>proactive rather than reactive</strong>, detecting threats in real-time and alerting analysts quickly.</p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li>Security operations face growing complexity and scale, which makes manual approaches unsustainable</li>
+                        <li>Automation enables faster incident response, reducing the damage of cyberattacks</li>
+                        <li>Supports regulatory compliance by ensuring security tasks are performed consistently</li>
+                        <li>Helps teams free up time to focus on higher-level analysis, strategy, and innovation</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Examples</h4>
+                    <ul>
+                        <li><strong>IDS (Intrusion Detection Systems):</strong> Automated tools that detect potential threats in real-time and immediately alert security analysts</li>
+                        <li><strong>Automated Vulnerability Management:</strong> Regularly scans systems, identifies weaknesses, and applies patches without human delay</li>
+                        <li><strong>SOAR Platforms:</strong> Integrate multiple security tools to orchestrate workflows, such as isolating an infected endpoint when malware is detected</li>
+                        <li><strong>Customer Service Impact:</strong> Automated processes help provide faster responses to user issues, boosting satisfaction and compliance</li>
+                    </ul>
+                </div>
+
+                <h3>Two Popular Tools Anchoring Security Automation</h3>
+
+                <h4>Security Information and Event Management (SIEM)</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p><strong>SIEM (Security Information and Event Management)</strong> automates the collection, analysis, and response to security-related data. It provides real-time or near-real-time analysis of security alerts generated by network hardware and applications.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <ul>
+                        <li>SIEM simplifies the process of identifying, analyzing, and responding to threats, especially for events contained in log data</li>
+                        <li>It reduces the time and manual effort needed to monitor, identify, and respond to security events</li>
+                        <li>SIEM systems are essential for providing centralized visibility into security events across the organization</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li><strong>Efficiency:</strong> Helps detect and respond to threats more quickly</li>
+                        <li><strong>Workload reduction:</strong> Minimizes the manual labor required for monitoring and alerting</li>
+                        <li><strong>Challenges:</strong> False positives increase as SIEM usage expands, requiring resources to investigate alerts that may not be real threats</li>
+                        <li><strong>Trend:</strong> Many organizations are pairing SIEM with SOAR platforms to improve consistency and reduce alert fatigue</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>A SIEM might correlate unusual login attempts from multiple devices with firewall logs to flag a potential brute-force attack. At the same time, it could trigger alerts to the security team and even automatically enforce blocking policies.</p>
+                </div>
+
+                <h4>Security Orchestration, Automation, and Response (SOAR)</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p><strong>SOAR:</strong> Refers to the process of automating the identification, analysis, and response to security threats by using predefined workflows called <strong>playbooks</strong>.</p>
+                    <p>Playbooks contain sets of instructions that guide how to respond to specific incidents based on collected data.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <ul>
+                        <li><strong>Automates the response to threats:</strong> SOAR scans threat intelligence data from multiple enterprise sources, analyzes it, and executes predefined workflows</li>
+                        <li><strong>Defines actions to be taken:</strong> Playbooks may include:
+                            <ul>
+                                <li>Isolating a compromised system</li>
+                                <li>Blocking malicious IP addresses</li>
+                                <li>Alerting security personnel</li>
+                            </ul>
+                        </li>
+                        <li><strong>Integration:</strong> SOAR connects with cloud services, APIs, orchestration tools, and threat intelligence feeds (CTI) to unify security management</li>
+                        <li><strong>Leverages advanced technologies:</strong>
+                            <ul>
+                                <li>Automated malware signature creation</li>
+                                <li>User and Entity Behavior Analytics (UEBA) to detect anomalies</li>
+                                <li>Automation of provisioning tasks (e.g., creating/deleting accounts, launching VMs)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li><strong>Efficiency:</strong> Reduces the workload on security teams by automating repetitive responses</li>
+                        <li><strong>Speed:</strong> Provides rapid containment of threats (e.g., isolating infected devices before they spread malware)</li>
+                        <li><strong>Consistency:</strong> Ensures standardized and reliable responses across all incidents</li>
+                        <li><strong>Visibility:</strong> Provides leadership with real-time insights for better decision-making</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Examples</h4>
+                    <ul>
+                        <li>Automatically block a malicious IP address identified by SIEM</li>
+                        <li>Isolate a compromised endpoint to prevent malware spread</li>
+                        <li>Trigger alerts for suspicious user behavior (via UEBA)</li>
+                        <li>Launch VMs or remove user accounts automatically in response to specific triggers</li>
+                    </ul>
+                </div>
+
+                <h4>SOAR and SIEM Integration</h4>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <ul>
+                        <li><strong>SOAR and SIEM Integration:</strong> SOAR tools typically "bolt on" to a SIEM. Instead of a human reviewing every SIEM alert, the alert is forwarded to the SOAR platform</li>
+                        <li><strong>Automated Playbooks:</strong> SOAR follows predefined playbooks (step-by-step workflows) to evaluate, analyze, and respond to alerts</li>
+                        <li><strong>Flexible Responses:</strong>
+                            <ul>
+                                <li>For simple alerts (e.g., known malware signatures, blocked IPs), SOAR can fully resolve the issue automatically</li>
+                                <li>For complex alerts, SOAR performs additional automated analysis and then forwards the case for manual review by analysts</li>
+                            </ul>
+                        </li>
+                        <li><strong>Integration:</strong> SOAR leverages APIs and other security tools to pull in threat intelligence, evaluate event details, and enforce responses automatically</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li><strong>Reduces False Positives:</strong> Fewer wasted analyst hours spent chasing "false alarms"</li>
+                        <li><strong>Minimizes Mundane Work:</strong> Routine, repetitive monitoring and response tasks are automated</li>
+                        <li><strong>Saves Time and Effort:</strong> Reduces the manual labor required to monitor, review, and respond to alerts</li>
+                        <li><strong>Faster Mitigation:</strong> Ensures that security threats are detected and addressed more quickly</li>
+                        <li><strong>Improved Security Posture:</strong> Consistency and speed result in more effective defenses</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Examples</h4>
+                    <ul>
+                        <li>A SIEM generates an alert about unusual login attempts
+                            <ul>
+                                <li>SOAR automatically analyzes logs, blocks the suspicious IP, and notifies analysts if escalation is required</li>
+                            </ul>
+                        </li>
+                        <li>An endpoint reports malware detection
+                            <ul>
+                                <li>SOAR isolates the machine from the network and creates an incident ticket</li>
+                            </ul>
+                        </li>
+                        <li>SOAR playbooks may also:
+                            <ul>
+                                <li>Disable compromised accounts</li>
+                                <li>Launch deeper scans across related systems</li>
+                                <li>Correlate alerts with external threat intelligence feeds</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>Identifying Tasks Suitable for Automation</h3>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p>SOC (Security Operations Center) teams can identify tasks suitable for automation by analyzing which processes are repetitive, time-consuming, and critical to security effectiveness.</p>
+                </div>
+
+                <h4>1. Analyze Workflows</h4>
+                <div class="key-points">
+                    <ul>
+                        <li>Automating the analysis of security alerts and incidents by implementing workflows that automatically triage, prioritize, and investigate alerts based on predefined criteria</li>
+                        <li><strong>Example:</strong> Identifying repetitive or time-consuming tasks, such as scanning or simple log checks</li>
+                    </ul>
+                </div>
+
+                <h4>2. Evaluate Time-to-Detection</h4>
+                <div class="key-points">
+                    <ul>
+                        <li>Tasks that cause delays in detection or response are strong candidates for automation</li>
+                        <li><strong>Incident Triage and Prioritization:</strong> When a large number of alerts are received, SOC analysts must manually review each one. Automation can prioritize based on:
+                            <ul>
+                                <li>Threat severity</li>
+                                <li>Asset criticality</li>
+                                <li>Attack likelihood</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <h4>3. Identify High-Risk Areas</h4>
+                <div class="key-points">
+                    <ul>
+                        <li>SOC teams must locate vulnerabilities in IT infrastructure and assess their potential impact</li>
+                        <li><strong>Typical activities include:</strong>
+                            <ul>
+                                <li>Scanning systems and applications for known vulnerabilities</li>
+                                <li>Analyzing results</li>
+                                <li>Prioritizing remediation based on severity and critical asset impact</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <h4>4. Consider the Frequency of Tasks</h4>
+                <div class="key-points">
+                    <ul>
+                        <li>Tasks that are performed frequently are strong candidates for automation</li>
+                        <li><strong>Example:</strong> Manually analyzing and correlating log data from multiple sources (firewalls, IDS/IPS, endpoint security solutions) to detect potential incidents</li>
+                        <li>Automating these tasks reduces repetitive manual effort and helps analysts focus on higher-priority threats</li>
+                    </ul>
+                </div>
+
+                <h4>5. Evaluate the Benefits of Automation</h4>
+                <div class="key-points">
+                    <ul>
+                        <li>Focus on increased accuracy, faster response times, and reduced manual workload</li>
+                        <li>SOC teams often use predefined playbooks or workflows to respond consistently to incidents</li>
+                        <li><strong>Automation tools can orchestrate response actions such as:</strong>
+                            <ul>
+                                <li>Isolating infected systems</li>
+                                <li>Blocking malicious IP addresses</li>
+                                <li>Quarantining suspicious files</li>
+                            </ul>
+                        </li>
+                        <li>These actions are executed based on predefined rules and criteria, ensuring consistent and rapid response</li>
+                    </ul>
+                </div>
+
+                <h3>Streamlining Operations</h3>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p>Streamlining operations in security involves <strong>continuously monitoring threat intelligence feeds</strong> to detect, analyze, and respond to cyber threats more effectively.</p>
+                    <p>Threat intelligence feeds are curated sources of information that provide up-to-date data about vulnerabilities, attack methods, and emerging threats.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p><strong>Threat intelligence feeds include:</strong></p>
+                    <ul>
+                        <li>Known malware signatures</li>
+                        <li>Indicators of compromise (IOCs)</li>
+                        <li>Suspicious IP addresses</li>
+                        <li>Phishing URLs</li>
+                        <li>Data from security researchers, industry reports, and global security communities</li>
+                    </ul>
+                    <p>By leveraging these feeds, organizations can automatically detect new threats in real time, without relying on manual intervention.</p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li>Helps organizations improve incident response by reducing the time needed to identify and mitigate security incidents</li>
+                        <li>Enhances threat hunting by offering a broader and more detailed view of the threat landscape</li>
+                        <li>Enables proactive defense against both emerging threats and known attack trends</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>A threat intelligence feed detects a suspicious IP address linked to a phishing campaign. The automated system blocks the IP in real time, preventing users from accessing the malicious site.</p>
+                </div>
+
+                <h4>Automatically Detect New Threats in Real Time</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p>Automatically detecting threats in real time involves using <strong>Indicators of Compromise (IOCs)</strong> to identify when a system may have been breached or compromised.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p><strong>IOCs include:</strong></p>
+                    <ul>
+                        <li>IP addresses</li>
+                        <li>Domain names</li>
+                        <li>File hashes</li>
+                        <li>Registry keys</li>
+                        <li>Other digital artifacts linked to malicious activity</li>
+                    </ul>
+                    <p>Helps reduce the time to identify and respond to security incidents.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>A monitoring system identifies a suspicious file hash known to be linked to ransomware and blocks it immediately before execution.</p>
+                </div>
+
+                <h4>Orchestrating Threat Intelligence Data for Threat Hunting</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p>Threat hunting leverages curated threat intelligence feeds to proactively identify and mitigate potential threats before they escalate.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p>Provides a comprehensive view of the threat landscape, including:</p>
+                    <ul>
+                        <li>Potential risks</li>
+                        <li>Vulnerabilities</li>
+                        <li>Adversaries targeting an organization's assets</li>
+                    </ul>
+                    <p><strong>Involves:</strong></p>
+                    <ul>
+                        <li>Emerging threats (e.g., zero-day vulnerabilities)</li>
+                        <li>Attack trends (patterns in Tactics, Techniques, and Procedures - TTPs - used by threat actors)</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>Analysts use intelligence feeds to identify a pattern of phishing emails targeting specific industries and implement countermeasures before the campaign expands.</p>
+                </div>
+
+                <h4>Aggregating Threat Intelligence Data from Multiple Sources</h4>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p>Aggregating data means pulling threat intelligence from multiple internal and external sources to build a complete picture of the threat landscape.</p>
+                    <p><strong>Supports prioritization efforts by helping organizations decide:</strong></p>
+                    <ul>
+                        <li>Where to allocate resources most effectively</li>
+                        <li>Which security controls should be prioritized and implemented first</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>A company aggregates feeds from security vendors, government advisories, and internal system logs to decide whether to patch a critical vulnerability immediately or schedule it later.</p>
+                </div>
+
+                <h4>Sharing Threat Intelligence Data Across Different Teams</h4>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <ul>
+                        <li>Sharing involves distributing intelligence across different teams and departments to strengthen collaboration and improve response effectiveness</li>
+                        <li>Ensures all departments — SOC, IT, operations, leadership — have access to the same intelligence</li>
+                        <li>Encourages collaboration and coordination to combat threats more effectively</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>The SOC shares details of an ongoing phishing campaign with the HR and IT teams, allowing HR to warn employees and IT to block malicious domains quickly.</p>
+                </div>
+
+                <h4>Orchestrating Threat Intelligence Data</h4>
+
+                <div class="key-points">
+                    <h4>🔑 Data Enrichment</h4>
+                    <ul>
+                        <li>Involves combining and analyzing data from disparate sources to gain a deeper understanding of the threat landscape</li>
+                        <li>Helps build a complete picture of attackers by integrating feeds about:
+                            <ul>
+                                <li>Threat actors</li>
+                                <li>Tools</li>
+                                <li>Methods</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h4>🔑 Correlating Data from Multiple Sources</h4>
+                    <ul>
+                        <li>Includes network logs, endpoint data, and threat intelligence feeds</li>
+                        <li>Allows organizations to identify and prioritize threats effectively</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li>By orchestrating threat intelligence data, security teams can gain greater visibility into threats and act preemptively</li>
+                        <li>Organizations can better understand the tactics, techniques, and procedures (TTPs) attackers use</li>
+                        <li>With proper processes in place, orchestration enables a holistic view of the threat landscape and ensures steps are taken to stay ahead of adversaries</li>
+                    </ul>
+                </div>
+
+                <h3>MISP Threat Sharing Platform</h3>
+
+                <div class="definition-box">
+                    <h4>📖 What is MISP?</h4>
+                    <p>A <strong>MISP Threat Sharing Platform</strong> is a centralized system where organizations can share, collect, and analyze threat intelligence data to improve cybersecurity defenses. This platform allows security teams to collaborate effectively, stay updated on emerging threats, and make informed decisions to mitigate risks.</p>
+                </div>
+
+                <h4>Key Features of MISP Threat Sharing Platform</h4>
+
+                <div class="key-points">
+                    <h4>1. Search and Analysis Tools</h4>
+                    <ul>
+                        <li>Users can search by <strong>URL, IP address, domain, or file hash</strong> to quickly identify whether a resource is linked to malicious activity</li>
+                        <li>Helps analysts correlate threat data with known attack indicators</li>
+                    </ul>
+
+                    <h4>2. API Integration</h4>
+                    <ul>
+                        <li>The Platform often provides <strong>API keys</strong> for automation</li>
+                        <li>Example: Premium API options may allow higher request rates and larger data quotas for enterprise use</li>
+                        <li>This enables security tools like SIEMs or SOAR to automatically pull and analyze threat intelligence</li>
+                    </ul>
+
+                    <h4>3. Quota and Access Controls</h4>
+                    <ul>
+                        <li>API usage is controlled by access level, request rates, daily and monthly quotas</li>
+                        <li>Ensures fair resource allocation while encouraging upgrades for more intensive use cases</li>
+                    </ul>
+
+                    <h4>4. Visualization Dashboards</h4>
+                    <ul>
+                        <li>Dashboards show <strong>malicious activity trends, authentication failures, and network attack attempts</strong></li>
+                        <li>Visual tools like distribution graphs, failure data, and event mapping help analysts spot attack patterns</li>
+                    </ul>
+
+                    <h4>5. Collaboration and Community Sharing</h4>
+                    <ul>
+                        <li>Supports sharing threat intelligence with <strong>connected communities or within an organization</strong></li>
+                        <li>Includes tagging, taxonomies, and enrichment options (e.g., linking threats to malware families, ransomware tags, etc.)</li>
+                        <li>Encourages a <strong>collective defense approach</strong>, where lessons from one organization help others</li>
+                    </ul>
+
+                    <h4>6. Gamification & Achievements</h4>
+                    <ul>
+                        <li>This Platform may include <strong>achievements or recognition badges</strong> (e.g., first shared event, using tags, leveraging taxonomies)</li>
+                        <li>Motivates organizations to contribute and collaborate actively</li>
+                    </ul>
+                </div>
+
+                <h3>Review Activity: Leadership and Security Operations</h3>
+
+                <div class="quiz-section">
+                    <div class="quiz-question">
+                        <p><strong>1.</strong> Which tool largely automates the work of identifying, analyzing, and responding to security threats often flagged by a SIEM?</p>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2.</strong> Which tool helps to simplify identifying, analyzing, and responding to security threats, especially for events contained within log data?</p>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>3.</strong> Data _______________ combines and analyzes data from disparate sources to gain a greater understanding of it.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPIC 4B SECTION -->
+        <section id="topic4b" class="content-section">
+            <div class="card">
+                <h2>💻 Topic 4B: Understanding Technology for Security Operations</h2>
+
+                <div class="key-points">
+                    <h4>📋 Introduction</h4>
+                    <ul>
+                        <li>Technology plays an increasingly important role in modern security operations</li>
+                        <li>It helps organizations better understand their environment and quickly detect potential threats</li>
+                        <li>Technology also supports automation of routine tasks, which increases response speed and accuracy</li>
+                        <li>By integrating the right tools, SOC teams can reduce manual effort, cut down response times, and improve overall efficiency</li>
+                        <li>In this topic, we will look at common technologies used in security operations and understand how they enhance efficiency and strengthen defense capabilities</li>
+                    </ul>
+                </div>
+
+                <h3>Single Pane of Glass</h3>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p><strong>Single pane of glass</strong> is a term used to describe a unified view of a computer network or system.</p>
+                    <p>It is a <strong>graphical user interface (GUI)</strong> that enables administrators to manage their entire network from one place.</p>
+                    <p>The interface can include <strong>monitoring, configuration, and control</strong> of the network, its components, and related services.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <ul>
+                        <li>A <strong>Single Pane of Glass Orchestration</strong> provides a centralized dashboard for managing security operations</li>
+                        <li>It allows teams to see, monitor, and control all security systems and services in one place</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li><strong>Efficiency in Threat Response:</strong> Teams can identify and respond to threats quickly and effectively without switching between multiple tools</li>
+                        <li><strong>Automation of Workflows:</strong> By unifying tools, teams can automate workflows and focus on responding to threats instead of managing interfaces</li>
+                        <li><strong>Real-Time Visibility:</strong> Offers real-time insights into incidents and events, simplifying threat detection and resolution</li>
+                        <li><strong>Improved Security Operations:</strong> Enhances collaboration, reduces response times, and boosts overall efficiency</li>
+                    </ul>
+                </div>
+
+                <h3>Explore Customization Features</h3>
+
+                <h4>Application Programming Interface (API)</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p>An <strong>API (Application Programming Interface)</strong> is a set of functions and procedures that allow two or more applications to communicate with each other.</p>
+                    <p>APIs are essential for integrating with popular security services without requiring human intervention.</p>
+                    <p><strong>The API defines:</strong></p>
+                    <ul>
+                        <li>The types of requests available</li>
+                        <li>How requests should be made</li>
+                        <li>Data format requirements</li>
+                        <li>Conventions and usage rules</li>
+                    </ul>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <ul>
+                        <li>APIs extend the functionality of security tools by enabling <strong>automation, integration, and customization</strong></li>
+                        <li><strong>For example:</strong>
+                            <ul>
+                                <li>A SOAR platform can use the VirusTotal API to check if a URL or file hash is malicious</li>
+                                <li>Instead of manually searching the VirusTotal database, the SOAR tool sends an API request and receives results automatically</li>
+                            </ul>
+                        </li>
+                        <li>This helps automate scanning, analysis, and decision-making processes</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <p><strong>APIs streamline workflows by:</strong></p>
+                    <ul>
+                        <li><strong>Automating repetitive queries</strong> (e.g., scanning files, IP addresses, or URLs)</li>
+                        <li><strong>Reducing human error</strong> by standardizing interactions between systems</li>
+                        <li><strong>Saving time</strong> and allowing analysts to focus on incident response rather than manual lookups</li>
+                    </ul>
+                    <p>APIs also allow security tools to "talk" to each other, creating a more connected and efficient security ecosystem.</p>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example: VirusTotal API Integration</h4>
+                    <p>A SOAR platform integrates with <strong>VirusTotal's API:</strong></p>
+                    <ul>
+                        <li>Submits a suspicious URL automatically</li>
+                        <li>VirusTotal returns metadata, threat classifications, and reputation information</li>
+                        <li>Security teams can then quickly decide whether to block, quarantine, or investigate further</li>
+                    </ul>
+                </div>
+
+                <div class="definition-box">
+                    <h4>📖 VirusTotal Database</h4>
+                    <p>A comprehensive collection of digital signatures, hashes, and metadata associated with millions of files and URLs. Acts as a central repository for cybersecurity researchers, analysts, and organizations. Used to query and analyze potential threats such as malware samples, suspicious files, and malicious URLs.</p>
+                </div>
+
+                <h4>Webhooks</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p><strong>Webhooks</strong> are automated messages sent from one application to another, particularly when specific events occur.</p>
+                    <p>They allow real-time communication between systems without requiring manual checks or requests.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p>A webhook contains details about the event, such as:</p>
+                    <ul>
+                        <li>The time it occurred</li>
+                        <li>The data associated with the event</li>
+                        <li>Any other relevant information</li>
+                    </ul>
+                    <p>Once received, this data can immediately trigger an action in another system.</p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li>Webhooks allow security systems to act quickly and automatically when an event happens, reducing delays</li>
+                        <li>They can support automation by linking tools together. For example:
+                            <ul>
+                                <li>Sending an email alert when a suspicious login attempt is detected</li>
+                                <li>Updating a database or incident log automatically</li>
+                            </ul>
+                        </li>
+                        <li>This reduces manual effort for analysts and ensures faster response times</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Example</h4>
+                    <p>If a security monitoring system detects a failed login attempt, it can use a webhook to:</p>
+                    <ul>
+                        <li>Instantly notify administrators via email</li>
+                        <li>Log the failed attempt into a centralized SIEM or database</li>
+                        <li>Trigger automated countermeasures, such as temporarily blocking the suspicious IP</li>
+                    </ul>
+                </div>
+
+                <h4>Plugins and Apps</h4>
+
+                <div class="definition-box">
+                    <h4>📖 Definition</h4>
+                    <p>Many security tools can have their functionality extended by adding additional features through <strong>plugins, add-ons, and apps</strong>.</p>
+                </div>
+
+                <div class="key-points">
+                    <h4>🔑 Key Idea</h4>
+                    <p>These additions help to:</p>
+                    <ul>
+                        <li>Customize the software or tailor the software product</li>
+                        <li>Better align the software with the infrastructure being managed</li>
+                    </ul>
+                    <p>Some plugins are free or feature-limited. Others may require licensing or additional costs.</p>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Why It Matters</h4>
+                    <ul>
+                        <li>Extending tools with plugins/apps allows organizations to adapt security platforms to their unique needs</li>
+                        <li>Teams can quickly integrate new capabilities without having to replace or rebuild existing systems</li>
+                        <li>Supports scalability — as organizations grow, they can extend the same base platform with new features</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📌 Examples</h4>
+                    <ul>
+                        <li>Adding a vulnerability scanner plugin to a SIEM platform to enrich log data with vulnerability details</li>
+                        <li>Installing an encryption app to provide advanced file protection within a DLP solution</li>
+                    </ul>
+                </div>
+
+                <h3>Review Activity: Technology for Security Operations</h3>
+
+                <div class="quiz-section">
+                    <div class="quiz-question">
+                        <p><strong>1.</strong> What management tool is used to obtain a unified view of a computer network or system?</p>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>2.</strong> This term describes a set of functions and procedures that allow two or more applications to communicate with each other.</p>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>3.</strong> These are automated messages sent from (web) applications to other applications, particularly when certain events occur.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ SECTION -->
+        <section id="quiz" class="content-section">
+            <div class="card">
+                <h2>✅ Lesson 4 Quiz</h2>
+                
+                <div class="quiz-section">
+                    <div class="quiz-question">
+                        <p><strong>Question 1:</strong> Which tool largely automates the work of identifying, analyzing, and responding to security threats often flagged by a SIEM?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) API</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) SOAR</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Webhook</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Plugin</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 2:</strong> Which tool helps to simplify identifying, analyzing, and responding to security threats, especially for events contained within log data?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) SIEM</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) API</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Single Pane of Glass</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Webhook</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 3:</strong> Data _______________ combines and analyzes data from disparate sources to gain a greater understanding of it.</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Aggregation</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Enrichment</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Correlation</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Sharing</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 4:</strong> What management tool is used to obtain a unified view of a computer network or system?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) API</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Single Pane of Glass</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) SOAR</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Plugin</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 5:</strong> This term describes a set of functions and procedures that allow two or more applications to communicate with each other.</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) API</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Webhook</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Plugin</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) SIEM</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 6:</strong> These are automated messages sent from (web) applications to other applications, particularly when certain events occur.</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) API</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Webhooks</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Plugins</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) IOCs</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 7:</strong> What does SOAR stand for?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Security Operations and Response</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Security Orchestration, Automation, and Response</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) System Orchestration and Automated Response</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Security Optimization and Risk Assessment</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 8:</strong> What are predefined workflows in SOAR called?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Scripts</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Playbooks</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Procedures</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Templates</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 9:</strong> What does IOC stand for?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">A) Internet Operations Center</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">B) Indicators of Compromise</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Integrated Operations Command</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Information Operations Control</div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p><strong>Question 10:</strong> Which platform is specifically mentioned as a threat sharing platform?</p>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) MISP</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) VirusTotal</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Splunk</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) QRadar</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            const tabs = document.querySelectorAll('.tab-btn');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('keydown', function(e) {
+                const activeTab = document.querySelector('.tab-btn.active');
+                if (e.key === 'ArrowRight') {
+                    const nextTab = activeTab.nextElementSibling;
+                    if (nextTab && nextTab.classList.contains('tab-btn')) {
+                        nextTab.click();
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    const prevTab = activeTab.previousElementSibling;
+                    if (prevTab && prevTab.classList.contains('tab-btn')) {
+                        prevTab.click();
+                    }
+                }
+            });
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson3_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson5_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+
+</html>

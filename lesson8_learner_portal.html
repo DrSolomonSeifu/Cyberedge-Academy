@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 8: Explaining Incident Response Activities - Learner Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d84315 0%, #bf360c 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 100px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .sidebar h3 {
+            color: #ff6f00;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff6f00;
+            font-size: 1.1em;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .sidebar li:hover {
+            background: #34495e;
+            padding-left: 15px;
+        }
+
+        .sidebar li.active {
+            background: #ff6f00;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #2c3e50;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6f00, #f44336);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ff6f00;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: #ecf0f1;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .tab-btn.active {
+            background: #ff6f00;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hook-box {
+            background: linear-gradient(135deg, #d84315 0%, #bf360c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(216, 67, 21, 0.3);
+        }
+
+        .hook-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .scenario-box {
+            background: #ffe0b2;
+            border-left: 5px solid #ff6f00;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .objective-list {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .objective-list li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .quest-section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #ff6f00;
+        }
+
+        .quest-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .quest-section h4 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .example-box {
+            background: #ffe0b2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #ff6f00;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #ff6f00;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .quiz-options li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-options li:hover {
+            background: #bdc3c7;
+            transform: translateX(5px);
+        }
+
+        .quiz-options li.correct {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .quiz-options li.incorrect {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .quiz-options li.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        .quiz-feedback.correct-feedback {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .quiz-feedback.incorrect-feedback {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reflection-prompt {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+        }
+
+        .reflection-prompt h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #2c3e50;
+            color: #ff6f00;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #ff6f00;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #ff6f00;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #ff6f00;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #e65100;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="background: #bf360c; color: white; padding: 20px; text-align: center; border-bottom: 3px solid #ff6f00; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+        <div style="font-size: 0.95em; font-weight: 600; letter-spacing: 1px; margin-bottom: 5px;">CyberEdge Academy</div>
+        <div style="font-size: 0.9em; font-weight: 500; margin-bottom: 5px;">Cybersecurity Analyst Training</div>
+        <div style="font-size:0.85em;font-weight:500;margin-bottom:8px;">CyberEdge Academy — EXPLAINING INCIDENT RESPONSE ACTIVITIES</div>
+        <div style="font-size: 0.75em; font-style: italic; opacity: 0.9;">Dr. Solomon Seifu | CyberEdge Academy</div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>Quest Progress</h3>
+            <ul id="quest-nav">
+                <li data-quest="overview" class="active">📚 Overview</li>
+                <li data-quest="quest1">🎯 Quest 1: IR Fundamentals</li>
+                <li data-quest="quest2">📊 Quest 2: Detection & Analysis</li>
+                <li data-quest="quest3">⚙️ Quest 3: Containment & Recovery</li>
+                <li data-quest="quest4">✅ Quest 4: Post-Incident Activities</li>
+                <li data-quest="quest5">🔬 Quest 5: Practical IR Scenarios</li>
+                <li data-quest="resources">📥 Resources</li>
+            </ul>
+
+            <div class="progress-container">
+                <h4>Overall Progress</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="sidebar-progress">0%</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #34495e; border-radius: 8px;">
+                <h4 style="color: #ff6f00; margin-bottom: 10px;">🏆 Badges</h4>
+                <div id="badges-container">
+                    <span class="badge">Incident Responder</span>
+                    <span class="badge">Forensics Expert</span>
+                    <span class="badge">Recovery Pro</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="overview">📚 Overview</button>
+                <button class="tab-btn" data-tab="quest1">Quest 1</button>
+                <button class="tab-btn" data-tab="quest2">Quest 2</button>
+                <button class="tab-btn" data-tab="quest3">Quest 3</button>
+                <button class="tab-btn" data-tab="quest4">Quest 4</button>
+                <button class="tab-btn" data-tab="quest5">Quest 5</button>
+                <button class="tab-btn" data-tab="resources">📥 Resources</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div class="hook-box">
+                    <h2>🚨 The Incident Response Challenge</h2>
+                    <p><strong>It's 3 AM. Your monitoring system alerts you to suspicious activity on the network. Systems are encrypting. Files are being deleted. What do you do first?</strong></p>
+                    <p style="margin-top: 10px;">Incident response is about having a plan BEFORE the crisis hits. The decisions you make in the first 30 minutes can determine whether you contain a breach or suffer a catastrophic loss.</p>
+                    <p style="margin-top: 15px;">This lesson teaches you the structured approach to detecting, analyzing, containing, and recovering from security incidents.</p>
+                </div>
+
+                <div class="scenario-box">
+                    <h3>📖 What is Incident Response?</h3>
+                    <p><strong>Incident Response (IR)</strong> is the structured approach to handling security breaches, cyber attacks, and other security incidents.</p>
+                    <p style="margin-top: 10px;">The goal is to:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Minimize damage and reduce recovery time and costs</li>
+                        <li>Contain the incident to prevent further compromise</li>
+                        <li>Preserve evidence for investigation and legal proceedings</li>
+                        <li>Learn from the incident to prevent future occurrences</li>
+                    </ul>
+                </div>
+
+                <div class="objective-list">
+                    <h3>🎓 Learning Objectives</h3>
+                    <ul>
+                        <li><strong>IR Fundamentals:</strong> Understand the incident response lifecycle and key roles</li>
+                        <li><strong>Detection & Analysis:</strong> Learn to identify and analyze security incidents</li>
+                        <li><strong>Containment & Eradication:</strong> Master techniques to stop and remove threats</li>
+                        <li><strong>Recovery & Lessons Learned:</strong> Restore operations and improve defenses</li>
+                        <li><strong>Documentation:</strong> Properly document incidents for legal and compliance needs</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 NIST Incident Response Lifecycle</h4>
+                    <p><strong>NIST SP 800-61</strong> defines four phases:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Preparation:</strong> Build capabilities before incidents occur</li>
+                        <li><strong>Detection & Analysis:</strong> Identify and investigate incidents</li>
+                        <li><strong>Containment, Eradication & Recovery:</strong> Stop, remove, and restore</li>
+                        <li><strong>Post-Incident Activity:</strong> Learn and improve</li>
+                    </ol>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>🤔 Think About It</h4>
+                    <p>Why is preparation (having a plan BEFORE an incident) so critical in incident response?</p>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <h3>🚀 Lesson Structure</h3>
+                    <p>This lesson consists of 5 quests (approximately 2.5-3 hours):</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><strong>Quest 1:</strong> IR Fundamentals (30-35 min)</li>
+                        <li><strong>Quest 2:</strong> Detection & Analysis (35-40 min)</li>
+                        <li><strong>Quest 3:</strong> Containment & Recovery (30-35 min)</li>
+                        <li><strong>Quest 4:</strong> Post-Incident Activities (25-30 min)</li>
+                        <li><strong>Quest 5:</strong> Practical IR Scenarios (20-25 min)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quest 1: IR Fundamentals -->
+            <div class="tab-content" id="quest1">
+                <div class="quest-section">
+                    <h3>🎯 Quest 1: Incident Response Fundamentals</h3>
+                    <p><strong>Quest Goal:</strong> Master the IR lifecycle and key concepts</p>
+                    <p><strong>Time:</strong> 30-35 minutes</p>
+
+                    <h4>The NIST Incident Response Lifecycle</h4>
+
+                    <div class="example-box">
+                        <h4>Phase 1: Preparation</h4>
+                        <p><strong>Build IR capabilities BEFORE incidents occur:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Develop and maintain IR plans and playbooks</li>
+                            <li>Train IR team members and conduct exercises</li>
+                            <li>Deploy monitoring and detection tools</li>
+                            <li>Establish communication channels and escalation procedures</li>
+                            <li>Build relationships with external partners (law enforcement, vendors)</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Phase 2: Detection & Analysis</h4>
+                        <p><strong>Identify and investigate potential incidents:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Monitor for indicators of compromise (IOCs)</li>
+                            <li>Analyze alerts and determine if they're real incidents</li>
+                            <li>Prioritize incidents based on severity and impact</li>
+                            <li>Collect and preserve evidence</li>
+                            <li>Determine scope and timeline of compromise</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Phase 3: Containment, Eradication & Recovery</h4>
+                        <p><strong>Stop the threat, remove it, and restore operations:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Containment:</strong> Isolate affected systems to prevent spread</li>
+                            <li><strong>Eradication:</strong> Remove malware, backdoors, and attacker access</li>
+                            <li><strong>Recovery:</strong> Restore systems and verify they're clean</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Phase 4: Post-Incident Activity</h4>
+                        <p><strong>Learn from the incident:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Conduct lessons learned meeting</li>
+                            <li>Update IR plans and procedures</li>
+                            <li>Implement additional security controls</li>
+                            <li>Complete final documentation and reports</li>
+                        </ul>
+                    </div>
+
+                    <h4>Key IR Roles and Responsibilities</h4>
+
+                    <table>
+                        <tr>
+                            <th>Role</th>
+                            <th>Responsibilities</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Incident Manager</strong></td>
+                            <td>Coordinates response activities, makes decisions, communicates with stakeholders</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Security Analysts</strong></td>
+                            <td>Investigate incidents, analyze logs, identify IOCs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Forensics Team</strong></td>
+                            <td>Collect and preserve evidence, perform forensic analysis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IT Operations</strong></td>
+                            <td>Implement containment, rebuild systems, restore services</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Legal/Compliance</strong></td>
+                            <td>Advise on legal obligations, breach notification requirements</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Communications</strong></td>
+                            <td>Manage internal and external communications, media relations</td>
+                        </tr>
+                    </table>
+
+                    <div class="info-box">
+                        <h4>💡 Incident Classification</h4>
+                        <p><strong>Not everything is a security incident:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Event:</strong> Any observable occurrence (login, file access)</li>
+                            <li><strong>Alert:</strong> Notification that something requires attention</li>
+                            <li><strong>Incident:</strong> Confirmed violation of security policies or threat to operations</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Example:</strong> Failed login = Event. Multiple failed logins = Alert. Successful compromise = Incident.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Common IR Mistakes</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Rash Actions:</strong> Immediately shutting down systems destroys evidence</li>
+                            <li><strong>Poor Communication:</strong> Not notifying the right people at the right time</li>
+                            <li><strong>Incomplete Eradication:</strong> Leaving backdoors that allow reinfection</li>
+                            <li><strong>No Documentation:</strong> Failing to document actions and findings</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Reflection</h4>
+                        <p>Why might immediately shutting down an infected system be a mistake during incident response?</p>
+                    </div>
+
+                    <h4>Quest 1 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 1: What are the four phases of the NIST incident response lifecycle?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Preparation, Detection & Analysis, Containment/Eradication/Recovery, Post-Incident Activity</li>
+                            <li data-option="2">Prevention, Detection, Response, Recovery</li>
+                            <li data-option="3">Identify, Protect, Detect, Respond, Recover</li>
+                            <li data-option="4">Planning, Investigation, Remediation, Documentation</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: What is the difference between an event and an incident?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">There is no difference; they are the same thing</li>
+                            <li data-option="2">Events are more serious than incidents</li>
+                            <li data-option="3">An event is any observable occurrence; an incident is a confirmed security violation</li>
+                            <li data-option="4">Events require response; incidents do not</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 3: Which IR phase focuses on building capabilities BEFORE incidents occur?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Detection & Analysis</li>
+                            <li data-option="2">Preparation</li>
+                            <li data-option="3">Containment</li>
+                            <li data-option="4">Post-Incident Activity</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 2: Detection & Analysis -->
+            <div class="tab-content" id="quest2">
+                <div class="quest-section">
+                    <h3>📊 Quest 2: Detection & Analysis</h3>
+                    <p><strong>Quest Goal:</strong> Learn to identify and analyze security incidents</p>
+                    <p><strong>Time:</strong> 35-40 minutes</p>
+
+                    <h4>Indicators of Compromise (IOCs)</h4>
+
+                    <div class="example-box">
+                        <h4>Network-Based IOCs</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Unusual outbound traffic to unknown IPs</li>
+                            <li>Traffic on unusual ports (e.g., port 4444 for reverse shells)</li>
+                            <li>Beaconing (regular communication to C2 servers)</li>
+                            <li>DNS queries to suspicious domains</li>
+                            <li>Geographic anomalies (traffic from unusual countries)</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Host-Based IOCs</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Unexpected processes or services running</li>
+                            <li>New user accounts or privilege escalations</li>
+                            <li>Registry modifications (Windows)</li>
+                            <li>Files in unusual locations (e.g., executables in temp folders)</li>
+                            <li>Disabled security tools (antivirus, logging)</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Behavioral IOCs</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Failed login attempts followed by success</li>
+                            <li>Access to files/systems the user doesn't normally use</li>
+                            <li>Data exfiltration (large file transfers)</li>
+                            <li>Unusual time-of-day access (e.g., 3 AM logins)</li>
+                            <li>Lateral movement across the network</li>
+                        </ul>
+                    </div>
+
+                    <h4>Incident Detection Sources</h4>
+
+                    <table>
+                        <tr>
+                            <th>Source</th>
+                            <th>What It Detects</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td><strong>SIEM</strong></td>
+                            <td>Correlated security events across multiple systems</td>
+                            <td>Multiple failed logins + successful compromise</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IDS/IPS</strong></td>
+                            <td>Network attacks and suspicious traffic patterns</td>
+                            <td>Exploit attempt detected</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Antivirus/EDR</strong></td>
+                            <td>Malware on endpoints</td>
+                            <td>Ransomware detected and quarantined</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall Logs</strong></td>
+                            <td>Blocked connections and traffic anomalies</td>
+                            <td>Attempted connection to known C2 server</td>
+                        </tr>
+                        <tr>
+                            <td><strong>User Reports</strong></td>
+                            <td>Suspicious emails, strange system behavior</td>
+                            <td>Employee reports phishing email</td>
+                        </tr>
+                    </table>
+
+                    <h4>Incident Triage and Prioritization</h4>
+
+                    <div class="info-box">
+                        <h4>💡 Severity Assessment Factors</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Functional Impact:</strong> What operations are affected?</li>
+                            <li><strong>Information Impact:</strong> Is sensitive data compromised?</li>
+                            <li><strong>Recoverability:</strong> How difficult is it to recover?</li>
+                            <li><strong>Scope:</strong> How many systems are affected?</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Incident Severity Levels</h4>
+                        <p><strong>Critical:</strong> Significant impact on operations, data breach, widespread compromise</p>
+                        <p style="margin-top: 10px;"><strong>High:</strong> Important systems affected, potential for data loss, requires immediate attention</p>
+                        <p style="margin-top: 10px;"><strong>Medium:</strong> Limited impact, affects non-critical systems, can be addressed during business hours</p>
+                        <p style="margin-top: 10px;"><strong>Low:</strong> Minimal impact, isolated to single system, routine response adequate</p>
+                    </div>
+
+                    <h4>Initial Analysis Steps</h4>
+
+                    <div class="success-box">
+                        <h4>✅ Investigation Checklist</h4>
+                        <ol style="margin-left: 20px;">
+                            <li><strong>Verify:</strong> Is this a real incident or false positive?</li>
+                            <li><strong>Scope:</strong> How many systems are affected?</li>
+                            <li><strong>Timeline:</strong> When did it start? Is it still ongoing?</li>
+                            <li><strong>Impact:</strong> What data/systems are compromised?</li>
+                            <li><strong>Evidence:</strong> Collect logs, memory dumps, disk images</li>
+                            <li><strong>Containment Strategy:</strong> How do we stop the spread?</li>
+                        </ol>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Evidence Preservation</h4>
+                        <p><strong>Chain of Custody Requirements:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Document who collected evidence, when, and how</li>
+                            <li>Use write-blockers for disk imaging</li>
+                            <li>Hash all evidence files (MD5, SHA-256)</li>
+                            <li>Store evidence securely with limited access</li>
+                            <li>Maintain documentation of everyone who accessed evidence</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Think About It</h4>
+                        <p>Why is it important to preserve evidence even if you just want to "fix the problem quickly"?</p>
+                    </div>
+
+                    <h4>Quest 2 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 1: What is beaconing?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">A type of antivirus alert</li>
+                            <li data-option="2">Regular communication from infected systems to command and control servers</li>
+                            <li data-option="3">A wireless network detection method</li>
+                            <li data-option="4">A logging mechanism</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: Which tool correlates security events across multiple systems?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Firewall</li>
+                            <li data-option="2">Antivirus</li>
+                            <li data-option="3">SIEM</li>
+                            <li data-option="4">IDS</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: What is the purpose of maintaining chain of custody for evidence?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">To document who handled evidence and ensure it wasn't tampered with</li>
+                            <li data-option="2">To speed up the investigation</li>
+                            <li data-option="3">To reduce storage costs</li>
+                            <li data-option="4">To share evidence with competitors</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 3: Containment & Recovery -->
+            <div class="tab-content" id="quest3">
+                <div class="quest-section">
+                    <h3>⚙️ Quest 3: Containment, Eradication & Recovery</h3>
+                    <p><strong>Quest Goal:</strong> Master techniques to stop, remove, and recover from threats</p>
+                    <p><strong>Time:</strong> 30-35 minutes</p>
+
+                    <h4>Containment Strategies</h4>
+
+                    <div class="example-box">
+                        <h4>Short-Term Containment</h4>
+                        <p><strong>Immediate actions to limit damage:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Network isolation (disconnect affected systems)</li>
+                            <li>Disable compromised accounts</li>
+                            <li>Block malicious IPs/domains at firewall</li>
+                            <li>Quarantine affected systems</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Goal:</strong> Stop the bleeding while preserving evidence</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Long-Term Containment</h4>
+                        <p><strong>Sustained measures while preparing for eradication:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Patch vulnerable systems</li>
+                            <li>Implement additional monitoring</li>
+                            <li>Strengthen access controls</li>
+                            <li>Deploy temporary security measures</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Goal:</strong> Maintain business operations while planning remediation</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Containment Decisions</h4>
+                        <p><strong>Consider these factors:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Evidence Preservation:</strong> Will action destroy forensic data?</li>
+                            <li><strong>Service Availability:</strong> Can business continue operating?</li>
+                            <li><strong>Time and Resources:</strong> How long will it take?</li>
+                            <li><strong>Effectiveness:</strong> Will it actually stop the threat?</li>
+                        </ul>
+                    </div>
+
+                    <h4>Eradication</h4>
+
+                    <div class="success-box">
+                        <h4>✅ Eradication Steps</h4>
+                        <ol style="margin-left: 20px;">
+                            <li><strong>Remove Malware:</strong> Delete malicious files and processes</li>
+                            <li><strong>Eliminate Backdoors:</strong> Remove unauthorized accounts, reset passwords</li>
+                            <li><strong>Close Vulnerabilities:</strong> Patch systems, fix misconfigurations</li>
+                            <li><strong>Clean Registry:</strong> Remove malicious registry entries (Windows)</li>
+                            <li><strong>Verify Removal:</strong> Scan systems to confirm threats are gone</li>
+                        </ol>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Common Eradication Techniques</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Rebuild from Known-Good:</strong> Wipe and reinstall from clean images</li>
+                            <li><strong>Selective Cleanup:</strong> Remove specific malware while preserving data</li>
+                            <li><strong>Account Lockdown:</strong> Disable compromised accounts, force password resets</li>
+                            <li><strong>Network Segmentation:</strong> Isolate affected segments permanently</li>
+                        </ul>
+                    </div>
+
+                    <h4>Recovery</h4>
+
+                    <div class="example-box">
+                        <h4>Recovery Process</h4>
+                        <ol style="margin-left: 20px;">
+                            <li><strong>Restore from Backups:</strong> Use clean, verified backups</li>
+                            <li><strong>Rebuild Systems:</strong> Reinstall OS and applications from trusted sources</li>
+                            <li><strong>Restore Data:</strong> Recover business-critical data</li>
+                            <li><strong>Test Systems:</strong> Verify functionality before production</li>
+                            <li><strong>Monitor Closely:</strong> Watch for signs of reinfection</li>
+                            <li><strong>Gradual Restoration:</strong> Bring systems back online incrementally</li>
+                        </ol>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Recovery Pitfalls</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Restoring Infected Backups:</strong> Verify backups are clean before restoring</li>
+                            <li><strong>Rushed Recovery:</strong> Bringing systems back online before threat is eliminated</li>
+                            <li><strong>Insufficient Validation:</strong> Not testing restored systems thoroughly</li>
+                            <li><strong>Missing Root Cause:</strong> Failing to fix underlying vulnerability</li>
+                        </ul>
+                    </div>
+
+                    <h4>Validation and Monitoring</h4>
+
+                    <div class="success-box">
+                        <h4>✅ Post-Recovery Validation</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Run vulnerability scans on restored systems</li>
+                            <li>Verify security controls are functioning</li>
+                            <li>Check for persistence mechanisms</li>
+                            <li>Monitor for 48-72 hours minimum</li>
+                            <li>Review logs for anomalies</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Critical Thinking</h4>
+                        <p>Your company suffers a ransomware attack. You have backups from yesterday. Should you immediately restore from backups? Why or why not?</p>
+                    </div>
+
+                    <h4>Quest 3 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 1: What is the primary goal of short-term containment?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Immediately limit damage while preserving evidence</li>
+                            <li data-option="2">Permanently fix the vulnerability</li>
+                            <li data-option="3">Restore normal operations</li>
+                            <li data-option="4">Notify law enforcement</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: What should you do BEFORE restoring from backups?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Immediately restore to minimize downtime</li>
+                            <li data-option="2">Delete all current data</li>
+                            <li data-option="3">Verify backups are clean and not infected</li>
+                            <li data-option="4">Restore to production immediately</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 3: What is eradication in incident response?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Isolating affected systems</li>
+                            <li data-option="2">Removing malware, backdoors, and closing vulnerabilities</li>
+                            <li data-option="3">Restoring from backups</li>
+                            <li data-option="4">Notifying stakeholders</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 4: Post-Incident Activities -->
+            <div class="tab-content" id="quest4">
+                <div class="quest-section">
+                    <h3>✅ Quest 4: Post-Incident Activities</h3>
+                    <p><strong>Quest Goal:</strong> Learn from incidents and improve defenses</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>Lessons Learned Meeting</h4>
+
+                    <div class="info-box">
+                        <h4>💡 Purpose of Lessons Learned</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Identify what went well and what needs improvement</li>
+                            <li>Update IR plans and procedures</li>
+                            <li>Improve detection and response capabilities</li>
+                            <li>Prevent similar incidents in the future</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Key Questions to Address</h4>
+                        <ol style="margin-left: 20px;">
+                            <li><strong>What Happened?</strong> Timeline and sequence of events</li>
+                            <li><strong>How Was It Detected?</strong> What alerted us?</li>
+                            <li><strong>What Worked Well?</strong> Successful response actions</li>
+                            <li><strong>What Didn't Work?</strong> Challenges and failures</li>
+                            <li><strong>Root Cause?</strong> How did the attacker get in?</li>
+                            <li><strong>How Can We Improve?</strong> Specific action items</li>
+                        </ol>
+                    </div>
+
+                    <h4>Incident Documentation</h4>
+
+                    <div class="success-box">
+                        <h4>✅ Essential Documentation</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Incident Summary:</strong> High-level overview for management</li>
+                            <li><strong>Timeline:</strong> Chronological sequence of events and actions</li>
+                            <li><strong>Technical Details:</strong> IOCs, malware analysis, affected systems</li>
+                            <li><strong>Impact Assessment:</strong> Data loss, downtime, costs</li>
+                            <li><strong>Response Actions:</strong> What was done and by whom</li>
+                            <li><strong>Evidence Log:</strong> Chain of custody documentation</li>
+                            <li><strong>Recommendations:</strong> Specific improvements needed</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Legal and Compliance Considerations</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Breach Notification:</strong> Many regulations require notification within specific timeframes</li>
+                            <li><strong>Evidence Retention:</strong> Preserve evidence for legal proceedings</li>
+                            <li><strong>Regulatory Reporting:</strong> Report to appropriate authorities (SEC, HHS, etc.)</li>
+                            <li><strong>Attorney-Client Privilege:</strong> Consider involving legal early</li>
+                        </ul>
+                    </div>
+
+                    <h4>Improvement Actions</h4>
+
+                    <table>
+                        <tr>
+                            <th>Category</th>
+                            <th>Improvement Examples</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Technical Controls</strong></td>
+                            <td>Deploy EDR, improve SIEM rules, enhance monitoring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Processes</strong></td>
+                            <td>Update IR playbooks, improve escalation procedures</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training</strong></td>
+                            <td>Conduct tabletop exercises, security awareness training</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Architecture</strong></td>
+                            <td>Network segmentation, zero trust implementation</td>
+                        </tr>
+                    </table>
+
+                    <h4>Metrics and Reporting</h4>
+
+                    <div class="example-box">
+                        <h4>Key IR Metrics</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Mean Time to Detect (MTTD):</strong> How long to discover incident</li>
+                            <li><strong>Mean Time to Respond (MTTR):</strong> How long to contain/resolve</li>
+                            <li><strong>Number of Incidents:</strong> Trend over time</li>
+                            <li><strong>Incident Severity Distribution:</strong> Critical vs. High vs. Medium</li>
+                            <li><strong>False Positive Rate:</strong> Alerts that weren't real incidents</li>
+                            <li><strong>Cost Per Incident:</strong> Financial impact</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>✅ Building a Culture of Continuous Improvement</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Conduct regular tabletop exercises</li>
+                            <li>Share lessons learned across the organization</li>
+                            <li>Track action items to completion</li>
+                            <li>Measure improvement over time</li>
+                            <li>Celebrate successes and learn from failures</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Think About It</h4>
+                        <p>Why is it important to document "what went well" in addition to "what went wrong" during lessons learned?</p>
+                    </div>
+
+                    <h4>Quest 4 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 1: What is the primary purpose of a lessons learned meeting?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">To assign blame for the incident</li>
+                            <li data-option="2">To identify improvements and prevent future incidents</li>
+                            <li data-option="3">To satisfy compliance requirements only</li>
+                            <li data-option="4">To document technical details</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 2: What does MTTD measure?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Mean Time to Detect - how long to discover an incident</li>
+                            <li data-option="2">Mean Time to Deploy - how long to patch systems</li>
+                            <li data-option="3">Maximum Time to Document</li>
+                            <li data-option="4">Minimum Threat Tolerance Duration</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 3: Which of the following should be included in incident documentation?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Only technical details</li>
+                            <li data-option="2">Only the final report</li>
+                            <li data-option="3">Timeline, impact, actions taken, evidence, and recommendations</li>
+                            <li data-option="4">Just the root cause</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 5: Practical IR Scenarios -->
+            <div class="tab-content" id="quest5">
+                <div class="quest-section">
+                    <h3>🔬 Quest 5: Practical IR Scenarios</h3>
+                    <p><strong>Quest Goal:</strong> Apply IR knowledge to real-world situations</p>
+                    <p><strong>Time:</strong> 20-25 minutes</p>
+
+                    <div class="scenario-box">
+                        <h4>🎯 Scenario 1: Ransomware Attack</h4>
+                        <p><strong>Situation:</strong> Monday 6:00 AM - Multiple servers start encrypting files. Ransom note appears demanding $500,000 in Bitcoin.</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Your immediate actions should include:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Isolate affected systems from network (prevent spread)</li>
+                            <li>Notify incident manager and activate IR team</li>
+                            <li>Preserve evidence (disk images, memory dumps)</li>
+                            <li>Identify patient zero and scope of infection</li>
+                            <li>Check backups (when were they last verified?)</li>
+                            <li>Do NOT pay ransom without consulting legal/management</li>
+                        </ol>
+                    </div>
+
+                    <div class="scenario-box">
+                        <h4>🎯 Scenario 2: Data Exfiltration</h4>
+                        <p><strong>Situation:</strong> SIEM alert shows 50GB of data transferred from database server to unknown IP address at 2:00 AM.</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Investigation steps:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Block the external IP at firewall</li>
+                            <li>Review authentication logs - whose credentials were used?</li>
+                            <li>Determine what data was accessed/exported</li>
+                            <li>Check for persistence mechanisms (backdoors)</li>
+                            <li>Assess if this is still ongoing</li>
+                            <li>Consider breach notification requirements</li>
+                        </ol>
+                    </div>
+
+                    <div class="scenario-box">
+                        <h4>🎯 Scenario 3: Phishing Compromise</h4>
+                        <p><strong>Situation:</strong> Employee reports clicking link in suspicious email. Their account now shows unusual activity.</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Response actions:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Immediately disable the compromised account</li>
+                            <li>Review email logs - who else received the phishing email?</li>
+                            <li>Check for email forwarding rules (data exfiltration)</li>
+                            <li>Review sent items for spam from compromised account</li>
+                            <li>Scan endpoint for malware</li>
+                            <li>Force password reset after cleanup</li>
+                            <li>Security awareness training reminder</li>
+                        </ol>
+                    </div>
+
+                    <div class="success-box" style="margin-top: 30px;">
+                        <h4>🎉 Lesson Complete!</h4>
+                        <p><strong>You've mastered:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>✅ The NIST incident response lifecycle</li>
+                            <li>✅ Detection techniques and IOC analysis</li>
+                            <li>✅ Containment, eradication, and recovery strategies</li>
+                            <li>✅ Post-incident activities and lessons learned</li>
+                            <li>✅ Practical application to real-world scenarios</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Final Reflection</h4>
+                        <p>What is the most important lesson you learned about incident response? How will this change how you approach security incidents in the future?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div class="tab-content" id="resources">
+                <div class="quest-section">
+                    <h3>📥 Lesson Resources</h3>
+                    
+                    <h4>📚 Study Materials</h4>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📄 Lesson 8 Study Guide</a>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📊 IR Playbook Template</a>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📋 Incident Response Checklist</a>
+
+                    <h4 style="margin-top: 30px;">🌐 External Resources</h4>
+                    <div class="info-box">
+                        <ul style="margin-left: 20px;">
+                            <li><strong>NIST SP 800-61:</strong> Computer Security Incident Handling Guide</li>
+                            <li><strong>SANS Incident Handler's Handbook:</strong> Practical IR guidance</li>
+                            <li><strong>MITRE ATT&CK:</strong> Adversary tactics and techniques knowledge base</li>
+                            <li><strong>US-CERT:</strong> Incident reporting and coordination</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">🎓 Key Takeaways</h4>
+                    <div class="success-box">
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Preparation is key</strong> - Have plans and tools ready BEFORE incidents</li>
+                            <li><strong>Preserve evidence</strong> - Don't rush to "fix" and destroy forensic data</li>
+                            <li><strong>Follow the lifecycle</strong> - Don't skip phases (especially lessons learned)</li>
+                            <li><strong>Document everything</strong> - Critical for legal and improvement</li>
+                            <li><strong>Practice makes perfect</strong> - Regular exercises improve response</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">💡 Pro Tips</h4>
+                    <div class="example-box">
+                        <ul style="margin-left: 20px;">
+                            <li>Maintain an IR "jump bag" with essential tools and contact info</li>
+                            <li>Build relationships with law enforcement BEFORE you need them</li>
+                            <li>Conduct tabletop exercises quarterly</li>
+                            <li>Have legal review IR plans for privilege considerations</li>
+                            <li>Track metrics to show improvement over time</li>
+                            <li>Remember: Speed matters, but accuracy matters more</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz answers with explanations
+        const quizAnswers = {
+            "What are the four phases of the NIST incident response lifecycle?": {
+                correct: 1,
+                explanation: "Correct! NIST SP 800-61 defines these four phases: Preparation, Detection & Analysis, Containment/Eradication/Recovery, and Post-Incident Activity.",
+                incorrectExplanation: "Not quite. While other frameworks exist, NIST specifically defines these four phases: Preparation, Detection & Analysis, Containment/Eradication/Recovery, and Post-Incident Activity. 🔄 Reflect: Why is preparation listed as the first phase?"
+            },
+            "What is the difference between an event and an incident?": {
+                correct: 3,
+                explanation: "Correct! Events are any observable occurrences (like a login). Incidents are confirmed security violations or threats that require response.",
+                incorrectExplanation: "Not correct. Events are simply observable occurrences (any action on a system). Incidents are confirmed security violations that require a response. Not all events are incidents. 🔄 Reflect: Why is it important to distinguish between events and incidents?"
+            },
+            "Which IR phase focuses on building capabilities BEFORE incidents occur?": {
+                correct: 2,
+                explanation: "Correct! Preparation involves developing IR plans, training teams, deploying tools, and establishing procedures before incidents happen.",
+                incorrectExplanation: "Not correct. Preparation is the phase where you build IR capabilities, develop plans, train teams, and deploy monitoring tools BEFORE incidents occur. 🔄 Reflect: What happens if you skip the preparation phase?"
+            },
+            "What is beaconing?": {
+                correct: 2,
+                explanation: "Correct! Beaconing is when compromised systems regularly communicate with command and control (C2) servers, often on predictable intervals.",
+                incorrectExplanation: "Not quite. Beaconing refers to regular, periodic communication from infected systems to command and control servers. This pattern is an important IOC. 🔄 Reflect: Why would attackers use beaconing instead of constant communication?"
+            },
+            "Which tool correlates security events across multiple systems?": {
+                correct: 3,
+                explanation: "Correct! SIEM (Security Information and Event Management) systems collect logs from multiple sources and correlate events to detect incidents.",
+                incorrectExplanation: "Not correct. While firewalls, antivirus, and IDS are all important security tools, SIEM specifically correlates events across multiple systems to detect patterns and incidents. 🔄 Reflect: Why is correlation across multiple systems important?"
+            },
+            "What is the purpose of maintaining chain of custody for evidence?": {
+                correct: 1,
+                explanation: "Correct! Chain of custody documents who handled evidence, when, and how - ensuring it hasn't been tampered with and is admissible in legal proceedings.",
+                incorrectExplanation: "Not correct. Chain of custody is a legal concept that documents every person who handled evidence and every action taken, ensuring evidence integrity for court. 🔄 Reflect: What could happen if chain of custody is broken?"
+            },
+            "What is the primary goal of short-term containment?": {
+                correct: 1,
+                explanation: "Correct! Short-term containment focuses on immediately stopping the damage from spreading while preserving evidence for investigation.",
+                incorrectExplanation: "Not quite. Short-term containment is about immediate damage control - isolating the threat to prevent spread while preserving evidence. Permanent fixes come later. 🔄 Reflect: Why preserve evidence during containment?"
+            },
+            "What should you do BEFORE restoring from backups?": {
+                correct: 3,
+                explanation: "Correct! Always verify backups are clean and free from malware before restoring, or you'll just reinfect your systems.",
+                incorrectExplanation: "Not correct. Never restore backups without first verifying they're clean. If the backup is infected, you'll just restore the malware along with your data. 🔄 Reflect: How far back might you need to go to find clean backups?"
+            },
+            "What is eradication in incident response?": {
+                correct: 2,
+                explanation: "Correct! Eradication is the complete removal of threats (malware, backdoors) and fixing vulnerabilities to prevent reinfection.",
+                incorrectExplanation: "Not quite. Eradication specifically means removing the threat completely - deleting malware, removing backdoors, and fixing the vulnerabilities that allowed the compromise. 🔄 Reflect: What happens if eradication is incomplete?"
+            },
+            "What is the primary purpose of a lessons learned meeting?": {
+                correct: 2,
+                explanation: "Correct! Lessons learned meetings focus on improving incident response capabilities and preventing future incidents - not assigning blame.",
+                incorrectExplanation: "Not correct. Lessons learned is about improvement, not blame. The goal is to identify what worked, what didn't, and how to prevent similar incidents. 🔄 Reflect: Why is a blame-free environment important?"
+            },
+            "What does MTTD measure?": {
+                correct: 1,
+                explanation: "Correct! Mean Time to Detect (MTTD) measures how long it takes to discover that an incident has occurred - a critical IR metric.",
+                incorrectExplanation: "Not correct. MTTD stands for Mean Time to Detect - how long it takes to discover an incident. Shorter MTTD means you catch incidents faster. 🔄 Reflect: Why is detecting incidents quickly so important?"
+            },
+            "Which of the following should be included in incident documentation?": {
+                correct: 3,
+                explanation: "Correct! Comprehensive documentation includes timeline, impact assessment, all actions taken, evidence collected, and recommendations for improvement.",
+                incorrectExplanation: "Not correct. Incident documentation must be comprehensive, including timeline, impact, response actions, evidence chain of custody, and recommendations. 🔄 Reflect: Why is comprehensive documentation important for legal proceedings?"
+            }
+        };
+
+        // Tab Navigation
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+                
+                document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+                document.querySelector(`.sidebar li[data-quest="${tabName}"]`).classList.add('active');
+                
+                document.querySelector('.main-content').scrollTop = 0;
+            });
+        });
+
+        // Sidebar Navigation
+        document.querySelectorAll('.sidebar li').forEach(item => {
+            item.addEventListener('click', function() {
+                const questName = this.getAttribute('data-quest');
+                
+                document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.tab-btn[data-tab="${questName}"]`).classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(questName).classList.add('active');
+                
+                document.querySelector('.main-content').scrollTop = 0;
+            });
+        });
+
+        // Quiz interaction with immediate feedback and reflection
+        document.querySelectorAll('.quiz-question').forEach(question => {
+            const correctAnswer = question.getAttribute('data-answer');
+            const questionText = question.querySelector('h4').textContent;
+            const options = question.querySelectorAll('.quiz-options li');
+            const feedbackDiv = question.querySelector('.quiz-feedback');
+            const feedbackText = feedbackDiv.querySelector('.feedback-text');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (this.classList.contains('disabled')) return;
+                    
+                    const selectedOption = this.getAttribute('data-option');
+                    const quizData = quizAnswers[questionText];
+                    
+                    options.forEach(opt => opt.classList.add('disabled'));
+                    
+                    if (selectedOption == correctAnswer) {
+                        this.classList.add('correct');
+                        feedbackDiv.classList.add('show', 'correct-feedback');
+                        feedbackText.innerHTML = `<strong>✅ Correct!</strong><br>${quizData.explanation}`;
+                    } else {
+                        this.classList.add('incorrect');
+                        options.forEach(opt => {
+                            if (opt.getAttribute('data-option') == correctAnswer) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                        feedbackDiv.classList.add('show', 'incorrect-feedback');
+                        feedbackText.innerHTML = `<strong>❌ Incorrect</strong><br>${quizData.incorrectExplanation}<br><br><em>The correct answer is highlighted in green.</em>`;
+                    }
+                    
+                    updateProgress();
+                });
+            });
+        });
+
+        // Progress tracking
+        function updateProgress() {
+            const totalQuestions = document.querySelectorAll('.quiz-question').length;
+            const answeredQuestions = document.querySelectorAll('.quiz-options li.correct, .quiz-options li.incorrect').length / document.querySelectorAll('.quiz-question').length;
+            const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+            
+            const progressBar = document.getElementById('sidebar-progress');
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson7_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson9_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

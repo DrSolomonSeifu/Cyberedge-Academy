@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberEdge Lesson 7: Communicating Vulnerability Information - Learner Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f2417 0%, #1a4d2e 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .sidebar h3 {
+            color: #52b788;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #52b788;
+            font-size: 1.1em;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .sidebar li:hover {
+            background: #34495e;
+            padding-left: 15px;
+        }
+
+        .sidebar li.active {
+            background: #52b788;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #2c3e50;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #52b788, #3498db);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #52b788;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: #ecf0f1;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .tab-btn.active {
+            background: #52b788;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hook-box {
+            background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(45, 106, 79, 0.3);
+        }
+
+        .hook-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .scenario-box {
+            background: #d8f3dc;
+            border-left: 5px solid #52b788;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .objective-list {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .objective-list li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .quest-section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #52b788;
+        }
+
+        .quest-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .quest-section h4 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: #d1f2eb;
+            border-left: 4px solid #1abc9c;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .example-box {
+            background: #d8f3dc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #52b788;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 2px solid #52b788;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .quiz-question h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .quiz-options li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-options li:hover {
+            background: #bdc3c7;
+            transform: translateX(5px);
+        }
+
+        .quiz-options li.correct {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .quiz-options li.incorrect {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .quiz-options li.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        .quiz-feedback.correct-feedback {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .quiz-feedback.incorrect-feedback {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reflection-prompt {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin: 20px 0;
+        }
+
+        .reflection-prompt h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .lab-exercise {
+            background: #e8f5e9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #4caf50;
+        }
+
+        .lab-exercise h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .lab-step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #4caf50;
+        }
+
+        .lab-step h5 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #52b788;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #52b788;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #52b788;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #40916c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="background: #0f2417; color: white; padding: 15px; text-align: center; border-bottom: 3px solid #52b788;">
+        <div style="font-size: 0.95em; font-weight: 600; letter-spacing: 1px; margin-bottom: 5px;">CyberEdge Academy</div>
+        <div style="font-size: 0.9em; font-weight: 500; margin-bottom: 5px;">Cybersecurity Analyst Training</div>
+        <div style="font-size:0.85em;font-weight:500;margin-bottom:8px;">CyberEdge Academy — COMMUNICATING VULNERABILITY INFORMATION</div>
+        <div style="font-size: 0.75em; font-style: italic; opacity: 0.8;">Dr. Solomon Seifu | CyberEdge Academy</div>
+    </div>
+    <div class="header">
+        <h1>CyberEdge Lesson 7</h1>
+        <h2>Communicating Vulnerability Information</h2>
+        <p>Master vulnerability reporting, documentation, and stakeholder communication</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>Quest Progress</h3>
+            <ul id="quest-nav">
+                <li data-quest="overview" class="active">📚 Overview</li>
+                <li data-quest="quest1">🎯 Quest 1: Reporting Basics</li>
+                <li data-quest="quest2">📊 Quest 2: Report Components</li>
+                <li data-quest="quest3">⚙️ Quest 3: Stakeholder Communication</li>
+                <li data-quest="quest4">✅ Quest 4: Documentation Standards</li>
+                <li data-quest="quest5">🔬 Quest 5: Practical Communication</li>
+                <li data-quest="resources">📥 Resources</li>
+            </ul>
+
+            <div class="progress-container">
+                <h4>Overall Progress</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="sidebar-progress">0%</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #34495e; border-radius: 8px;">
+                <h4 style="color: #52b788; margin-bottom: 10px;">🏆 Badges</h4>
+                <div id="badges-container">
+                    <span class="badge">Report Writer</span>
+                    <span class="badge">Communicator</span>
+                    <span class="badge">Documentation Pro</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="overview">📚 Overview</button>
+                <button class="tab-btn" data-tab="quest1">Quest 1</button>
+                <button class="tab-btn" data-tab="quest2">Quest 2</button>
+                <button class="tab-btn" data-tab="quest3">Quest 3</button>
+                <button class="tab-btn" data-tab="quest4">Quest 4</button>
+                <button class="tab-btn" data-tab="quest5">Quest 5</button>
+                <button class="tab-btn" data-tab="resources">📥 Resources</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div class="hook-box">
+                    <h2>🎯 The Communication Challenge</h2>
+                    <p><strong>You've discovered a critical vulnerability in your organization's infrastructure.</strong></p>
+                    <p style="margin-top: 10px;">How do you communicate this to technical teams, management, and executives? What information do they need? How technical should you be?</p>
+                    <p style="margin-top: 15px;">Effective vulnerability communication can be the difference between a timely patch and a catastrophic breach.</p>
+                </div>
+
+                <div class="scenario-box">
+                    <h3>📖 Why Communication Matters</h3>
+                    <p><strong>Vulnerability Communication</strong> is the process of clearly documenting, reporting, and explaining security weaknesses to different audiences.</p>
+                    <p style="margin-top: 10px;">Poor communication leads to:</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Delayed patches and remediation</li>
+                        <li>Misunderstood risk levels</li>
+                        <li>Inadequate resource allocation</li>
+                        <li>Compliance failures</li>
+                    </ul>
+                </div>
+
+                <div class="objective-list">
+                    <h3>🎓 Learning Objectives</h3>
+                    <ul>
+                        <li><strong>Vulnerability Reporting:</strong> Create clear, actionable vulnerability reports</li>
+                        <li><strong>Report Components:</strong> Understand essential elements of professional reports</li>
+                        <li><strong>Stakeholder Communication:</strong> Tailor messages for technical and non-technical audiences</li>
+                        <li><strong>Documentation Standards:</strong> Follow industry best practices for documentation</li>
+                        <li><strong>Communication Channels:</strong> Choose appropriate methods for different situations</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 Key Communication Principles</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Clarity:</strong> Use clear, concise language appropriate for your audience</li>
+                        <li><strong>Accuracy:</strong> Provide correct technical details and severity ratings</li>
+                        <li><strong>Timeliness:</strong> Report vulnerabilities promptly through proper channels</li>
+                        <li><strong>Completeness:</strong> Include all necessary information for decision-making</li>
+                    </ul>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>🤔 Think About It</h4>
+                    <p>How would you explain a SQL injection vulnerability differently to: (1) a developer, (2) your manager, and (3) the CEO?</p>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <h3>🚀 Lesson Structure</h3>
+                    <p>This lesson consists of 5 quests (approximately 2-2.5 hours):</p>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><strong>Quest 1:</strong> Reporting Basics (25-30 min)</li>
+                        <li><strong>Quest 2:</strong> Report Components (30-35 min)</li>
+                        <li><strong>Quest 3:</strong> Stakeholder Communication (25-30 min)</li>
+                        <li><strong>Quest 4:</strong> Documentation Standards (25-30 min)</li>
+                        <li><strong>Quest 5:</strong> Practical Communication (20-25 min)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quest 1: Reporting Basics -->
+            <div class="tab-content" id="quest1">
+                <div class="quest-section">
+                    <h3>🎯 Quest 1: Vulnerability Reporting Basics</h3>
+                    <p><strong>Quest Goal:</strong> Master the fundamentals of vulnerability reporting</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>What is Vulnerability Reporting?</h4>
+                    <p><strong>Vulnerability Reporting</strong> is the structured process of documenting and communicating security weaknesses to appropriate stakeholders.</p>
+
+                    <div class="info-box">
+                        <h4>💡 Why Proper Reporting Matters</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Enables Action:</strong> Provides information needed for remediation decisions</li>
+                            <li><strong>Creates Accountability:</strong> Documents who knows what and when</li>
+                            <li><strong>Supports Compliance:</strong> Meets regulatory reporting requirements</li>
+                            <li><strong>Facilitates Prioritization:</strong> Helps teams focus on critical issues</li>
+                        </ul>
+                    </div>
+
+                    <h4>Types of Vulnerability Reports</h4>
+                    <table>
+                        <tr>
+                            <th>Report Type</th>
+                            <th>Audience</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Technical Report</strong></td>
+                            <td>IT Teams, Developers</td>
+                            <td>Detailed technical information for remediation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Executive Summary</strong></td>
+                            <td>Management, Executives</td>
+                            <td>High-level risk overview and business impact</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compliance Report</strong></td>
+                            <td>Auditors, Regulators</td>
+                            <td>Demonstrate compliance with standards</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Incident Report</strong></td>
+                            <td>Security Team, Management</td>
+                            <td>Document exploitation or active threats</td>
+                        </tr>
+                    </table>
+
+                    <h4>Key Reporting Principles</h4>
+
+                    <div class="example-box">
+                        <h4>1. Timeliness</h4>
+                        <p><strong>Critical vulnerabilities</strong> should be reported immediately (within hours)</p>
+                        <p><strong>High severity</strong> within 24 hours</p>
+                        <p><strong>Medium/Low</strong> can follow regular reporting cycles</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2. Accuracy</h4>
+                        <p>Verify findings before reporting</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Validate vulnerability existence (avoid false positives)</li>
+                            <li>Confirm CVSS scores and severity ratings</li>
+                            <li>Test proof-of-concept exploits responsibly</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3. Completeness</h4>
+                        <p>Include all necessary information:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>What: Description of the vulnerability</li>
+                            <li>Where: Affected systems/applications</li>
+                            <li>Impact: Potential consequences</li>
+                            <li>Risk: CVSS score and severity rating</li>
+                            <li>Remediation: Steps to fix</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Common Reporting Mistakes</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Too Technical:</strong> Using jargon with non-technical stakeholders</li>
+                            <li><strong>Too Vague:</strong> Not providing enough detail for action</li>
+                            <li><strong>Missing Context:</strong> Not explaining business impact</li>
+                            <li><strong>Delayed Reporting:</strong> Waiting too long to escalate critical issues</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Reflection</h4>
+                        <p>Why might delaying a vulnerability report by even 24 hours be problematic for a critical finding?</p>
+                    </div>
+
+                    <h4>Quest 1 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 1: What is the primary purpose of vulnerability reporting?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">To document and communicate security weaknesses to appropriate stakeholders</li>
+                            <li data-option="2">To automatically fix all vulnerabilities</li>
+                            <li data-option="3">To replace vulnerability scanning</li>
+                            <li data-option="4">To assign blame for security issues</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 2: Which report type is best suited for C-level executives?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Technical Report with full exploit details</li>
+                            <li data-option="2">Executive Summary focused on business impact</li>
+                            <li data-option="3">Raw scanner output</li>
+                            <li data-option="4">Developer-focused remediation guide</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: How quickly should critical vulnerabilities be reported?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Immediately (within hours)</li>
+                            <li data-option="2">Within one week</li>
+                            <li data-option="3">At the next scheduled meeting</li>
+                            <li data-option="4">Within 30 days</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 2: Report Components -->
+            <div class="tab-content" id="quest2">
+                <div class="quest-section">
+                    <h3>📊 Quest 2: Essential Report Components</h3>
+                    <p><strong>Quest Goal:</strong> Learn what makes a complete vulnerability report</p>
+                    <p><strong>Time:</strong> 30-35 minutes</p>
+
+                    <h4>Core Report Elements</h4>
+
+                    <div class="example-box">
+                        <h4>1. Executive Summary</h4>
+                        <p><strong>Purpose:</strong> High-level overview for decision-makers</p>
+                        <p><strong>Includes:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Number of vulnerabilities found (by severity)</li>
+                            <li>Most critical findings</li>
+                            <li>Business impact summary</li>
+                            <li>Recommended actions</li>
+                            <li>Timeline for remediation</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Length:</strong> 1-2 pages maximum</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2. Vulnerability Details</h4>
+                        <p><strong>For each vulnerability include:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>ID:</strong> CVE number or internal tracking ID</li>
+                            <li><strong>Title:</strong> Clear, descriptive name</li>
+                            <li><strong>CVSS Score:</strong> Numerical severity rating</li>
+                            <li><strong>Description:</strong> What the vulnerability is</li>
+                            <li><strong>Affected Systems:</strong> Where it exists</li>
+                            <li><strong>Impact:</strong> What could happen if exploited</li>
+                            <li><strong>Proof of Concept:</strong> Evidence it exists (screenshots, logs)</li>
+                            <li><strong>Remediation:</strong> How to fix it</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3. Risk Assessment</h4>
+                        <p><strong>Contextual risk analysis:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>CVSS base score</li>
+                            <li>Exploitability (is exploit code available?)</li>
+                            <li>Asset criticality (production vs. test)</li>
+                            <li>Exposure (internal vs. internet-facing)</li>
+                            <li>Threat intelligence (is it being actively exploited?)</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>4. Remediation Guidance</h4>
+                        <p><strong>Actionable steps:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Primary Solution:</strong> Patch, configuration change, etc.</li>
+                            <li><strong>Workarounds:</strong> Temporary mitigations if patch unavailable</li>
+                            <li><strong>Compensating Controls:</strong> Additional protections (WAF, IPS rules)</li>
+                            <li><strong>Timeline:</strong> Recommended remediation timeframe</li>
+                            <li><strong>Testing Notes:</strong> How to verify the fix</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Report Organization Best Practices</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Start with most critical findings first</li>
+                            <li>Group similar vulnerabilities together</li>
+                            <li>Use consistent formatting and terminology</li>
+                            <li>Include table of contents for long reports</li>
+                            <li>Add visual elements (charts, graphs) for trends</li>
+                        </ul>
+                    </div>
+
+                    <h4>Report Template Example</h4>
+                    <pre>
+VULNERABILITY REPORT
+====================
+Report ID: VR-2025-001
+Date: January 18, 2026
+Analyst: [Your Name]
+
+EXECUTIVE SUMMARY
+-----------------
+- Total Vulnerabilities: 42
+  * Critical: 3
+  * High: 12
+  * Medium: 18
+  * Low: 9
+
+Top Finding: CVE-2024-XXXXX (CVSS 9.8)
+  SQL Injection in customer portal
+  Immediate remediation required
+
+DETAILED FINDINGS
+-----------------
+Finding #1: SQL Injection in Login Form
+CVE: CVE-2024-XXXXX
+CVSS Score: 9.8 (Critical)
+Affected System: customer-portal.company.com
+Description: [details]
+Impact: Complete database compromise
+Remediation: Apply patch version 2.3.1
+Timeline: 24 hours
+                    </pre>
+
+                    <div class="success-box">
+                        <h4>✅ Report Quality Checklist</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>☑ Executive summary present</li>
+                            <li>☑ All vulnerabilities include CVSS scores</li>
+                            <li>☑ Clear remediation steps provided</li>
+                            <li>☑ Business impact explained</li>
+                            <li>☑ Proof of concept included (when appropriate)</li>
+                            <li>☑ Report follows consistent format</li>
+                            <li>☑ Technical jargon explained or avoided</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Think About It</h4>
+                        <p>Why is it important to include both technical details AND business impact in vulnerability reports?</p>
+                    </div>
+
+                    <h4>Quest 2 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 1: What is the recommended maximum length for an executive summary?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">10+ pages with all details</li>
+                            <li data-option="2">1-2 pages maximum</li>
+                            <li data-option="3">One paragraph only</li>
+                            <li data-option="4">Same length as technical section</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: What should be included in vulnerability remediation guidance?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Only the patch version number</li>
+                            <li data-option="2">Just a link to vendor documentation</li>
+                            <li data-option="3">Primary solution, workarounds, timeline, and testing notes</li>
+                            <li data-option="4">A request for management approval</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: When organizing a vulnerability report, which findings should appear first?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Most critical findings</li>
+                            <li data-option="2">Easiest to fix</li>
+                            <li data-option="3">Alphabetically by system name</li>
+                            <li data-option="4">Oldest findings</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 3: Stakeholder Communication -->
+            <div class="tab-content" id="quest3">
+                <div class="quest-section">
+                    <h3>⚙️ Quest 3: Stakeholder Communication</h3>
+                    <p><strong>Quest Goal:</strong> Tailor communication to different audiences</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>Understanding Your Audience</h4>
+
+                    <table>
+                        <tr>
+                            <th>Stakeholder</th>
+                            <th>Focus</th>
+                            <th>Communication Style</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Executives/C-Suite</strong></td>
+                            <td>Business risk, financial impact, compliance</td>
+                            <td>High-level, brief, focused on decisions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IT Management</strong></td>
+                            <td>Resource allocation, timelines, priorities</td>
+                            <td>Balance of technical and business context</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Technical Teams</strong></td>
+                            <td>How to fix, technical details, testing</td>
+                            <td>Detailed technical information</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compliance/Legal</strong></td>
+                            <td>Regulatory requirements, reporting obligations</td>
+                            <td>Formal, documented, audit-ready</td>
+                        </tr>
+                    </table>
+
+                    <h4>Communication Examples by Audience</h4>
+
+                    <div class="example-box">
+                        <h4>For Executives:</h4>
+                        <p><strong>BAD:</strong> "We found a CVE-2024-12345 SQL injection with CVSS 9.8 in the authentication module using parameterized queries..."</p>
+                        <p style="margin-top: 10px;"><strong>GOOD:</strong> "We discovered a critical vulnerability in our customer portal that could allow attackers to access all customer data. This requires immediate patching within 24 hours. Estimated downtime: 2 hours during off-peak."</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>For IT Management:</h4>
+                        <p><strong>Message:</strong> "Critical SQL injection vulnerability (CVSS 9.8) in customer portal requires emergency patch. We need:"</p>
+                        <ul style="margin-left: 20px;">
+                            <li>2-hour maintenance window this weekend</li>
+                            <li>Database administrator for backup/testing</li>
+                            <li>Web team for application restart</li>
+                            <li>Patch available from vendor, tested in staging</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>For Developers:</h4>
+                        <p><strong>Technical Details:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Vulnerability:</strong> SQL Injection in login.php (line 47)</li>
+                            <li><strong>Issue:</strong> User input concatenated directly into SQL query</li>
+                            <li><strong>Fix:</strong> Replace with prepared statements (mysqli_prepare)</li>
+                            <li><strong>Code Example:</strong> [Include code snippet]</li>
+                            <li><strong>Testing:</strong> Validate with sqlmap and manual testing</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Key Communication Principles</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Know Your Audience:</strong> Adjust technical depth appropriately</li>
+                            <li><strong>Lead with Impact:</strong> Start with "what it means" before "what it is"</li>
+                            <li><strong>Be Concise:</strong> Busy executives need brief, actionable information</li>
+                            <li><strong>Provide Context:</strong> Explain why this matters to the business</li>
+                            <li><strong>Offer Solutions:</strong> Don't just present problems, include recommendations</li>
+                        </ul>
+                    </div>
+
+                    <h4>Communication Channels</h4>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Channel Selection</h4>
+                        <p><strong>Critical Vulnerabilities:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>✅ Phone call + encrypted email</li>
+                            <li>✅ Secure messaging platform</li>
+                            <li>✅ In-person meeting if possible</li>
+                            <li>❌ Regular email (avoid details)</li>
+                            <li>❌ Slack/public channels</li>
+                        </ul>
+
+                        <p style="margin-top: 15px;"><strong>General Reporting:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>✅ Ticketing system (Jira, ServiceNow)</li>
+                            <li>✅ Scheduled security meetings</li>
+                            <li>✅ Documented reports via secure portal</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>✅ Communication Best Practices</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>Use the "inverted pyramid" - most important information first</li>
+                            <li>Avoid acronyms without defining them first</li>
+                            <li>Include visual aids (charts, diagrams) when helpful</li>
+                            <li>Provide clear action items with owners and deadlines</li>
+                            <li>Follow up to ensure understanding and track progress</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Practice Exercise</h4>
+                        <p>Write two versions of the same finding: one for your CISO (1-2 sentences) and one for the development team (1 paragraph with technical details).</p>
+                    </div>
+
+                    <h4>Quest 3 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 1: When communicating with executives, what should you emphasize?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Technical implementation details</li>
+                            <li data-option="2">Business risk and required decisions</li>
+                            <li data-option="3">Specific code vulnerabilities</li>
+                            <li data-option="4">Low-level network protocols</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 2: What is the BEST channel for reporting a critical, actively exploited vulnerability?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Regular email to the team distribution list</li>
+                            <li data-option="2">Public Slack channel</li>
+                            <li data-option="3">Phone call followed by encrypted email</li>
+                            <li data-option="4">Wait for the next scheduled meeting</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: What communication principle suggests putting the most important information first?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Inverted pyramid</li>
+                            <li data-option="2">Chronological order</li>
+                            <li data-option="3">Technical depth-first</li>
+                            <li data-option="4">Alphabetical organization</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 4: Documentation Standards -->
+            <div class="tab-content" id="quest4">
+                <div class="quest-section">
+                    <h3>✅ Quest 4: Documentation Standards</h3>
+                    <p><strong>Quest Goal:</strong> Follow industry best practices for documentation</p>
+                    <p><strong>Time:</strong> 25-30 minutes</p>
+
+                    <h4>Why Documentation Standards Matter</h4>
+                    <p>Consistent documentation ensures:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Compliance with regulations (PCI DSS, HIPAA, SOX)</li>
+                        <li>Reproducible processes</li>
+                        <li>Knowledge transfer when staff changes</li>
+                        <li>Audit trail for investigations</li>
+                    </ul>
+
+                    <h4>Documentation Best Practices</h4>
+
+                    <div class="example-box">
+                        <h4>1. Standardized Templates</h4>
+                        <p><strong>Benefits:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Ensures nothing is missed</li>
+                            <li>Makes reports easier to read</li>
+                            <li>Simplifies review process</li>
+                        </ul>
+                        <p style="margin-top: 10px;"><strong>Template Sections:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Report metadata (ID, date, analyst)</li>
+                            <li>Executive summary</li>
+                            <li>Methodology</li>
+                            <li>Findings (grouped by severity)</li>
+                            <li>Recommendations</li>
+                            <li>Appendices</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2. Version Control</h4>
+                        <p><strong>Track changes over time:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Version number in filename (VR-2025-001_v1.2)</li>
+                            <li>Change log documenting updates</li>
+                            <li>Who made changes and when</li>
+                            <li>Reason for changes</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3. Evidence Collection</h4>
+                        <p><strong>Document proof of vulnerabilities:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Screenshots of scan results</li>
+                            <li>Log files showing exploitation attempts</li>
+                            <li>Configuration files demonstrating misconfigurations</li>
+                            <li>Network captures (if appropriate)</li>
+                            <li>Sanitize sensitive data from evidence</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>💡 Naming Conventions</h4>
+                        <p><strong>Consistent file naming:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li><code>VR-YYYY-###_SystemName_vX.Y.pdf</code></li>
+                            <li>Example: <code>VR-2026-042_WebPortal_v1.0.pdf</code></li>
+                            <li>VR = Vulnerability Report</li>
+                            <li>YYYY = Year</li>
+                            <li>### = Sequential number</li>
+                            <li>vX.Y = Version number</li>
+                        </ul>
+                    </div>
+
+                    <h4>Retention and Storage</h4>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Security Considerations</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Encryption:</strong> All vulnerability reports should be encrypted at rest</li>
+                            <li><strong>Access Control:</strong> Limit access to need-to-know basis</li>
+                            <li><strong>Retention:</strong> Follow organizational policy (typically 3-7 years)</li>
+                            <li><strong>Disposal:</strong> Securely delete when retention period ends</li>
+                        </ul>
+                    </div>
+
+                    <h4>Compliance Requirements</h4>
+
+                    <table>
+                        <tr>
+                            <th>Standard</th>
+                            <th>Documentation Requirement</th>
+                        </tr>
+                        <tr>
+                            <td><strong>PCI DSS</strong></td>
+                            <td>Quarterly vulnerability scans, annual penetration tests</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HIPAA</strong></td>
+                            <td>Regular risk assessments, remediation tracking</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SOX</strong></td>
+                            <td>IT control testing, vulnerability documentation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ISO 27001</strong></td>
+                            <td>Vulnerability management process documentation</td>
+                        </tr>
+                    </table>
+
+                    <div class="success-box">
+                        <h4>✅ Documentation Checklist</h4>
+                        <ul style="margin-left: 20px;">
+                            <li>☑ Using standardized template</li>
+                            <li>☑ Proper version control</li>
+                            <li>☑ Evidence collected and sanitized</li>
+                            <li>☑ Consistent naming convention</li>
+                            <li>☑ Encrypted storage</li>
+                            <li>☑ Access controls in place</li>
+                            <li>☑ Retention policy followed</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Think About It</h4>
+                        <p>Why is it important to sanitize sensitive data from screenshots and logs before including them in reports?</p>
+                    </div>
+
+                    <h4>Quest 4 Knowledge Check</h4>
+                    
+                    <div class="quiz-question" data-answer="3">
+                        <h4>Question 1: What is the primary benefit of using standardized report templates?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">They make reports longer</li>
+                            <li data-option="2">They eliminate the need for technical details</li>
+                            <li data-option="3">They ensure consistency and completeness</li>
+                            <li data-option="4">They replace the need for evidence</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="2">
+                        <h4>Question 2: How should vulnerability reports be stored?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">In plain text on shared drives</li>
+                            <li data-option="2">Encrypted with access controls</li>
+                            <li data-option="3">Printed and filed only</li>
+                            <li data-option="4">On public cloud without restrictions</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="1">
+                        <h4>Question 3: What should be included in version control for reports?</h4>
+                        <ul class="quiz-options">
+                            <li data-option="1">Version number, who made changes, when, and why</li>
+                            <li data-option="2">Just the date of creation</li>
+                            <li data-option="3">Only the analyst's name</li>
+                            <li data-option="4">The file size</li>
+                        </ul>
+                        <div class="quiz-feedback">
+                            <p class="feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 5: Practical Communication -->
+            <div class="tab-content" id="quest5">
+                <div class="quest-section">
+                    <h3>🔬 Quest 5: Practical Communication Exercises</h3>
+                    <p><strong>Quest Goal:</strong> Apply communication skills to real scenarios</p>
+                    <p><strong>Time:</strong> 20-25 minutes</p>
+
+                    <div class="lab-exercise">
+                        <h4>🧪 Lab Exercise: Write Executive Summary</h4>
+                        <p><strong>Duration:</strong> 10-15 minutes</p>
+
+                        <div class="lab-step">
+                            <h5>Scenario</h5>
+                            <p>Your vulnerability scan revealed:</p>
+                            <ul style="margin-left: 20px;">
+                                <li>3 Critical vulnerabilities (CVSS 9.0+)</li>
+                                <li>12 High vulnerabilities (CVSS 7.0-8.9)</li>
+                                <li>28 Medium vulnerabilities</li>
+                                <li>15 Low vulnerabilities</li>
+                            </ul>
+                            <p style="margin-top: 10px;">The most critical finding is a SQL injection (CVSS 9.8) in your customer-facing web application that processes credit card transactions.</p>
+                        </div>
+
+                        <div class="lab-step">
+                            <h5>Your Task</h5>
+                            <p>Write a 1-page executive summary for your CISO that includes:</p>
+                            <ul style="margin-left: 20px;">
+                                <li>Overview of findings</li>
+                                <li>Business impact of critical finding</li>
+                                <li>Recommended immediate actions</li>
+                                <li>Timeline for remediation</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Remember:</strong> No technical jargon, focus on business risk!</p>
+                        </div>
+
+                        <div class="lab-step">
+                            <h5>Self-Assessment Checklist</h5>
+                            <ul style="margin-left: 20px;">
+                                <li>☐ Did you avoid technical jargon?</li>
+                                <li>☐ Is the business impact clear?</li>
+                                <li>☐ Are action items specific?</li>
+                                <li>☐ Is it one page or less?</li>
+                                <li>☐ Would a non-technical executive understand it?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lab-exercise">
+                        <h4>🧪 Lab Exercise: Stakeholder Communication Matrix</h4>
+                        <p><strong>Duration:</strong> 5-10 minutes</p>
+
+                        <div class="lab-step">
+                            <h5>Task</h5>
+                            <p>For the SQL injection vulnerability above, write one sentence for each stakeholder:</p>
+                            <ol style="margin-left: 20px;">
+                                <li><strong>CEO:</strong> ___________________________</li>
+                                <li><strong>IT Manager:</strong> ___________________________</li>
+                                <li><strong>Developer:</strong> ___________________________</li>
+                                <li><strong>Compliance Officer:</strong> ___________________________</li>
+                            </ol>
+                        </div>
+
+                        <div class="lab-step">
+                            <h5>Example Answers</h5>
+                            <div class="success-box">
+                                <p><strong>CEO:</strong> "We found a critical security flaw in our payment system that could expose customer credit cards; we need emergency maintenance this weekend."</p>
+                                <p style="margin-top: 10px;"><strong>IT Manager:</strong> "Critical SQL injection requires emergency patch deployment; need 2-hour maintenance window and database team support."</p>
+                                <p style="margin-top: 10px;"><strong>Developer:</strong> "SQL injection in payment_process.php line 156; need to implement prepared statements per OWASP guidelines."</p>
+                                <p style="margin-top: 10px;"><strong>Compliance Officer:</strong> "Critical PCI DSS violation discovered; immediate remediation required to maintain compliance and avoid fines."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="success-box" style="margin-top: 30px;">
+                        <h4>🎉 Lesson Complete!</h4>
+                        <p><strong>You've learned:</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>✅ Fundamentals of vulnerability reporting</li>
+                            <li>✅ Essential components of professional reports</li>
+                            <li>✅ How to tailor communication for different audiences</li>
+                            <li>✅ Documentation standards and best practices</li>
+                            <li>✅ Practical communication skills for real scenarios</li>
+                        </ul>
+                    </div>
+
+                    <div class="reflection-prompt">
+                        <h4>🤔 Final Reflection</h4>
+                        <p>What is the most important principle you learned about communicating vulnerability information? How will you apply this in your work?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div class="tab-content" id="resources">
+                <div class="quest-section">
+                    <h3>📥 Lesson Resources</h3>
+                    
+                    <h4>📚 Study Materials</h4>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📄 Lesson 7 Study Guide</a>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📊 Report Template Pack</a>
+                    <a href="#" class="download-btn" onclick="alert('Download functionality would be enabled in production'); return false;">📋 Communication Checklist</a>
+
+                    <h4 style="margin-top: 30px;">🎓 Key Takeaways</h4>
+                    <div class="success-box">
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Know your audience</strong> - Tailor technical depth appropriately</li>
+                            <li><strong>Prioritize critical findings</strong> - Most important information first</li>
+                            <li><strong>Include context</strong> - Explain business impact, not just technical details</li>
+                            <li><strong>Follow standards</strong> - Use templates, version control, proper storage</li>
+                            <li><strong>Provide actionable recommendations</strong> - Don't just identify problems</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">💡 Pro Tips</h4>
+                    <div class="example-box">
+                        <ul style="margin-left: 20px;">
+                            <li>Keep executive summaries to 1-2 pages maximum</li>
+                            <li>Use the "inverted pyramid" - most critical info first</li>
+                            <li>Include visual aids (charts, graphs) for trends</li>
+                            <li>Always verify findings before reporting</li>
+                            <li>Follow up to ensure understanding and track remediation</li>
+                            <li>Document everything for compliance and audit purposes</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="margin-top: 30px;">📖 Further Reading</h4>
+                    <div class="info-box">
+                        <ul style="margin-left: 20px;">
+                            <li><strong>NIST SP 800-40:</strong> Guide to Enterprise Patch Management Technologies</li>
+                            <li><strong>SANS Reading Room:</strong> Vulnerability Assessment Reports</li>
+                            <li><strong>OWASP Testing Guide:</strong> Reporting Best Practices</li>
+                            <li><strong>PCI DSS:</strong> Vulnerability Scanning Requirements</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz answers with explanations
+        const quizAnswers = {
+            "What is the primary purpose of vulnerability reporting?": {
+                correct: 1,
+                explanation: "Correct! Vulnerability reporting documents and communicates security weaknesses to appropriate stakeholders so they can take action.",
+                incorrectExplanation: "Not quite. Vulnerability reporting doesn't fix vulnerabilities automatically, replace scanning, or assign blame. Its primary purpose is to document and communicate findings to stakeholders who can take action. 🔄 Reflect: Why is clear communication critical in cybersecurity?"
+            },
+            "Which report type is best suited for C-level executives?": {
+                correct: 2,
+                explanation: "Correct! Executive summaries focus on business impact and risk, which is what C-level executives need to make decisions.",
+                incorrectExplanation: "Not correct. Executives don't need technical exploit details or raw scanner output. They need high-level summaries focused on business impact and required decisions. 🔄 Reflect: How would you explain a technical vulnerability in business terms?"
+            },
+            "How quickly should critical vulnerabilities be reported?": {
+                correct: 1,
+                explanation: "Correct! Critical vulnerabilities should be reported immediately (within hours) to enable rapid response and remediation.",
+                incorrectExplanation: "Not correct. Critical vulnerabilities represent severe risk and should be reported immediately - within hours, not days or weeks. Time is critical when systems are at high risk. 🔄 Reflect: What could happen if you wait even 24 hours to report a critical finding?"
+            },
+            "What is the recommended maximum length for an executive summary?": {
+                correct: 2,
+                explanation: "Correct! Executive summaries should be concise - 1-2 pages maximum - to respect busy executives' time while providing key information.",
+                incorrectExplanation: "Not correct. Executive summaries need to be brief (1-2 pages max) because executives have limited time. Too long and it won't be read; too short and it lacks necessary context. 🔄 Reflect: What are the 3-5 most critical pieces of information an executive needs?"
+            },
+            "What should be included in vulnerability remediation guidance?": {
+                correct: 3,
+                explanation: "Correct! Complete remediation guidance includes primary solution, workarounds if needed, realistic timeline, and testing procedures to verify the fix.",
+                incorrectExplanation: "Not correct. Good remediation guidance needs more than just a patch number or link. It should include the primary solution, temporary workarounds, timeline, and how to test the fix. 🔄 Reflect: Why is it important to include workarounds even when a patch exists?"
+            },
+            "When organizing a vulnerability report, which findings should appear first?": {
+                correct: 1,
+                explanation: "Correct! The most critical findings should appear first so decision-makers immediately see the highest priorities.",
+                incorrectExplanation: "Not correct. Reports should prioritize by criticality, not ease of fixing or alphabetical order. The most critical vulnerabilities need immediate attention and should be first. 🔄 Reflect: Why does the order of information matter in security reporting?"
+            },
+            "When communicating with executives, what should you emphasize?": {
+                correct: 2,
+                explanation: "Correct! Executives need to understand business risk and make decisions - focus on impact, not technical implementation details.",
+                incorrectExplanation: "Not correct. Executives don't need code-level details or network protocols. They need to understand business risk, financial impact, and what decisions are required. 🔄 Reflect: How does business risk differ from technical severity?"
+            },
+            "What is the BEST channel for reporting a critical, actively exploited vulnerability?": {
+                correct: 3,
+                explanation: "Correct! Critical vulnerabilities require immediate, secure communication - phone call for urgency plus encrypted email for documentation.",
+                incorrectExplanation: "Not correct. Critical vulnerabilities shouldn't be sent via regular email or public channels, and definitely shouldn't wait for scheduled meetings. Immediate, secure communication (phone + encrypted email) is essential. 🔄 Reflect: Why is the communication channel itself a security concern?"
+            },
+            "What communication principle suggests putting the most important information first?": {
+                correct: 1,
+                explanation: "Correct! The inverted pyramid approach puts the most critical information first, ensuring readers get key details even if they don't read the entire report.",
+                incorrectExplanation: "Not correct. The inverted pyramid (from journalism) means putting the most important information first. This ensures busy stakeholders get critical details even if they only read the beginning. 🔄 Reflect: How does this differ from how technical documentation is typically organized?"
+            },
+            "What is the primary benefit of using standardized report templates?": {
+                correct: 3,
+                explanation: "Correct! Standardized templates ensure consistency across reports and completeness by including all necessary sections.",
+                incorrectExplanation: "Not correct. Templates don't make reports longer, eliminate technical details, or replace evidence. They ensure consistency and completeness by providing a standard structure. 🔄 Reflect: How do templates help with compliance and audits?"
+            },
+            "How should vulnerability reports be stored?": {
+                correct: 2,
+                explanation: "Correct! Vulnerability reports contain sensitive information and must be encrypted at rest with strict access controls on a need-to-know basis.",
+                incorrectExplanation: "Not correct. Vulnerability reports contain sensitive security information and must be protected. They should be encrypted with strict access controls - never in plain text or unrestricted cloud storage. 🔄 Reflect: What could happen if vulnerability reports fell into the wrong hands?"
+            },
+            "What should be included in version control for reports?": {
+                correct: 1,
+                explanation: "Correct! Proper version control tracks who made changes, when, and why - creating an audit trail and preventing confusion.",
+                incorrectExplanation: "Not correct. Version control needs to track more than just dates or names. It should document who made changes, when, and why - creating a complete audit trail. 🔄 Reflect: Why is this audit trail important for compliance?"
+            }
+        };
+
+        // Tab Navigation
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+                
+                document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+                document.querySelector(`.sidebar li[data-quest="${tabName}"]`).classList.add('active');
+                
+                document.querySelector('.main-content').scrollTop = 0;
+            });
+        });
+
+        // Sidebar Navigation
+        document.querySelectorAll('.sidebar li').forEach(item => {
+            item.addEventListener('click', function() {
+                const questName = this.getAttribute('data-quest');
+                
+                document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.tab-btn[data-tab="${questName}"]`).classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(questName).classList.add('active');
+                
+                document.querySelector('.main-content').scrollTop = 0;
+            });
+        });
+
+        // Quiz interaction with immediate feedback and reflection
+        document.querySelectorAll('.quiz-question').forEach(question => {
+            const correctAnswer = question.getAttribute('data-answer');
+            const questionText = question.querySelector('h4').textContent;
+            const options = question.querySelectorAll('.quiz-options li');
+            const feedbackDiv = question.querySelector('.quiz-feedback');
+            const feedbackText = feedbackDiv.querySelector('.feedback-text');
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (this.classList.contains('disabled')) return;
+                    
+                    const selectedOption = this.getAttribute('data-option');
+                    const quizData = quizAnswers[questionText];
+                    
+                    options.forEach(opt => opt.classList.add('disabled'));
+                    
+                    if (selectedOption == correctAnswer) {
+                        this.classList.add('correct');
+                        feedbackDiv.classList.add('show', 'correct-feedback');
+                        feedbackText.innerHTML = `<strong>✅ Correct!</strong><br>${quizData.explanation}`;
+                    } else {
+                        this.classList.add('incorrect');
+                        options.forEach(opt => {
+                            if (opt.getAttribute('data-option') == correctAnswer) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                        feedbackDiv.classList.add('show', 'incorrect-feedback');
+                        feedbackText.innerHTML = `<strong>❌ Incorrect</strong><br>${quizData.incorrectExplanation}<br><br><em>The correct answer is highlighted in green.</em>`;
+                    }
+                    
+                    updateProgress();
+                });
+            });
+        });
+
+        // Progress tracking
+        function updateProgress() {
+            const totalQuestions = document.querySelectorAll('.quiz-question').length;
+            const answeredQuestions = document.querySelectorAll('.quiz-options li.correct, .quiz-options li.incorrect').length / document.querySelectorAll('.quiz-question').length;
+            const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+            
+            const progressBar = document.getElementById('sidebar-progress');
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson6_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson8_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

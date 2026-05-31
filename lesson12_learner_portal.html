@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12: Understanding Application Vulnerability Assessment - Learner Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        .header-content { }
+        
+        .header h1 {
+            font-size: 1.4em;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .header h2 {
+            font-size: 1.15em;
+            margin-bottom: 6px;
+            font-weight: 400;
+        }
+        
+        .header h3 {
+            font-size: 1em;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+        
+        .header p {
+            margin-top: 10px;
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
+        .learner-badge {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-tabs {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 4px solid #3498db;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .nav-tab {
+            flex: 1;
+            min-width: 130px;
+            padding: 16px 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.7);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(52, 152, 219, 0.2);
+            color: white;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #2c3e50;
+            border-bottom: 4px solid #3498db;
+            margin-bottom: -4px;
+        }
+        
+        .content-section {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.6s ease;
+            background: white;
+        }
+        
+        .content-section.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .content-section h2 {
+            color: #2c3e50;
+            font-size: 1.9em;
+            margin-bottom: 22px;
+            padding-bottom: 12px;
+            border-bottom: 4px solid #3498db;
+        }
+        
+        .content-section h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .content-section h4 {
+            color: #7f8c8d;
+            font-size: 1.25em;
+            margin-top: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .content-section p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-left: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .content-section li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+        
+        .quiz-container {
+            background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%);
+            border: 3px solid #16a085;
+            border-radius: 12px;
+            padding: 28px;
+            margin: 28px 0;
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.2);
+        }
+        
+        .quiz-question {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #117a65;
+            margin-bottom: 18px;
+        }
+        
+        .quiz-options { margin: 18px 0; }
+        
+        .quiz-option {
+            background: white;
+            border: 3px solid #d5f4e6;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin: 12px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #2c3e50;
+        }
+        
+        .quiz-option:hover {
+            border-color: #16a085;
+            background: #f0fdf4;
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.selected {
+            border-color: #16a085;
+            background: #d1f2eb;
+            font-weight: 600;
+        }
+        
+        .quiz-option.correct {
+            border-color: #27ae60;
+            background: #d4edda;
+            font-weight: 600;
+        }
+        
+        .quiz-option.incorrect {
+            border-color: #e74c3c;
+            background: #f8d7da;
+        }
+        
+        .quiz-feedback {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 10px;
+            display: none;
+            font-size: 1.02em;
+        }
+        
+        .quiz-feedback.correct {
+            background: #d4edda;
+            border-left: 6px solid #27ae60;
+            color: #155724;
+            display: block;
+        }
+        
+        .quiz-feedback.incorrect {
+            background: #f8d7da;
+            border-left: 6px solid #e74c3c;
+            color: #721c24;
+            display: block;
+        }
+        
+        .quiz-button {
+            background: linear-gradient(135deg, #16a085 0%, #138d75 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            margin-top: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+        }
+        
+        .quiz-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(22, 160, 133, 0.4);
+        }
+        
+        .glossary-container {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .glossary-term {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+        }
+        
+        .glossary-term-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.15em;
+            margin-bottom: 8px;
+        }
+        
+        .glossary-term-definition {
+            color: #34495e;
+            line-height: 1.8;
+        }
+        
+        .resource-links {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 12px;
+            padding: 28px;
+            margin: 28px 0;
+        }
+        
+        .resource-link {
+            background: white;
+            border-left: 5px solid #2196f3;
+            padding: 18px;
+            margin: 18px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .resource-link a {
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+        
+        .resource-link a:hover { text-decoration: underline; }
+        
+        .resource-description {
+            color: #5d6d7e;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+        
+        .practical-guide {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe9b3 100%);
+            border-left: 6px solid #f39c12;
+            padding: 25px;
+            margin: 28px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.2);
+        }
+        
+        .practical-guide-header {
+            font-weight: bold;
+            color: #d68910;
+            font-size: 1.25em;
+            margin-bottom: 16px;
+        }
+        
+        .practical-guide-steps { color: #856404; }
+        
+        .practical-guide-steps ol { margin-left: 25px; }
+        
+        .practical-guide-steps li { margin: 12px 0; }
+        
+        .key-concept {
+            background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%);
+            border-left: 6px solid #16a085;
+            padding: 28px;
+            margin: 28px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.2);
+        }
+        
+        .key-concept-header {
+            font-weight: bold;
+            color: #117a65;
+            margin-bottom: 16px;
+            font-size: 1.35em;
+        }
+        
+        .key-concept-content {
+            color: #117a65;
+            line-height: 1.9;
+        }
+        
+        .code-block {
+            background: #1e272e;
+            color: #00ff9f;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 16px 0;
+            border: 1px solid #2c3e50;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 22px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .data-table tr:nth-child(even) { background: #f8f9fa; }
+        
+        .data-table tr:hover { background: #e8f4f8; }
+        
+        .progress-tracker {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar-container {
+            background: #ecf0f1;
+            height: 35px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #27ae60 0%, #229954 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+        
+        .example-box {
+            background: #fafafa;
+            border-left: 6px solid #95a5a6;
+            padding: 20px;
+            margin: 22px 0;
+            border-radius: 10px;
+        }
+        
+        .example-box-header {
+            font-weight: bold;
+            color: #5d6d7e;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            text-align: center;
+            padding: 32px;
+            margin-top: 45px;
+        }
+        
+        .footer p { margin: 7px 0; }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.9em; }
+            .header h2 { font-size: 1.3em; }
+            .nav-tab { min-width: 100%; }
+            .content-section { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>CyberEdge Academy</h1>
+        <p style="font-size:13px;opacity:0.85;margin-top:4px;">Lesson 12: Understanding Application Vulnerability Assessment</p>
+                <p>Dr. Solomon Seifu | CyberEdge Academy</p>
+                <div class="learner-badge">📖 LEARNER PORTAL 📖</div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-tab" onclick="showSection('content')">Core Content</button>
+            <button class="nav-tab" onclick="showSection('practical')">Practical Guide</button>
+            <button class="nav-tab" onclick="showSection('quiz')">Knowledge Check</button>
+            <button class="nav-tab" onclick="showSection('glossary')">Glossary</button>
+            <button class="nav-tab" onclick="showSection('resources')">Resources</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <h2>📚 Welcome to Lesson 12</h2>
+            
+            <div class="key-concept">
+                <div class="key-concept-header">🎯 What You'll Learn</div>
+                <div class="key-concept-content">
+                    This lesson focuses on structured application vulnerability assessments. You'll learn to use automated scanning tools, apply manual testing techniques, and leverage architectural knowledge to uncover security flaws, generate actionable reports, and help developers remediate issues effectively.
+                </div>
+            </div>
+
+            <div class="progress-tracker">
+                <strong>Your Learning Progress</strong>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progress-bar">0%</div>
+                </div>
+                <p style="margin-top: 12px; color: #7f8c8d; font-size: 0.9em;">Complete all sections and quizzes to track your progress!</p>
+            </div>
+
+            <h3>Lesson Objectives</h3>
+            <table class="data-table">
+                <tr>
+                    <th>Objective</th>
+                    <th>What You'll Learn</th>
+                </tr>
+                <tr>
+                    <td>1. Web Application Scanners</td>
+                    <td>Understand tools like OWASP ZAP and Burp Suite and how they identify common web vulnerabilities</td>
+                </tr>
+                <tr>
+                    <td>2. Scanner Capabilities</td>
+                    <td>Study how scanners detect flaws such as SQL injection, XSS, misconfigurations, and authentication weaknesses</td>
+                </tr>
+                <tr>
+                    <td>3. Software Debuggers</td>
+                    <td>Learn how debuggers and reverse engineering help identify vulnerabilities in compiled code and binaries</td>
+                </tr>
+                <tr>
+                    <td>4. Cloud Assessment Tools</td>
+                    <td>Understand specialized cloud tools like Prowler and ScoutSuite that address misconfigurations and access control issues</td>
+                </tr>
+                <tr>
+                    <td>5. Cloud Tool Capabilities</td>
+                    <td>Examine how cloud posture management, permission scanning, and compliance checks strengthen cloud security</td>
+                </tr>
+            </table>
+
+            <h3>What is Application Vulnerability Assessment?</h3>
+            <p>Application vulnerability assessment is the process of finding, categorizing, and fixing security problems inside software applications. Think of it as a digital health checkup for software.</p>
+
+            <p><strong>This applies to:</strong></p>
+            <ul>
+                <li><strong>Web applications</strong> - Online banking, email platforms, e-commerce sites</li>
+                <li><strong>Mobile applications</strong> - iOS and Android apps</li>
+                <li><strong>Cloud-hosted platforms</strong> - SaaS applications, cloud services</li>
+                <li><strong>Compiled desktop software</strong> - Windows/Linux executables</li>
+            </ul>
+
+            <p>The assessment serves as more than just finding problems—it determines severity and provides fixes.</p>
+
+            <h3>Key Activities</h3>
+            <ul>
+                <li><strong>Vulnerability Identification:</strong> Scanning apps with specialized tools to find flaws</li>
+                <li><strong>Manual Testing:</strong> Simulating attacks to catch logic flaws missed by scanners</li>
+                <li><strong>Reverse Engineering:</strong> Using debuggers to analyze compiled code</li>
+                <li><strong>Cloud Security Assessment:</strong> Checking permissions, misconfigurations, access control</li>
+                <li><strong>Reporting Findings:</strong> Creating detailed reports with vulnerabilities, risk levels, and remediation advice</li>
+            </ul>
+
+            <h3>Why It Matters</h3>
+            <p>Failing to conduct proper application vulnerability assessments can lead to:</p>
+            <ul>
+                <li>Exploitation of critical flaws in web or cloud applications</li>
+                <li>Data breaches through misconfigurations or unpatched software</li>
+                <li>Attackers bypassing authentication or exploiting poor session handling</li>
+                <li>Loss of customer trust and regulatory non-compliance</li>
+            </ul>
+
+            <div class="example-box">
+                <div class="example-box-header">Real-World Breaches</div>
+                <div style="color: #5d6d7e; line-height: 1.8;">
+                    These major breaches could have been prevented with proper vulnerability assessments:
+                    <ul>
+                        <li><strong>Equifax (2017):</strong> Unpatched Apache Struts vulnerability - 147 million people affected</li>
+                        <li><strong>Capital One (2019):</strong> Misconfigured AWS firewall - 100 million records stolen</li>
+                        <li><strong>Target (2013):</strong> SQL injection in web portal - 40 million credit cards compromised</li>
+                    </ul>
+                    These weren't exotic, advanced attacks. They were simple vulnerabilities that the tools you're learning could have found.
+                </div>
+            </div>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">📖 How to Excel in This Lesson</div>
+                <div class="practical-guide-steps">
+                    <ol>
+                        <li><strong>Read Core Content</strong> - Understand each tool and technique thoroughly</li>
+                        <li><strong>Follow Practical Guides</strong> - Install tools and practice on safe targets (DVWA, Juice Shop)</li>
+                        <li><strong>Take Knowledge Checks</strong> - Complete all quizzes to test comprehension</li>
+                        <li><strong>Review Glossary</strong> - Familiarize yourself with key terminology</li>
+                        <li><strong>Explore Resources</strong> - Dive deeper with recommended training platforms</li>
+                        <li><strong>Practice Regularly</strong> - Hands-on experience is essential for mastery</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="key-concept">
+                <div class="key-concept-header">⚖️ Legal and Ethical Reminder</div>
+                <div class="key-concept-content">
+                    <strong>ONLY scan applications you own or have explicit written permission to scan!</strong>
+                    <ul>
+                        <li>Unauthorized scanning is ILLEGAL (Computer Fraud and Abuse Act - CFAA)</li>
+                        <li>Always practice on intentionally vulnerable applications (DVWA, Juice Shop, WebGoat)</li>
+                        <li>In professional settings: Get written authorization before any security testing</li>
+                        <li>Bug bounty programs (HackerOne, Bugcrowd) are legal ways to test real applications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Content Section -->
+        <div id="content" class="content-section">
+            <h2>📖 Core Content: Application Vulnerability Assessment</h2>
+
+            <h3>Introduction to Application Vulnerability Assessment</h3>
+            <p>Application Vulnerability Assessment is the process of finding, categorizing, and fixing security problems inside software applications. This type of assessment applies to:</p>
+            <ul>
+                <li><strong>Web applications</strong> - Online banking, email platforms, e-commerce sites</li>
+                <li><strong>Mobile applications</strong> - iOS and Android apps</li>
+                <li><strong>Cloud-hosted platforms</strong> - SaaS applications, cloud services</li>
+                <li><strong>Compiled desktop software</strong> - Windows/Linux executables (.exe, .so files)</li>
+            </ul>
+
+            <p>The assessment serves as a digital health checkup for applications. It not only identifies what is wrong but also determines the severity of issues and how to fix them.</p>
+
+            <h4>Key Aspects of Application Vulnerability Assessment</h4>
+            <ul>
+                <li><strong>Identification and Remediation</strong> - Detects, classifies, and provides steps to remediate vulnerabilities</li>
+                <li><strong>Specialized Tools</strong>
+                    <ul>
+                        <li>Web applications: OWASP ZAP, Burp Suite</li>
+                        <li>Cloud: Prisma Cloud, Microsoft Defender for Cloud, and other posture management tools</li>
+                        <li>Binary reverse engineering: Analysis of compiled code when source code is unavailable</li>
+                    </ul>
+                </li>
+                <li><strong>Beyond Generic Scanning</strong> - Addresses logic flaws and design issues that basic scanners may miss, often involves manual testing</li>
+                <li><strong>Architectural Knowledge</strong> - Requires deep familiarity with how applications are built and behave at runtime (API interactions, session handling, user role management, input validation)</li>
+                <li><strong>Detailed Reporting</strong> - Produces structured reports containing vulnerabilities, risk ratings (low/medium/high), technical explanations, and remediation advice</li>
+            </ul>
+
+            <div class="key-concept">
+                <div class="key-concept-header">🎯 Ultimate Goal</div>
+                <div class="key-concept-content">
+                    The goal is not just to point out weaknesses but to guide developers and organizations in fixing them effectively.
+                </div>
+            </div>
+
+            <h4>Key Activities in Application Vulnerability Assessment</h4>
+            <table class="data-table">
+                <tr>
+                    <th>Activity</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Vulnerability Identification</td>
+                    <td>Scanning apps with OWASP ZAP, Burp Suite, or cloud posture tools to find common security flaws</td>
+                </tr>
+                <tr>
+                    <td>Manual Testing</td>
+                    <td>Simulating attacks (e.g., bypassing logins, altering transactions) to catch logic flaws missed by scanners</td>
+                </tr>
+                <tr>
+                    <td>Reverse Engineering</td>
+                    <td>Using debuggers to analyze compiled code for vulnerabilities when source code is unavailable</td>
+                </tr>
+                <tr>
+                    <td>Cloud Security Assessment</td>
+                    <td>Employing tools like Prisma Cloud or Microsoft Defender for Cloud to check permissions, misconfigurations, and access control</td>
+                </tr>
+                <tr>
+                    <td>Reporting Findings</td>
+                    <td>Creating detailed reports with vulnerabilities, risk levels, bug explanations, and remediation advice</td>
+                </tr>
+            </table>
+
+            <h4>Why It Matters</h4>
+            <p>Failing to conduct proper application vulnerability assessments can lead to:</p>
+            <ul>
+                <li>Exploitation of critical flaws in web or cloud applications</li>
+                <li>Data breaches through misconfigurations or unpatched software</li>
+                <li>Attackers bypassing authentication or exploiting poor session handling</li>
+                <li>Loss of customer trust and regulatory non-compliance</li>
+            </ul>
+
+            <div class="example-box">
+                <div class="example-box-header">Real-World Impact</div>
+                <div style="color: #5d6d7e; line-height: 1.8;">
+                    These weren't exotic attacks - they were simple vulnerabilities:
+                    <ul>
+                        <li><strong>Equifax (2017):</strong> Unpatched Apache Struts - 147 million records stolen</li>
+                        <li><strong>Capital One (2019):</strong> AWS misconfigured firewall - 100 million customers affected</li>
+                        <li><strong>Target (2013):</strong> SQL injection in web portal - 40 million credit cards compromised</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Web Application Vulnerability Scanners</h3>
+
+            <p>Web vulnerability scanners are automated tools designed to identify security issues in web applications. They detect flaws in how applications handle data, reveal weaknesses in authentication and input validation, and support deeper security testing with advanced techniques.</p>
+
+            <h4>What Web Application Scanners Look For</h4>
+            <ul>
+                <li><strong>SQL Injection (SQLi)</strong> - Malicious SQL queries inserted into input fields</li>
+                <li><strong>Cross-Site Scripting (XSS)</strong> - Injecting malicious scripts into web pages</li>
+                <li><strong>Misconfigured Headers</strong> - Missing security headers like CSP, X-Frame-Options, HSTS</li>
+                <li><strong>Insecure Cookies</strong> - Cookies without Secure or HttpOnly flags</li>
+                <li><strong>Authentication Flaws</strong> - Weak password policies, session vulnerabilities</li>
+                <li><strong>Broken Access Control</strong> - Users accessing unauthorized resources</li>
+            </ul>
+
+            <h4>Techniques Used by Web Vulnerability Scanners</h4>
+            <p>Scanners rarely rely on just one method. Effective tools combine multiple approaches:</p>
+            <ul>
+                <li><strong>Static Code Analysis</strong> - Examines source code without executing it. Example: Identifies insecure function calls, hardcoded credentials, or poor input validation before execution</li>
+                <li><strong>Dynamic Code Analysis</strong> - Observes the application while it runs. Example: Detects runtime issues like session hijacking or improper redirects</li>
+                <li><strong>Fuzzing</strong> - Sends random or unexpected inputs to find crashes or hidden errors. Example: Reveals flaws when an application receives malformed or unusual data</li>
+                <li><strong>Reverse Engineering</strong> - Analyzes binaries to understand program behavior without source code. Example: Useful for testing third-party or legacy apps to uncover embedded logic flaws</li>
+            </ul>
+
+            <h4>Detecting Misconfigurations and Security Weaknesses</h4>
+            <p>Scanners can uncover common misconfigurations, including:</p>
+            <ul>
+                <li>Use of HTTP instead of HTTPS</li>
+                <li>Default or weak credentials</li>
+                <li>Unused or exposed ports</li>
+            </ul>
+            <p>These vulnerabilities often provide attackers with the easiest entry points.</p>
+
+            <h4>Role of Debuggers in Deeper Analysis</h4>
+            <p>Debuggers complement scanners by offering step-by-step control and observation of application behavior. They allow security analysts to:</p>
+            <ul>
+                <li>Step through code execution in real time</li>
+                <li>Pinpoint where vulnerabilities reside</li>
+                <li>Understand logic behind data processing</li>
+            </ul>
+            <p><strong>Example:</strong> Debuggers can trace how applications manage user roles and detect improper privilege assignments, such as unauthorized admin access.</p>
+
+            <h3>Burp Suite</h3>
+            <p>Burp Suite is a popular web application security testing tool developed by PortSwigger Web Security. It is widely used by penetration testers, researchers, and security analysts to detect vulnerabilities and analyze application behavior.</p>
+
+            <h4>Interception Proxy - Burp's Most Powerful Feature</h4>
+            <p>The interception proxy is one of Burp Suite's most important components.</p>
+            <p><strong>What it does:</strong></p>
+            <ul>
+                <li>Allows users to pause, view, and edit requests or responses before they reach the server or return to the browser</li>
+                <li>Provides complete visibility and control over application traffic</li>
+            </ul>
+            <p><strong>Example:</strong> A tester can intercept a login request, modify the username, and resend it to test how the system responds.</p>
+
+            <h4>Why Interception Is Useful</h4>
+            <ul>
+                <li><strong>Dynamic Code Analysis:</strong> Observe how the application behaves in real time by analyzing requests and responses</li>
+                <li><strong>Penetration Testing:</strong> Manipulate or tamper with traffic to uncover flaws like insecure session handling or broken access control</li>
+                <li><strong>Attack Simulation:</strong> Simulate how an attacker might try to steal login data, tokens, or sensitive information transmitted over insecure connections</li>
+            </ul>
+
+            <h4>Additional Burp Suite Capabilities</h4>
+            <ul>
+                <li>Content discovery</li>
+                <li>Fuzzing</li>
+                <li>Password and injection attacks</li>
+                <li>Vulnerability scans</li>
+            </ul>
+
+            <h4>Versions of Burp Suite</h4>
+            <ul>
+                <li><strong>Community Edition (Free)</strong> - Feature-limited, good for learning and basic testing</li>
+                <li><strong>Professional Edition (Paid)</strong> - Includes advanced features such as automated scanning, fuzzing, and enhanced reporting</li>
+            </ul>
+
+            <h3>OWASP Zed Attack Proxy (ZAP)</h3>
+            <p>OWASP ZAP (Zed Attack Proxy) is a widely used open-source web application security tool developed and maintained by the OWASP Foundation, a nonprofit promoting secure software development.</p>
+
+            <h4>Why ZAP Is Important</h4>
+            <ul>
+                <li><strong>Free and Open Source</strong> - Unlike Burp Suite Pro, ZAP is completely free and community-driven</li>
+                <li><strong>OWASP Flagship Tool</strong> - Recognized as one of OWASP's leading and most trusted tools for both education and professional use</li>
+                <li><strong>Comparable to Burp Suite</strong> - Provides many of the same capabilities such as request interception, automated scanning, and fuzzing inputs</li>
+            </ul>
+
+            <h4>Key Features of ZAP</h4>
+            <ul>
+                <li><strong>Interception Proxy</strong> - Allows stopping and inspecting HTTP/HTTPS traffic between client and server</li>
+                <li><strong>Automated Scanner</strong> - Automatically detects common vulnerabilities like SQL injection (SQLi) and cross-site scripting (XSS)</li>
+                <li><strong>Input Manipulation and API Testing</strong> - Tests how applications handle unexpected or malformed inputs, useful for evaluating API security and resilience</li>
+                <li><strong>Spider/Crawler</strong> - Maps entire application structure automatically</li>
+            </ul>
+
+            <h4>Why ZAP Is Popular with Learners</h4>
+            <ul>
+                <li>Easy to install and beginner-friendly with a graphical interface</li>
+                <li>Supported by extensive documentation, tutorials, and free training resources through owasp.org</li>
+                <li>Ideal for students, entry-level analysts, and professionals seeking hands-on experience</li>
+            </ul>
+
+            <h3>Additional Web Application Scanners</h3>
+
+            <h4>Nikto</h4>
+            <p>Nikto is a command-line based web server scanner widely used for quick and effective vulnerability assessments. It is free, open-source, and capable of identifying thousands of known issues across different server types.</p>
+            <p><strong>What Nikto Does:</strong></p>
+            <ul>
+                <li><strong>Scans Web Servers</strong> - Checks for over 6,700 known vulnerabilities across multiple server types</li>
+                <li><strong>Finds Misconfigurations</strong> - Detects default credentials, exposed directories, outdated software</li>
+                <li><strong>Fast and Effective</strong> - Quick assessments for initial reconnaissance</li>
+            </ul>
+
+            <h4>Arachni</h4>
+            <p>Arachni is an open-source web application security scanner with both CLI and GUI interfaces.</p>
+            <p><strong>Capabilities:</strong></p>
+            <ul>
+                <li>Analyzes HTML forms, JavaScript, JSON, XML</li>
+                <li>Finds orphaned input fields and hidden parameters</li>
+                <li>Comprehensive application testing</li>
+                <li>Both command-line and graphical interfaces available</li>
+            </ul>
+
+            <h3>Application Debuggers</h3>
+
+            <p>Application debuggers are tools that allow analysts to pause, step through, and monitor programs in real time. They are essential for:</p>
+            <ul>
+                <li>Understanding malware behavior</li>
+                <li>Analyzing post-execution actions</li>
+                <li>Understanding dependencies</li>
+                <li>Finding vulnerabilities in compiled code without source access</li>
+            </ul>
+
+            <h3>GNU Debugger (GDB)</h3>
+            <p>GDB is a versatile command-line debugger for C, C++, and Fortran programs on Linux/Unix systems.</p>
+
+            <h4>Key Capabilities</h4>
+            <ul>
+                <li><strong>Memory Inspection</strong> - View what's stored in RAM during execution</li>
+                <li><strong>Stack Tracing</strong> - See function call history and examine the call stack</li>
+                <li><strong>Breakpoints</strong> - Pause execution at specific code locations</li>
+                <li><strong>Step Execution</strong> - Run code line-by-line to observe behavior</li>
+                <li><strong>Variable Monitoring</strong> - Track how values change over time</li>
+                <li><strong>Kernel Debugging</strong> - Can debug both user-space and kernel-space programs</li>
+                <li><strong>Source Code Tracking</strong> - When available, correlates machine code with source</li>
+            </ul>
+
+            <h4>Common Use Cases</h4>
+            <ul>
+                <li>OS development and kernel analysis</li>
+                <li>Rootkit detection and analysis</li>
+                <li>Linux malware reverse engineering</li>
+                <li>Advanced malware research</li>
+                <li>Strengthening overall system reliability</li>
+            </ul>
+
+            <h3>Immunity Debugger</h3>
+            <p>Immunity Debugger is a free, advanced Windows-based debugger widely used for reverse engineering, malware analysis, and security research. Unlike many command-line debuggers, it provides a visual interface that makes it easier to inspect and modify running code.</p>
+
+            <h4>Who Uses It?</h4>
+            <ul>
+                <li><strong>Malware Analysts</strong> - To study how malicious software behaves during execution</li>
+                <li><strong>Reverse Engineers</strong> - To break down applications without access to source code</li>
+                <li><strong>Security Researchers</strong> - To identify vulnerabilities and weaknesses in software</li>
+            </ul>
+
+            <h4>Key Features</h4>
+            <ul>
+                <li><strong>Memory Analysis</strong> - Inspects data loaded into memory during execution (useful when malware hides or decrypts payloads inside RAM)</li>
+                <li><strong>Simultaneous Process Analysis</strong> - Enables examination of multiple threads or processes at the same time (critical for analyzing modern multi-threaded malware)</li>
+                <li><strong>Breakpoints</strong> - Allows analysts to pause execution at specific points to observe what the program does step by step</li>
+                <li><strong>Run-Time Patching</strong> - Lets analysts modify how a program behaves while it's running (useful for skipping or altering malicious actions to observe alternative outcomes)</li>
+                <li><strong>Graphical Interface</strong> - Displays code disassembly, memory contents, registers, and stack in organized panels</li>
+            </ul>
+
+            <h4>Interface Components</h4>
+            <p>The Immunity Debugger interface typically displays:</p>
+            <ul>
+                <li>Code disassembly (assembly instructions)</li>
+                <li>Memory contents and registers (tracking execution state)</li>
+                <li>Stack view for function calls and local variables</li>
+                <li>Right-click menu options for setting breakpoints or editing instructions on the fly</li>
+            </ul>
+
+            <h3>Cloud Platform Assessment Tools</h3>
+
+            <p>With the rapid adoption of public cloud platforms like AWS, Azure, and Google Cloud, organizations face new types of risks. Traditional security tools often fall short in these environments, which is why cloud platform assessment tools are essential.</p>
+
+            <h4>What Are Cloud Platform Assessment Tools?</h4>
+            <p>These tools are designed to:</p>
+            <ul>
+                <li><strong>Scan and Analyze Cloud-Hosted Applications</strong> - Examine services running in the cloud for vulnerabilities</li>
+                <li><strong>Check Platform Configurations</strong> - Misconfigurations often pose bigger risks than the apps themselves. Example: Leaving S3 buckets or cloud storage open to the public</li>
+            </ul>
+
+            <h4>Why Are These Tools Important?</h4>
+            <ul>
+                <li>Cloud adoption increases complexity, requiring specialized tools</li>
+                <li>They identify both vulnerabilities and misconfigurations such as weak access controls, unpatched virtual machines, and poor encryption settings</li>
+            </ul>
+
+            <h4>What Do These Tools Provide?</h4>
+            <ul>
+                <li><strong>Comprehensive Reports</strong> - Detailed breakdown of issues discovered during the scan</li>
+                <li><strong>Actionable Fixes</strong> - Not only highlight what is broken but provide steps to remediate, helping security teams quickly close gaps before exploitation</li>
+            </ul>
+
+            <div class="example-box">
+                <div class="example-box-header">Example Scenario</div>
+                <div style="color: #5d6d7e; line-height: 1.8;">
+                    A cloud assessment tool scans your AWS setup and reveals:
+                    <ul>
+                        <li>A database is publicly accessible (critical risk)</li>
+                        <li>The admin account lacks MFA (Multi-Factor Authentication)</li>
+                        <li>A virtual machine hasn't been patched in 6 months</li>
+                    </ul>
+                    By flagging these issues, the tool helps the team fix weaknesses before attackers exploit them.
+                </div>
+            </div>
+
+            <h3>Cloud Infrastructure Assessment Tools</h3>
+
+            <p>Cloud infrastructure forms the foundation of modern IT systems, including virtual machines, storage buckets, firewalls, and containers. Unlike application scanners, these tools focus on the underlying cloud environment.</p>
+
+            <h4>Key Concepts</h4>
+            <ul>
+                <li><strong>Adapted for Cloud-Based Infrastructure</strong> - Designed specifically to understand how cloud resources are built, connected, and secured. Go beyond apps to assess the core environment (VMs, networks, storage)</li>
+                <li><strong>Complexity of Cloud Management</strong> - Cloud is not plug-and-play; organizations depend heavily on providers. Managing all settings, permissions, and services requires expertise</li>
+                <li><strong>Division of Responsibilities (Shared Responsibility Model)</strong>
+                    <ul>
+                        <li><strong>Provider:</strong> Secures hardware, networking, and physical infrastructure</li>
+                        <li><strong>Customer:</strong> Secures data, access controls, and configuration settings</li>
+                        <li><strong>Example:</strong> AWS secures the servers, but you must configure your S3 bucket so it isn't exposed publicly</li>
+                    </ul>
+                </li>
+                <li><strong>Automated Testing</strong> - Runs vulnerability and penetration checks for misconfigured permissions, open ports, unpatched systems, and insecure network settings</li>
+            </ul>
+
+            <h3>ScoutSuite</h3>
+            <p>ScoutSuite is an open-source security auditing tool designed for cloud infrastructure assessment. It works across major cloud providers, including AWS, Azure, and GCP (Google Cloud Platform).</p>
+
+            <h4>What ScoutSuite Does</h4>
+            <ul>
+                <li>Evaluates whether environments are securely configured</li>
+                <li>Generates comprehensive reports ranking issues by severity</li>
+                <li>Helps organizations prioritize what to fix first</li>
+                <li>Works with read-only permissions (safe to run in production)</li>
+            </ul>
+
+            <h4>Multi-Cloud Support</h4>
+            <ul>
+                <li>Works across AWS, Azure, and Google Cloud Platform</li>
+                <li>Single tool for all your cloud environments</li>
+                <li>Consistent reporting format across platforms</li>
+            </ul>
+
+            <h4>Common Findings</h4>
+            <ul>
+                <li>S3 buckets with public access</li>
+                <li>Security groups allowing 0.0.0.0/0 (entire internet)</li>
+                <li>IAM users without MFA</li>
+                <li>Root account usage</li>
+                <li>Unencrypted storage</li>
+                <li>Overly permissive IAM policies</li>
+            </ul>
+
+            <h3>Prowler</h3>
+            <p>Prowler is a focused security tool for AWS environments, providing vulnerability scanning, CIS benchmark compliance, and regulatory checks.</p>
+
+            <h4>Key Capabilities</h4>
+            <ul>
+                <li><strong>AWS-Specific Scanner</strong> - Designed exclusively for AWS (not Azure or GCP)</li>
+                <li><strong>CIS Benchmark Compliance</strong> - Checks against Center for Internet Security benchmarks for AWS</li>
+                <li><strong>Regulatory Compliance</strong> - Supports HIPAA, GDPR, PCI-DSS, SOC2 checks</li>
+                <li><strong>Security Assessments</strong> - Identifies weak passwords, unpatched systems, misconfigurations</li>
+            </ul>
+
+            <h4>What It Checks</h4>
+            <ul>
+                <li>Security: Weak passwords, unpatched systems, exposed resources</li>
+                <li>CIS Benchmarks: Industry-standard security configurations</li>
+                <li>Compliance: HIPAA, GDPR, PCI-DSS, SOC2 requirements</li>
+                <li>Best Practices: AWS Well-Architected Framework alignment</li>
+            </ul>
+
+            <h4>Output and Results</h4>
+            <ul>
+                <li>Categorizes findings: PASSED, FAILED, MANUAL</li>
+                <li>Severity levels: Critical, High, Medium, Low</li>
+                <li>Each issue categorized by severity, giving teams actionable insight into what to fix first</li>
+            </ul>
+
+            <h4>Versions</h4>
+            <ul>
+                <li>Open-source version (Prowler OSS)</li>
+                <li>Commercial version (ProwlerPro) with additional features</li>
+            </ul>
+
+            <h3>Pacu</h3>
+            <p>Pacu (pronounced pah-coo) is an open-source cloud penetration testing framework designed specifically for AWS. It is often compared to Metasploit for AWS, as it helps simulate real-world attacks in a controlled environment.</p>
+
+            <h4>Key Features</h4>
+            <ul>
+                <li><strong>Cloud Penetration Testing Framework</strong> - Actively simulates real-world attacks to test AWS environments. Provides insight into potential damage if credentials or configurations are compromised</li>
+                <li><strong>Evaluate AWS Environment Security</strong> - Focused only on AWS (not Azure or GCP). Allows organizations to measure how vulnerable their environment is under attack scenarios</li>
+                <li><strong>Modules for API and VM Exploitation</strong> - Pacu includes multiple plug-in modules for targeted testing:
+                    <ul>
+                        <li><strong>iam_enum_permissions</strong> - Lists what actions different IAM users/roles are allowed to perform</li>
+                        <li><strong>ec2_backdoor</strong> - Simulates taking control of an AWS EC2 (Elastic Compute Cloud) instance. EC2 = virtual servers in AWS</li>
+                        <li><strong>Key extraction</strong> - Identifies and extracts AWS keys if misconfigured</li>
+                        <li><strong>s3_download</strong> - Tests if S3 buckets can be accessed/downloaded</li>
+                        <li><strong>iam_privesc</strong> - Tests for privilege escalation paths</li>
+                    </ul>
+                </li>
+                <li><strong>Abuse of Credentials</strong> - Demonstrates what an attacker could do with stolen AWS credentials. Highlights risks tied to weak or overly permissive IAM policies</li>
+            </ul>
+
+            <h4>Why It Matters</h4>
+            <p>Pacu enables ethical hacking in AWS environments by showing how attackers might exploit APIs, credentials, or misconfigured virtual machines. This is essential for risk assessment and cloud security hardening.</p>
+
+            <h4>Use Cases</h4>
+            <ul>
+                <li>Red team exercises</li>
+                <li>Testing incident response procedures</li>
+                <li>Validating AWS security controls</li>
+                <li>Understanding attacker tactics in cloud environments</li>
+            </ul>
+
+            <div class="key-concept">
+                <div class="key-concept-header">⚠️ Important Security Note</div>
+                <div class="key-concept-content">
+                    Cloud misconfigurations remain one of the leading causes of breaches. Tools that assess cloud infrastructure ensure organizations maintain secure foundations, prevent accidental exposures, and meet compliance requirements.
+                </div>
+            </div>
+        </div>
+
+        <!-- Practical Guide Section -->
+        <div id="practical" class="content-section">
+            <h2>🔧 Practical Analysis Guide</h2>
+
+            <p>This section provides step-by-step guidance for conducting application vulnerability assessments using the tools discussed in this lesson.</p>
+
+            <h3>Lab 1: SQL Injection Detection with OWASP ZAP</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Step-by-Step: Finding SQL Injection Vulnerabilities</div>
+                <div class="practical-guide-steps">
+                    <strong>Prerequisites:</strong> OWASP ZAP installed, DVWA (Damn Vulnerable Web Application) running<br><br>
+                    <strong>Setup Phase:</strong>
+                    <ol>
+                        <li>Download and install OWASP ZAP from <a href="https://www.zaproxy.org/download/" target="_blank">zaproxy.org</a></li>
+                        <li>Start OWASP ZAP application</li>
+                        <li>Configure your browser proxy settings:
+                            <ul>
+                                <li>Go to Browser Settings → Network Settings → Manual Proxy Configuration</li>
+                                <li>Set HTTP Proxy: <code>127.0.0.1</code></li>
+                                <li>Set Port: <code>8080</code></li>
+                                <li>Check "Use this proxy server for all protocols"</li>
+                            </ul>
+                        </li>
+                        <li>In ZAP: Tools → Options → Local Proxies (verify port 8080 is set)</li>
+                        <li>Test connection: Browse any HTTP site, traffic should appear in ZAP's History tab</li>
+                    </ol>
+                    <strong>Detection Phase:</strong>
+                    <ol start="6">
+                        <li>Navigate to DVWA SQL Injection page (set security to "low")</li>
+                        <li>Submit a normal search query (e.g., enter "1" and click Submit)</li>
+                        <li>In ZAP's History tab, locate the SQL injection request</li>
+                        <li>Right-click the request → Select "Active Scan"</li>
+                        <li>Wait for scan to complete (typically 2-3 minutes)</li>
+                        <li>Click on the Alerts tab to review findings</li>
+                        <li>Look for "SQL Injection" alert (should show High severity)</li>
+                        <li>Click the alert to view:
+                            <ul>
+                                <li>Attack payload that ZAP used</li>
+                                <li>Evidence showing the vulnerability</li>
+                                <li>Recommended solution</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <strong>Manual Exploitation (Optional):</strong>
+                    <ol start="14">
+                        <li>Right-click the original request → Open/Resend with Request Editor</li>
+                        <li>Modify the parameter to: <code>1' OR '1'='1</code></li>
+                        <li>Click "Send" and observe the response</li>
+                        <li>Notice: Response shows all database records (not just ID 1)</li>
+                        <li>This confirms the SQL injection vulnerability is exploitable</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Lab 2: Manual Testing with Burp Suite Interception Proxy</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Using Burp Suite to Intercept and Modify Requests</div>
+                <div class="practical-guide-steps">
+                    <strong>Prerequisites:</strong> Burp Suite Community Edition installed, vulnerable web application<br><br>
+                    <strong>Setup:</strong>
+                    <ol>
+                        <li>Launch Burp Suite (Community Edition is free)</li>
+                        <li>Click on "Proxy" tab → "Intercept" sub-tab</li>
+                        <li>Ensure "Intercept is on" button is enabled (orange)</li>
+                        <li>Configure browser proxy to <code>127.0.0.1:8080</code></li>
+                        <li>Navigate to target web application in browser</li>
+                    </ol>
+                    <strong>Interception Workflow:</strong>
+                    <ol start="6">
+                        <li>Browse to a login form or any interactive page</li>
+                        <li>Fill in the form and click Submit</li>
+                        <li>Burp intercepts the request - it pauses automatically!</li>
+                        <li>Observe the request in Burp's Intercept tab:
+                            <ul>
+                                <li>HTTP method (GET/POST)</li>
+                                <li>Headers (cookies, user-agent, etc.)</li>
+                                <li>Parameters (username, password, etc.)</li>
+                            </ul>
+                        </li>
+                        <li>Modify parameters (Example: change <code>username=user</code> to <code>username=admin</code>)</li>
+                        <li>Click "Forward" to send the modified request to the server</li>
+                        <li>Observe the server's response - did it accept your modification?</li>
+                        <li>Turn off interception: Click "Intercept is on" to toggle it off</li>
+                    </ol>
+                    <strong>What This Technique Finds:</strong><br>
+                    • Broken access control (accessing other users' data)<br>
+                    • Price manipulation in e-commerce<br>
+                    • Privilege escalation (user → admin)<br>
+                    • Hidden parameters and fields<br>
+                    • Session token weaknesses
+                </div>
+            </div>
+
+            <h3>Lab 3: Malware Analysis with Immunity Debugger</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Basic Binary Analysis and Debugging</div>
+                <div class="practical-guide-steps">
+                    <strong>Prerequisites:</strong> Windows VM, Immunity Debugger installed, safe malware sample or crackme<br><br>
+                    <strong>Safety First:</strong>
+                    <ul>
+                        <li>ALWAYS use an isolated VM for malware analysis</li>
+                        <li>Disable network connectivity during analysis</li>
+                        <li>Take VM snapshot before opening any sample</li>
+                        <li>Never analyze malware on your primary system!</li>
+                    </ul>
+                    <strong>Analysis Steps:</strong>
+                    <ol>
+                        <li>Open Immunity Debugger (run as Administrator)</li>
+                        <li>File → Open → Select your executable sample</li>
+                        <li>Observe the four main panes:
+                            <ul>
+                                <li><strong>Disassembly:</strong> Shows assembly code instructions</li>
+                                <li><strong>Registers:</strong> CPU register values (EAX, EBX, EIP, ESP)</li>
+                                <li><strong>Memory Dump:</strong> Raw memory contents in hexadecimal</li>
+                                <li><strong>Stack:</strong> Function call stack and variables</li>
+                            </ul>
+                        </li>
+                        <li>Press F9 to run - program pauses at entry point</li>
+                        <li>Look for suspicious API calls:
+                            <ul>
+                                <li>CreateFileA/W (file creation)</li>
+                                <li>WriteFile (writing to files)</li>
+                                <li>RegSetValue (registry modification)</li>
+                                <li>InternetOpenA (network connections)</li>
+                            </ul>
+                        </li>
+                        <li>Set a breakpoint: Right-click on instruction → Breakpoint → Toggle</li>
+                        <li>Press F9 to run until breakpoint is hit</li>
+                        <li>Examine registers for suspicious values (file paths, URLs, IP addresses)</li>
+                        <li>Press F7 to step into function, F8 to step over</li>
+                        <li>Watch the stack for function arguments and return values</li>
+                        <li>Document findings: API calls, strings, network indicators, file operations</li>
+                    </ol>
+                    <strong>Red Flags to Watch For:</strong><br>
+                    • Calls to VirtualAlloc (memory allocation - common in malware)<br>
+                    • Encoded/encrypted strings that decrypt at runtime<br>
+                    • Anti-debugging checks (IsDebuggerPresent)<br>
+                    • Network connections to suspicious IPs<br>
+                    • Registry persistence mechanisms
+                </div>
+            </div>
+
+            <h3>Lab 4: AWS Security Audit with ScoutSuite</h3>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Multi-Cloud Security Assessment</div>
+                <div class="practical-guide-steps">
+                    <strong>Prerequisites:</strong> Python 3 installed, AWS account, AWS CLI configured<br><br>
+                    <strong>Installation:</strong>
+                    <div class="code-block">pip install scoutsuite</div>
+                    <strong>AWS Credentials Setup:</strong>
+                    <div class="code-block">aws configure
+# Enter: AWS Access Key ID
+# Enter: AWS Secret Access Key
+# Default region: us-east-1
+# Output format: json</div>
+                    <strong>Running the Scan:</strong>
+                    <div class="code-block">scout aws --profile default</div>
+                    <strong>Scan Process:</strong>
+                    <ol>
+                        <li>ScoutSuite connects to AWS using your credentials (read-only access)</li>
+                        <li>Scans all services: EC2, S3, IAM, RDS, Lambda, VPC, CloudTrail, etc.</li>
+                        <li>Typical scan duration: 3-5 minutes for small accounts, 10-15 for large</li>
+                        <li>Generates HTML report in <code>scoutsuite-report/</code> folder</li>
+                        <li>Open the HTML file: <code>scoutsuite-report/scoutsuite-results/scoutsuite_results_aws-*.html</code></li>
+                    </ol>
+                    <strong>Analyzing Results:</strong>
+                    <ol start="6">
+                        <li>Review dashboard showing overview by AWS service</li>
+                        <li>Click on services with "Danger" findings (red flags)</li>
+                        <li>Common critical findings:
+                            <ul>
+                                <li><strong>S3 Buckets:</strong> Public read/write access</li>
+                                <li><strong>Security Groups:</strong> Allowing 0.0.0.0/0 on sensitive ports</li>
+                                <li><strong>IAM:</strong> Users without MFA, overly permissive policies</li>
+                                <li><strong>Root Account:</strong> Active usage or no MFA</li>
+                                <li><strong>CloudTrail:</strong> Not enabled or logging disabled</li>
+                            </ul>
+                        </li>
+                        <li>For each finding, ScoutSuite provides:
+                            <ul>
+                                <li>Severity level (Danger, Warning, Info)</li>
+                                <li>Description of the issue</li>
+                                <li>Affected resources</li>
+                                <li>Recommended remediation</li>
+                            </ul>
+                        </li>
+                        <li>Document top 5-10 critical issues</li>
+                        <li>Prioritize based on: Severity + Exposure + Data Sensitivity</li>
+                        <li>Create remediation plan with timelines</li>
+                    </ol>
+                    <strong>Best Practices:</strong><br>
+                    • Run ScoutSuite monthly for continuous monitoring<br>
+                    • Integrate with CI/CD for automated security checks<br>
+                    • Track remediation progress over time<br>
+                    • Use findings to improve security policies and training
+                </div>
+            </div>
+
+            <h3>Additional Tools and Techniques</h3>
+
+            <h4>Nikto Web Server Scanner</h4>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Quick Web Server Assessment</div>
+                <div class="practical-guide-steps">
+                    <strong>Basic Usage:</strong>
+                    <div class="code-block">nikto -h http://target-website.com</div>
+                    <strong>What Nikto Checks:</strong><br>
+                    • 6,700+ known vulnerabilities<br>
+                    • Outdated software versions<br>
+                    • Default credentials and files<br>
+                    • Dangerous CGI scripts<br>
+                    • Server misconfigurations
+                </div>
+            </div>
+
+            <h4>GDB (GNU Debugger) on Linux</h4>
+            <div class="practical-guide">
+                <div class="practical-guide-header">Command-Line Debugging</div>
+                <div class="practical-guide-steps">
+                    <strong>Basic Commands:</strong>
+                    <div class="code-block">gdb ./program              # Load program
+(gdb) run                  # Start execution
+(gdb) break main           # Set breakpoint at main
+(gdb) info registers       # View register values
+(gdb) x/20x $esp          # Examine stack
+(gdb) continue            # Continue execution
+(gdb) quit                # Exit GDB</div>
+                </div>
+            </div>
+
+            <div class="key-concept">
+                <div class="key-concept-header">⚖️ Critical Legal Reminder</div>
+                <div class="key-concept-content">
+                    <strong>Before conducting ANY security testing:</strong>
+                    <ul>
+                        <li>✅ Get explicit written permission from system owners</li>
+                        <li>✅ Use only authorized test environments (DVWA, Juice Shop, WebGoat)</li>
+                        <li>✅ In enterprise: Coordinate with IT, security, and legal teams</li>
+                        <li>✅ Document scope, timeline, and authorized activities</li>
+                        <li>❌ NEVER scan production systems without authorization</li>
+                        <li>❌ Unauthorized testing violates CFAA and similar laws globally</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" class="content-section">
+            <h2>✅ Knowledge Check Quiz</h2>
+            <p>Test your understanding! Select your answer and click "Check Answer" to see if you're correct.</p>
+
+            <!-- Quiz 1 -->
+            <div class="quiz-container">
+                <div class="quiz-question">1. What is the most powerful feature of Burp Suite?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="1" data-answer="A">A) Automated vulnerability scanner</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="B">B) Interception proxy that pauses and modifies HTTP traffic</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="C">C) Cloud security auditing</div>
+                    <div class="quiz-option" data-quiz="1" data-answer="D">D) Binary reverse engineering</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(1, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-1"></div>
+            </div>
+
+            <!-- Quiz 2 -->
+            <div class="quiz-container">
+                <div class="quiz-question">2. What is the primary difference between OWASP ZAP and Burp Suite Pro?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="2" data-answer="A">A) ZAP is completely free and open-source, Burp Pro is paid commercial</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="B">B) ZAP only works on Linux, Burp works on Windows</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="C">C) ZAP cannot intercept HTTPS traffic</div>
+                    <div class="quiz-option" data-quiz="2" data-answer="D">D) Burp cannot find SQL injection</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(2, 'A')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-2"></div>
+            </div>
+
+            <!-- Quiz 3 -->
+            <div class="quiz-container">
+                <div class="quiz-question">3. When would you use a debugger like Immunity Debugger instead of a web scanner?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="3" data-answer="A">A) When testing web applications for SQL injection</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="B">B) When analyzing compiled malware binaries without source code</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="C">C) When scanning cloud environments for misconfigurations</div>
+                    <div class="quiz-option" data-quiz="3" data-answer="D">D) When performing automated security scans</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(3, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-3"></div>
+            </div>
+
+            <!-- Quiz 4 -->
+            <div class="quiz-container">
+                <div class="quiz-question">4. In the cloud shared responsibility model, who is responsible if an S3 bucket is misconfigured as public?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="4" data-answer="A">A) AWS/Cloud provider</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="B">B) The customer who owns the account</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="C">C) Both share equal responsibility</div>
+                    <div class="quiz-option" data-quiz="4" data-answer="D">D) No one, it's not a security issue</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(4, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-4"></div>
+            </div>
+
+            <!-- Quiz 5 -->
+            <div class="quiz-container">
+                <div class="quiz-question">5. What does ScoutSuite do?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="5" data-answer="A">A) Debugs compiled binaries</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="B">B) Performs multi-cloud security auditing for AWS, Azure, and GCP</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="C">C) Scans web applications for SQL injection</div>
+                    <div class="quiz-option" data-quiz="5" data-answer="D">D) Intercepts HTTP traffic between browser and server</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(5, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-5"></div>
+            </div>
+
+            <!-- Quiz 6 -->
+            <div class="quiz-container">
+                <div class="quiz-question">6. What technique involves sending random or unexpected inputs to find crashes and errors?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-quiz="6" data-answer="A">A) Static code analysis</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="B">B) Fuzzing</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="C">C) Dynamic code analysis</div>
+                    <div class="quiz-option" data-quiz="6" data-answer="D">D) Reverse engineering</div>
+                </div>
+                <button class="quiz-button" onclick="checkAnswer(6, 'B')">Check Answer</button>
+                <div class="quiz-feedback" id="feedback-6"></div>
+            </div>
+
+            <div class="quiz-container" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-color: #27ae60;">
+                <div style="text-align: center;">
+                    <h3>🎓 Quiz Complete!</h3>
+                    <p>Review any questions you missed and make sure you understand the concepts before the exam.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Glossary Section -->
+        <div id="glossary" class="content-section">
+            <h2>📖 Glossary of Key Terms</h2>
+            <p>Quick reference for important terminology used in this lesson.</p>
+
+            <div class="glossary-container">
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Arachni</div>
+                    <div class="glossary-term-definition">
+                        Open-source web application security scanner with both CLI and GUI interfaces. Analyzes HTML forms, JavaScript, JSON, XML, and can find orphaned input fields.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Breakpoint</div>
+                    <div class="glossary-term-definition">
+                        A marker in a debugger that pauses program execution at a specific line of code, allowing analysts to examine program state, memory, and variables at that moment.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Burp Suite</div>
+                    <div class="glossary-term-definition">
+                        Popular web application security testing tool developed by PortSwigger. Features powerful interception proxy for intercepting, viewing, and modifying HTTP/HTTPS traffic.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">CIS Benchmark</div>
+                    <div class="glossary-term-definition">
+                        Center for Internet Security Benchmarks - industry-standard security configuration guidelines for systems, networks, and cloud platforms.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Dynamic Code Analysis</div>
+                    <div class="glossary-term-definition">
+                        Security testing technique that observes application behavior while it's running. Detects runtime issues like session hijacking, improper redirects, and memory leaks.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Fuzzing</div>
+                    <div class="glossary-term-definition">
+                        Testing technique that sends random, unexpected, or malformed inputs to an application to find crashes, buffer overflows, and input validation flaws.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">GDB (GNU Debugger)</div>
+                    <div class="glossary-term-definition">
+                        Command-line debugger for C, C++, and Fortran programs on Linux/Unix. Supports memory inspection, stack tracing, breakpoints, and kernel debugging.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">IAM (Identity and Access Management)</div>
+                    <div class="glossary-term-definition">
+                        Cloud service for managing user identities, permissions, and access controls. Critical component of cloud security that defines who can do what.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Immunity Debugger</div>
+                    <div class="glossary-term-definition">
+                        Free, Windows-based debugger designed for malware analysis and reverse engineering. Features graphical interface, memory analysis, and run-time patching.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Interception Proxy</div>
+                    <div class="glossary-term-definition">
+                        Tool that sits between browser and web server, allowing analysts to pause, view, and modify HTTP/HTTPS requests and responses in real-time.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Nikto</div>
+                    <div class="glossary-term-definition">
+                        Command-line web server scanner that checks for 6,700+ known vulnerabilities, misconfigurations, and outdated software. Fast and effective for initial assessments.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">OWASP ZAP (Zed Attack Proxy)</div>
+                    <div class="glossary-term-definition">
+                        Free, open-source web application security tool developed by OWASP Foundation. Combines interception proxy with automated scanning for vulnerabilities.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Pacu</div>
+                    <div class="glossary-term-definition">
+                        AWS-focused penetration testing framework (like "Metasploit for AWS"). Simulates real-world attacks to test AWS environment security and identify weaknesses.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Prowler</div>
+                    <div class="glossary-term-definition">
+                        AWS security scanner that performs CIS Benchmark compliance checks and regulatory assessments (HIPAA, GDPR, PCI-DSS). Identifies security misconfigurations.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Reverse Engineering</div>
+                    <div class="glossary-term-definition">
+                        Process of analyzing compiled binaries to understand program behavior without access to source code. Essential for malware analysis and third-party software assessment.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Run-Time Patching</div>
+                    <div class="glossary-term-definition">
+                        Debugger feature that allows modifying program behavior while it's executing. Useful for testing alternative execution paths or skipping malicious actions.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">S3 Bucket</div>
+                    <div class="glossary-term-definition">
+                        Amazon Web Services object storage container. Common misconfiguration: leaving buckets publicly accessible, leading to data breaches.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">ScoutSuite</div>
+                    <div class="glossary-term-definition">
+                        Multi-cloud security auditing tool for AWS, Azure, and GCP. Generates comprehensive HTML reports ranking security findings by severity.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Shared Responsibility Model</div>
+                    <div class="glossary-term-definition">
+                        Cloud security framework where provider secures infrastructure (hardware, networking) and customer secures their data, access controls, and configurations.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">SQL Injection (SQLi)</div>
+                    <div class="glossary-term-definition">
+                        Attack where malicious SQL queries are inserted into input fields to manipulate database operations, potentially exposing, modifying, or deleting data.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">Static Code Analysis</div>
+                    <div class="glossary-term-definition">
+                        Security testing technique that examines source code without executing it. Identifies insecure function calls, hardcoded credentials, and poor input validation.
+                    </div>
+                </div>
+
+                <div class="glossary-term">
+                    <div class="glossary-term-name">XSS (Cross-Site Scripting)</div>
+                    <div class="glossary-term-definition">
+                        Vulnerability where attackers inject malicious scripts into web pages viewed by other users. Can steal cookies, session tokens, or redirect to malicious sites.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div id="resources" class="content-section">
+            <h2>🌐 Additional Resources</h2>
+            <p>Expand your knowledge with these curated resources for further learning and practice.</p>
+
+            <h3>Web Application Security Tools</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.zaproxy.org/" target="_blank">OWASP ZAP Official Site</a>
+                    <div class="resource-description">Download ZAP, access documentation, tutorials, and community support. Completely free and open-source.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://portswigger.net/burp" target="_blank">Burp Suite by PortSwigger</a>
+                    <div class="resource-description">Download Burp Community Edition (free) or learn about Pro features. Includes Web Security Academy with free training.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://portswigger.net/web-security" target="_blank">PortSwigger Web Security Academy</a>
+                    <div class="resource-description">FREE interactive labs teaching web vulnerabilities (SQL injection, XSS, CSRF, etc.). Hands-on practice environment.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://cirt.net/Nikto2" target="_blank">Nikto Web Scanner</a>
+                    <div class="resource-description">Open-source web server scanner. Download, documentation, and usage guides.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.arachni-scanner.com/" target="_blank">Arachni Scanner</a>
+                    <div class="resource-description">Open-source web application security scanner with CLI and web UI.</div>
+                </div>
+            </div>
+
+            <h3>Vulnerable Practice Applications</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://github.com/digininja/DVWA" target="_blank">DVWA (Damn Vulnerable Web Application)</a>
+                    <div class="resource-description">Intentionally vulnerable PHP/MySQL web app for practicing security testing. Multiple difficulty levels.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://owasp.org/www-project-juice-shop/" target="_blank">OWASP Juice Shop</a>
+                    <div class="resource-description">Modern vulnerable web application (Node.js, Angular). Over 100 challenges covering OWASP Top 10.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://owasp.org/www-project-webgoat/" target="_blank">OWASP WebGoat</a>
+                    <div class="resource-description">Deliberately insecure application with lessons on different vulnerabilities. Great for learning.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://github.com/bkimminich/juice-shop" target="_blank">Juice Shop GitHub</a>
+                    <div class="resource-description">Source code and installation instructions for Juice Shop. Can run locally via Docker.</div>
+                </div>
+            </div>
+
+            <h3>Debuggers & Reverse Engineering</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://www.immunityinc.com/products/debugger/" target="_blank">Immunity Debugger</a>
+                    <div class="resource-description">Free Windows debugger for malware analysis and reverse engineering. Download and documentation.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.sourceware.org/gdb/" target="_blank">GNU Debugger (GDB)</a>
+                    <div class="resource-description">Official GDB site with documentation, downloads, and tutorials for Linux/Unix debugging.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://malwareunicorn.org/workshops/re101.html" target="_blank">Malware Unicorn - RE101</a>
+                    <div class="resource-description">Free reverse engineering course for beginners. Learn malware analysis with hands-on exercises.</div>
+                </div>
+            </div>
+
+            <h3>Cloud Security Tools</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://github.com/nccgroup/ScoutSuite" target="_blank">ScoutSuite (NCC Group)</a>
+                    <div class="resource-description">Multi-cloud security auditing tool. GitHub repo with installation instructions and documentation.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://github.com/prowler-cloud/prowler" target="_blank">Prowler</a>
+                    <div class="resource-description">AWS security assessment tool. Open-source on GitHub with CIS Benchmark checks.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://github.com/RhinoSecurityLabs/pacu" target="_blank">Pacu (Rhino Security Labs)</a>
+                    <div class="resource-description">AWS penetration testing framework. "Metasploit for AWS" with exploitation modules.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://aws.amazon.com/free/" target="_blank">AWS Free Tier</a>
+                    <div class="resource-description">Set up free AWS account for practicing cloud security assessments. Includes EC2, S3, RDS.</div>
+                </div>
+            </div>
+
+            <h3>Learning Platforms & Tutorials</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://tryhackme.com/" target="_blank">TryHackMe</a>
+                    <div class="resource-description">Interactive cybersecurity training with rooms on web app testing, malware analysis, and cloud security.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.hackthebox.com/" target="_blank">Hack The Box</a>
+                    <div class="resource-description">Penetration testing labs and challenges. Practice skills in realistic environments.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://pentesterlab.com/" target="_blank">PentesterLab</a>
+                    <div class="resource-description">Hands-on exercises for learning web penetration testing. From beginner to advanced.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.bugcrowd.com/hackers/bugcrowd-university/" target="_blank">Bugcrowd University</a>
+                    <div class="resource-description">Free training on vulnerability research and bug bounty hunting. Real-world scenarios.</div>
+                </div>
+            </div>
+
+            <h3>Official Documentation</h3>
+            <div class="resource-links">
+                <div class="resource-link">
+                    <a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10</a>
+                    <div class="resource-description">Most critical web application security risks. Essential reading for all security professionals.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://www.cisecurity.org/cis-benchmarks" target="_blank">CIS Benchmarks</a>
+                    <div class="resource-description">Industry-standard security configuration guidelines for systems, cloud platforms, and applications.</div>
+                </div>
+
+                <div class="resource-link">
+                    <a href="https://docs.aws.amazon.com/security/" target="_blank">AWS Security Documentation</a>
+                    <div class="resource-description">Official AWS security best practices, compliance guides, and configuration recommendations.</div>
+                </div>
+            </div>
+
+            <div class="practical-guide">
+                <div class="practical-guide-header">💡 Study Strategy</div>
+                <div class="practical-guide-steps">
+                    <strong>To master application vulnerability assessment:</strong>
+                    <ol>
+                        <li><strong>Install the tools</strong> - ZAP, Burp, DVWA on your own system</li>
+                        <li><strong>Practice daily</strong> - Spend 30 minutes scanning vulnerable apps</li>
+                        <li><strong>Complete challenges</strong> - TryHackMe, Hack The Box, Juice Shop</li>
+                        <li><strong>Read vulnerability reports</strong> - HackerOne disclosed reports</li>
+                        <li><strong>Build a portfolio</strong> - Document your findings and remediation</li>
+                        <li><strong>Join communities</strong> - Discord/Slack groups for web app security</li>
+                        <li><strong>Stay current</strong> - Follow OWASP, PortSwigger research blog</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>CyberEdge Academy</strong></p>
+            <p>CyberEdge Cybersecurity Analyst 003 - Lesson 12: Understanding Application Vulnerability Assessment</p>
+            <p>Learner Portal | © 2024</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedAnswers = {};
+        let correctAnswers = 0;
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            updateProgress();
+        }
+
+        function checkAnswer(quizNum, correctAnswer) {
+            const selected = selectedAnswers[quizNum];
+            const feedback = document.getElementById(`feedback-${quizNum}`);
+            const options = document.querySelectorAll(`[data-quiz="${quizNum}"]`);
+            
+            if (!selected) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            options.forEach(option => {
+                const answer = option.getAttribute('data-answer');
+                if (answer === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (answer === selected && answer !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (selected === correctAnswer) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.innerHTML = `<strong>✓ Correct!</strong> ${getFeedback(quizNum, true)}`;
+                correctAnswers++;
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.innerHTML = `<strong>✗ Incorrect.</strong> ${getFeedback(quizNum, false)}`;
+            }
+
+            updateProgress();
+        }
+
+        function getFeedback(quizNum, isCorrect) {
+            const feedbacks = {
+                1: {
+                    correct: "The interception proxy is Burp's signature feature, allowing you to pause, view, and modify HTTP/HTTPS traffic in real-time.",
+                    incorrect: "While Burp has many features, its most powerful capability is the interception proxy that lets you manipulate traffic between browser and server."
+                },
+                2: {
+                    correct: "OWASP ZAP is completely free and open-source, while Burp Suite Pro requires a paid license. Both are excellent tools.",
+                    incorrect: "OWASP ZAP is free and open-source, while Burp Suite Pro is commercial software requiring payment."
+                },
+                3: {
+                    correct: "Debuggers are essential for analyzing compiled binaries, especially malware, when you don't have source code available.",
+                    incorrect: "Debuggers are used for analyzing compiled binaries and malware, not web applications. Use web scanners for SQL injection."
+                },
+                4: {
+                    correct: "In the shared responsibility model, customers are responsible for their configuration settings, including S3 bucket permissions.",
+                    incorrect: "The customer is responsible for configuration. AWS provides the infrastructure, but YOU configure your resources securely."
+                },
+                5: {
+                    correct: "ScoutSuite is a multi-cloud auditing tool that works with AWS, Azure, and GCP to find security misconfigurations.",
+                    incorrect: "ScoutSuite is specifically designed for cloud security auditing across AWS, Azure, and GCP, not web applications or debugging."
+                },
+                6: {
+                    correct: "Fuzzing involves sending random, unexpected, or malformed inputs to find crashes and vulnerabilities.",
+                    incorrect: "Fuzzing is the technique of sending random/unexpected inputs. Static analysis examines code, dynamic analysis observes runtime behavior."
+                }
+            };
+
+            return feedbacks[quizNum][isCorrect ? 'correct' : 'incorrect'];
+        }
+
+        function updateProgress() {
+            const sections = ['overview', 'content', 'practical'];
+            const visitedSections = sections.filter(section => 
+                document.getElementById(section).classList.contains('active') || 
+                document.getElementById(section).hasAttribute('data-visited')
+            );
+
+            visitedSections.forEach(section => {
+                document.getElementById(section).setAttribute('data-visited', 'true');
+            });
+
+            const progress = Math.min(100, (visitedSections.length / sections.length) * 70 + (correctAnswers / 6) * 30);
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-bar').textContent = Math.round(progress) + '%';
+        }
+
+        // CRITICAL: Initialize quiz options after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const quizNum = this.getAttribute('data-quiz');
+                    const answer = this.getAttribute('data-answer');
+                    
+                    // Deselect all options for this quiz
+                    document.querySelectorAll(`[data-quiz="${quizNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    selectedAnswers[quizNum] = answer;
+                });
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const tabs = Array.from(document.querySelectorAll('.nav-tab'));
+            const activeTab = document.querySelector('.nav-tab.active');
+            const currentIndex = tabs.indexOf(activeTab);
+
+            if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
+                tabs[currentIndex + 1].click();
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                tabs[currentIndex - 1].click();
+            }
+        });
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            updateProgress();
+        });
+    </script>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #e5e7eb;margin-top:40px;">&#169; 2026 Solomon Seifu, PhD. All rights reserved. CyberEdge Academy. Unauthorized distribution or republication prohibited.</footer>
+</body>
+<style>
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.nav-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.nav-btn:hover {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+.nav-btn.home {
+    background: #10b981;
+    border-color: #10b981;
+}
+body { 
+    padding-top: 70px !important; 
+}
+</style>
+
+<div class="nav-bar">
+    <a href="CyberEdge_Master_Portal.html" class="nav-btn home">🏠 Home</a>
+<div>
+    <a href="lesson11_learner_portal.html" class="nav-btn">◀ Back</a>
+    <a href="lesson13_learner_portal.html" class="nav-btn">Next ▶</a>
+</div>
+</html>

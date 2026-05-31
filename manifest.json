@@ -1,0 +1,14 @@
+{
+  "name": "CyberEdge Academy — Cybersecurity Analyst Training",
+  "short_name": "CyberEdge Academy",
+  "description": "Cybersecurity Analyst Training Platform by Solomon Seifu, PhD. 14 interactive lessons covering threat intelligence, vulnerability management, and incident response.",
+  "start_url": "CyberEdge_Master_Portal.html",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
